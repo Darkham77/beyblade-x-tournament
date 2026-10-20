@@ -1,0 +1,15 @@
+{
+  "$schema": "https://fallow.tools/schema/config.json",
+  "entry": ["src/index.ts"],
+  "ignorePatterns": [".auditor/**", "dist/**", "scratch/**", "tests/**"],
+  "typeAware": {
+    "enabled": true
+  },
+  "duplicates": {
+    "nearMiss": true,
+    "mode": "strict"
+  },
+  "health": {
+    "maxCrap": 0
+  }
+}

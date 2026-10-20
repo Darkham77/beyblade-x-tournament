@@ -1,0 +1,11 @@
+node_modules/
+dist/
+scratch/
+.DS_Store
+Thumbs.db
+*.zip
+
+# Auditor tool caches (Added by @francogp/auditor)
+*.log
+.oxlintcache
+.stylelintcache

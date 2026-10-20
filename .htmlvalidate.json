@@ -1,0 +1,26 @@
+{
+  "elements": ["html5"],
+  "extends": ["html-validate:recommended"],
+  "rules": {
+    "no-deprecated-attr": "error",
+    "deprecated": "error",
+    "element-permitted-content": "error",
+    "element-required-attributes": "error",
+    "attribute-allowed-values": "error",
+    "doctype-style": [
+      "error",
+      {
+        "style": "lowercase"
+      }
+    ],
+    "element-case": "off",
+    "element-name": "off",
+    "no-inline-style": "off",
+    "text-content": "off",
+    "void-style": "off",
+    "no-implicit-button-type": "off",
+    "prefer-native-element": "off",
+    "unique-landmark": "off",
+    "wcag/h63": "off"
+  }
+}
