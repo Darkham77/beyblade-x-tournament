@@ -30,4 +30,6 @@ Beyblade X Tournament Architecture & Development Team.
 
 ## Child DOX Index
 
-- [src/index.ts](./src/index.ts): Main TypeScript entry point.
+- [scripts/AGENTS.md](./scripts/AGENTS.md): Build scripts and administration tools.
+- [src/AGENTS.md](./src/AGENTS.md): Core data structures, types, and domain constants.
+- [tests/AGENTS.md](./tests/AGENTS.md): Test suites verifying Beyblade X scoring invariants and tournament format mechanics.

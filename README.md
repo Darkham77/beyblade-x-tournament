@@ -60,12 +60,12 @@ Everything is packed into a single standalone file: **`index.html`**.
 
 ## 📜 Official Beyblade X Rules Quick Reference
 
-| Finish Type | Points | Condition |
-|---|:---:|---|
-| **Spin Finish** | **1 pt** | Opponent Beyblade stops spinning while your Beyblade is still rotating. |
-| **Over Finish** | **2 pts** | Opponent Beyblade is knocked into the Over Zone (pocket). |
-| **Burst Finish** | **2 pts** | Opponent Beyblade bursts (the Blade, Ratchet, and Bit separate). |
-| **Xtreme Finish**| **3 pts** | Opponent Beyblade is knocked into the Xtreme Zone. |
+| Finish Type       |  Points   | Condition                                                               |
+| ----------------- | :-------: | ----------------------------------------------------------------------- |
+| **Spin Finish**   | **1 pt**  | Opponent Beyblade stops spinning while your Beyblade is still rotating. |
+| **Over Finish**   | **2 pts** | Opponent Beyblade is knocked into the Over Zone (pocket).               |
+| **Burst Finish**  | **2 pts** | Opponent Beyblade bursts (the Blade, Ratchet, and Bit separate).        |
+| **Xtreme Finish** | **3 pts** | Opponent Beyblade is knocked into the Xtreme Zone.                      |
 
 ### Common Disputes & Judge Rulings
 

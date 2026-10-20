@@ -81,11 +81,11 @@ interface TournamentRules {
   presetName: 'official_standard_4' | 'official_championship_7' | 'custom_house_rules';
   targetPoints: number; // e.g., 4, 7, or custom
   finishPoints: {
-    spin: number;   // default 1
-    over: number;   // default 2
-    burst: number;  // default 2
+    spin: number; // default 1
+    over: number; // default 2
+    burst: number; // default 2
     xtreme: number; // default 3
-    penalty: number;// default 1 awarded to opponent or subtracted
+    penalty: number; // default 1 awarded to opponent or subtracted
   };
   allowCustomPenalties: boolean;
 }
@@ -167,14 +167,14 @@ interface PointEvent {
 
 ## 5. Decision Log
 
-| ID | Decision | Alternatives Considered | Rationale |
-|---|---|---|---|
-| DEC-01 | Single-File Vanilla HTML5/CSS/JS (`index.html`) | Vite + Vue 3 Single-file compilation, Petite-Vue | Maximum portable zero-setup runtime; openable instantly on any phone, transferable via WhatsApp/Drive, zero build tooling. |
-| DEC-02 | Multi-Tournament Architecture | Single active tournament | Enables pausing leagues, switching between casual family play and formal brackets, and preserving history. |
-| DEC-03 | Multi-Arena Parallel Scoring | Single active match queue | Family tournaments often run 2-3 stadiums simultaneously; admin needs to switch between bouts without resetting score state. |
-| DEC-04 | Hybrid Rules Engine (Official + House Rules) | Fixed official rules only | Provides Takara Tomy standard (4 pts) & championship (7 pts) presets while empowering users to customize target points and finish values. |
-| DEC-05 | Integrated Pocket Judge Guide | External web links | Phone may be offline during outings or basements; judge rules must be instantly accessible offline. |
-| DEC-06 | Automated Fisher-Yates Seeding on Tournament Creation | Deterministic registration order, sort(() => Math.random() - 0.5) | Eliminates repetitive matchups with mathematically unbiased O(N) shuffling across all formats with zero UI clutter. |
+| ID     | Decision                                              | Alternatives Considered                                           | Rationale                                                                                                                                 |
+| ------ | ----------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| DEC-01 | Single-File Vanilla HTML5/CSS/JS (`index.html`)       | Vite + Vue 3 Single-file compilation, Petite-Vue                  | Maximum portable zero-setup runtime; openable instantly on any phone, transferable via WhatsApp/Drive, zero build tooling.                |
+| DEC-02 | Multi-Tournament Architecture                         | Single active tournament                                          | Enables pausing leagues, switching between casual family play and formal brackets, and preserving history.                                |
+| DEC-03 | Multi-Arena Parallel Scoring                          | Single active match queue                                         | Family tournaments often run 2-3 stadiums simultaneously; admin needs to switch between bouts without resetting score state.              |
+| DEC-04 | Hybrid Rules Engine (Official + House Rules)          | Fixed official rules only                                         | Provides Takara Tomy standard (4 pts) & championship (7 pts) presets while empowering users to customize target points and finish values. |
+| DEC-05 | Integrated Pocket Judge Guide                         | External web links                                                | Phone may be offline during outings or basements; judge rules must be instantly accessible offline.                                       |
+| DEC-06 | Automated Fisher-Yates Seeding on Tournament Creation | Deterministic registration order, sort(() => Math.random() - 0.5) | Eliminates repetitive matchups with mathematically unbiased O(N) shuffling across all formats with zero UI clutter.                       |
 
 ---
 

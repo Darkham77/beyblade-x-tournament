@@ -49,7 +49,7 @@ export default defineAuditConfig({
     zLayersEnabled: false
   },
   ratchet: {
-    enabled: false
+    productionRef: 'main'
   },
   testCoverage: {
     enabled: false
@@ -59,5 +59,109 @@ export default defineAuditConfig({
     defaultEncoding: 'utf-8',
     prohibitBom: true,
     detectMojibake: true
+  },
+  coverage: {
+    enabled: true,
+    acknowledgedDegradations: [
+      {
+        policy: 'scripts',
+        glob: 'scripts/**',
+        reason: 'Maintenance, build verification, and deployment scripts'
+      }
+    ]
+  },
+  constants: {
+    enabled: true
+  },
+  environment: {
+    enabled: true
+  },
+  dependencyVulnerabilities: {
+    enabled: true,
+    failOn: 'critical'
+  },
+  persistence: {
+    enabled: true
+  },
+  fallow: {
+    enabled: true,
+    typeAware: true,
+    showCascade: true,
+    duplicates: {
+      nearMiss: true,
+      mode: 'strict'
+    },
+    viz: {
+      enabled: true,
+      outputPath: 'scratch/fallow_map.html'
+    },
+    similarCode: {
+      enabled: true,
+      threshold: 0.95,
+      ignoreSameFile: true
+    }
+  },
+  animation: {
+    enabled: true
+  },
+  oxfmt: {
+    enabled: true
+  },
+  oxlint: {
+    enabled: true
+  },
+  pinia: {
+    enabled: true
+  },
+  scriptExtensions: {
+    enabled: true,
+    enforceTypeScript: true,
+    allowMjs: false,
+    allowCjs: false,
+    allowJsScripts: false,
+    exemptFiles: []
+  },
+  scssArchitecture: {
+    enabled: true
+  },
+  stylelint: {
+    enabled: true,
+    order: {
+      enabled: true,
+      enforceHasBlockPartitioning: true
+    }
+  },
+  types: {
+    enabled: true
+  },
+  typeCoverage: {
+    enabled: true,
+    atLeast: 95
+  },
+  vitePlusConfig: {
+    enabled: true,
+    precompress: {
+      enabled: true,
+      server: 'nginx',
+      spa: true,
+      report: 'summary',
+      threshold: 512
+    }
+  },
+  domain: {
+    enabled: true
+  },
+  valibot: {
+    enabled: true,
+    targets: []
+  },
+  queryPerformance: {
+    enabled: true
+  },
+  webPerformance: {
+    enabled: true
+  },
+  securityHardening: {
+    enabled: true
   }
 });
