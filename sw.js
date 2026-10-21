@@ -1,7 +1,7 @@
 /* ==========================================================================
    BEYBLADE X TOURNAMENT - SERVICE WORKER (OFFLINE FIRST & PWA)
    ========================================================================== */
-const CACHE_NAME = 'beyblade-x-v1.0.4';
+const CACHE_NAME = 'beyblade-x-v1.0.5';
 
 const PRECACHE_ASSETS = [
   './',

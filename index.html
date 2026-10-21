@@ -1777,39 +1777,41 @@
     <!-- MODAL: SINCRONIZACIÓN EN TIEMPO REAL & VERSIÓN -->
     <!-- ========================================== -->
     <div class="modal-overlay" id="modal-sync">
-      <div class="modal-box" style="max-width: 480px">
+      <div class="modal-box" style="max-width: 440px">
         <div class="modal-title">
           <span>⚡ Tiempo Real &amp; Nube</span>
           <button class="btn-icon" id="btn-close-sync-modal">✕</button>
         </div>
         <div
-          style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5"
+          style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5"
         >
-          Conectá todos los celulares en vivo a la misma base de datos en la nube (Firebase Realtime
-          Database). Cada punto, combate o torneo se reflejará al instante en todas las pantallas.
+          Sincronización automática de combates y torneos en vivo entre todos los celulares y
+          pantallas conectadas.
         </div>
 
         <div
           class="card"
           style="
-            padding: 12px;
-            margin-bottom: 14px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
             background: rgba(0, 240, 255, 0.05);
             border: 1px solid var(--border-color);
+            border-radius: 12px;
           "
         >
           <div
             style="
-              font-size: 12px;
+              font-size: 11px;
               font-weight: 800;
               color: var(--bx-cyan);
               text-transform: uppercase;
-              margin-bottom: 6px;
+              letter-spacing: 0.5px;
+              margin-bottom: 8px;
             "
           >
             Estado de Conexión:
           </div>
-          <div style="display: flex; align-items: center; gap: 8px">
+          <div style="display: flex; align-items: center; gap: 10px">
             <span
               id="modal-sync-indicator-dot"
               style="
@@ -1818,97 +1820,46 @@
                 border-radius: 50%;
                 background: #888;
                 display: inline-block;
+                box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
               "
             ></span>
             <span
               id="modal-sync-indicator-status"
-              style="font-weight: 800; font-size: 14px; color: var(--text-main)"
+              style="font-weight: 800; font-size: 15px; color: var(--text-main)"
             >
               Modo Local (Sin sincronización)
             </span>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="input-firebase-db-url"
-            >URL de Firebase Realtime Database:</label
-          >
-          <input
-            type="text"
-            id="input-firebase-db-url"
-            class="form-control"
-            placeholder="https://tu-proyecto-default-rtdb.firebaseio.com"
-            autocomplete="off"
-          />
-          <small style="color: var(--text-muted); font-size: 11px; margin-top: 4px; display: block">
-            Obtenela gratis en la consola de Firebase en Realtime Database.
-          </small>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="input-firebase-api-key"
-            >API Key (Opcional si usás modo de prueba):</label
-          >
-          <input
-            type="text"
-            id="input-firebase-api-key"
-            class="form-control"
-            placeholder="AIzaSy..."
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="input-firebase-project-id">Project ID:</label>
-          <input
-            type="text"
-            id="input-firebase-project-id"
-            class="form-control"
-            placeholder="beyblade-x-tournament"
-            autocomplete="off"
-          />
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-top: 14px">
-          <button
-            class="btn btn-primary btn-block"
-            id="btn-save-firebase-config"
-            style="font-weight: 800"
-          >
-            💾 Guardar y Conectar
-          </button>
-          <button
-            class="btn btn-danger btn-block"
-            id="btn-disconnect-firebase"
-            style="font-weight: 700"
-          >
-            Desconectar
-          </button>
-        </div>
-
-        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 18px 0" />
-
         <div
+          class="card"
           style="
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            gap: 12px;
           "
         >
           <div>
             <div
               style="
-                font-size: 12px;
+                font-size: 11px;
                 font-weight: 800;
                 color: var(--text-muted);
                 text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 4px;
               "
             >
               Versión de la App:
             </div>
             <div
-              style="font-size: 14px; font-weight: 800; color: var(--bx-gold)"
+              style="font-size: 15px; font-weight: 800; color: var(--bx-gold)"
               id="app-version-display"
             >
               v1.0.0
@@ -1917,9 +1868,18 @@
           <button
             class="btn btn-sm"
             id="btn-check-github-updates"
-            style="border-color: var(--bx-cyan); color: var(--bx-cyan); font-weight: 800"
+            style="
+              border-color: var(--bx-cyan);
+              color: var(--bx-cyan);
+              font-weight: 800;
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              padding: 8px 14px;
+            "
           >
-            🔄 Buscar Actualizaciones
+            <span>🔄</span>
+            <span>Buscar Actualizaciones</span>
           </button>
         </div>
       </div>
@@ -4359,15 +4319,8 @@
           const btnSyncOpen = document.getElementById('btn-sync-open');
           if (btnSyncOpen) {
             btnSyncOpen.addEventListener('click', () => {
-              const cfg = RealtimeSync.getConfig() || {};
-              const inputUrl = document.getElementById('input-firebase-db-url');
-              const inputApiKey = document.getElementById('input-firebase-api-key');
-              const inputProj = document.getElementById('input-firebase-project-id');
               const versionDisplay = document.getElementById('app-version-display');
               const savedSha = localStorage.getItem('bx_last_commit_sha');
-              if (inputUrl) inputUrl.value = cfg.databaseURL || '';
-              if (inputApiKey) inputApiKey.value = cfg.apiKey || '';
-              if (inputProj) inputProj.value = cfg.projectId || '';
               if (versionDisplay) {
                 versionDisplay.textContent = savedSha
                   ? `v${APP_VERSION} (${savedSha})`
@@ -4381,46 +4334,6 @@
           const btnCloseSync = document.getElementById('btn-close-sync-modal');
           if (btnCloseSync) {
             btnCloseSync.addEventListener('click', () => this.closeModal('modal-sync'));
-          }
-
-          const btnSaveFirebase = document.getElementById('btn-save-firebase-config');
-          if (btnSaveFirebase) {
-            btnSaveFirebase.addEventListener('click', () => {
-              const urlInput = document.getElementById('input-firebase-db-url');
-              const apiKeyInput = document.getElementById('input-firebase-api-key');
-              const projInput = document.getElementById('input-firebase-project-id');
-              const url = (urlInput ? urlInput.value : '').trim();
-              const apiKey = (apiKeyInput ? apiKeyInput.value : '').trim();
-              const projectId = (projInput ? projInput.value : '').trim();
-
-              if (!url) {
-                alert('Ingresá una URL válida de Firebase Realtime Database.');
-                return;
-              }
-
-              RealtimeSync.saveConfig({
-                databaseURL: url,
-                apiKey: apiKey || 'dummy-key',
-                projectId: projectId || 'beyblade-x-tournament'
-              });
-              RealtimeSync.refreshUI();
-              alert('¡Conectando a Firebase en tiempo real!');
-              this.closeModal('modal-sync');
-            });
-          }
-
-          const btnDisconnectFirebase = document.getElementById('btn-disconnect-firebase');
-          if (btnDisconnectFirebase) {
-            btnDisconnectFirebase.addEventListener('click', () => {
-              if (
-                confirm('¿Desconectar la sincronización en tiempo real? Volverás al modo local.')
-              ) {
-                RealtimeSync.disconnect();
-                RealtimeSync.refreshUI();
-                alert('Sincronización desconectada. Modo local activo.');
-                this.closeModal('modal-sync');
-              }
-            });
           }
 
           const btnCheckUpdates = document.getElementById('btn-check-github-updates');

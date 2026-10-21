@@ -84,6 +84,7 @@ export default defineAuditConfig({
     enabled: true
   },
   fallow: {
+    maxTargetPriority: 50,
     enabled: true,
     typeAware: true,
     showCascade: true,
