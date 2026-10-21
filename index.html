@@ -1045,6 +1045,7 @@
         <button
           class="btn-icon"
           id="btn-bgm-toggle"
+          onclick="BgmEngine.toggle()"
           title="Música de Fondo (Activar / Silenciar)"
           aria-label="Música de fondo"
           style="
@@ -1061,7 +1062,7 @@
             transition: all 0.2s ease;
           "
         >
-          <span id="bgm-icon">🔊</span>
+          <span id="bgm-icon" style="pointer-events: none">🔊</span>
         </button>
         <button
           class="btn-icon"
@@ -3700,18 +3701,20 @@
             this.audio = new Audio(BGM_AUDIO_URL);
             this.audio.loop = true;
             this.audio.preload = 'auto';
+
+            this.audio.addEventListener('play', () => this.updateIcon());
+            this.audio.addEventListener('pause', () => this.updateIcon());
           }
 
           const savedMute = localStorage.getItem('beyblade_bgm_muted');
           this.isMuted = savedMute === 'true';
-
-          this.updateIcon();
 
           if (!this.isMuted) {
             this.audio.volume = this.naturalVolume;
             const playPromise = this.audio.play();
             if (playPromise !== undefined) {
               playPromise.catch(() => {
+                this.updateIcon();
                 const startOnInteraction = () => {
                   if (!this.isMuted && this.audio && this.audio.paused) {
                     this.audio.play().catch(() => {});
@@ -3725,22 +3728,27 @@
             }
           } else {
             this.audio.volume = 0;
+            this.audio.pause();
           }
+
+          this.updateIcon();
         },
 
         toggle() {
           if (!this.audio) this.init();
-          this.isMuted = !this.isMuted;
-          localStorage.setItem('beyblade_bgm_muted', String(this.isMuted));
 
-          if (this.isMuted) {
-            this.fadeVolume(0, 200, () => {
+          if (this.audio.paused) {
+            this.isMuted = false;
+            localStorage.setItem('beyblade_bgm_muted', 'false');
+            this.audio.play().catch((err) => console.warn('BGM play error:', err));
+            const targetVol = this.isDucked ? this.naturalVolume * 0.1 : this.naturalVolume;
+            this.fadeVolume(targetVol, 150);
+          } else {
+            this.isMuted = true;
+            localStorage.setItem('beyblade_bgm_muted', 'true');
+            this.fadeVolume(0, 150, () => {
               if (this.audio) this.audio.pause();
             });
-          } else {
-            const targetVol = this.isDucked ? this.naturalVolume * 0.1 : this.naturalVolume;
-            this.audio.play().catch(() => {});
-            this.fadeVolume(targetVol, 200);
           }
           this.updateIcon();
         },
@@ -3794,15 +3802,23 @@
         updateIcon() {
           const btn = document.getElementById('btn-bgm-toggle');
           const icon = document.getElementById('bgm-icon');
+          const isActuallyPlaying = this.audio && !this.audio.paused;
+
           if (icon) {
-            icon.textContent = this.isMuted ? '🔇' : '🔊';
+            icon.textContent = isActuallyPlaying ? '🔊' : '🔇';
           }
           if (btn) {
-            btn.title = this.isMuted
-              ? 'Música: Silenciada (Activar)'
-              : 'Música: Sonando (Silenciar)';
-            btn.style.opacity = this.isMuted ? '0.6' : '1';
-            btn.style.borderColor = this.isMuted ? 'rgba(255, 255, 255, 0.2)' : 'var(--bx-cyan)';
+            btn.title = isActuallyPlaying
+              ? 'Música: Sonando (Hacé clic para silenciar)'
+              : 'Música: Silenciada (Hacé clic para activar)';
+            btn.style.opacity = isActuallyPlaying ? '1' : '0.6';
+            btn.style.borderColor = isActuallyPlaying
+              ? 'var(--bx-cyan)'
+              : 'rgba(255, 255, 255, 0.2)';
+            btn.style.background = isActuallyPlaying
+              ? 'rgba(0, 240, 255, 0.15)'
+              : 'rgba(255, 255, 255, 0.05)';
+            btn.style.boxShadow = isActuallyPlaying ? '0 0 10px rgba(0, 240, 255, 0.4)' : 'none';
           }
         }
       };
