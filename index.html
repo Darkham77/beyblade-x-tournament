@@ -1341,7 +1341,7 @@
             type="text"
             id="input-tournament-name"
             class="input-field"
-            placeholder="Ej. Torneo Familiar Xtreme"
+            placeholder="Ej. Liga 21/10 19:40"
             required
           />
 
@@ -2623,6 +2623,28 @@
         }
       };
 
+      function getDefaultTournamentPrefix(formatKey) {
+        const map = {
+          brackets: 'Eliminatoria',
+          double_elimination: 'Doble Eliminación',
+          swiss: 'Suizo',
+          round_robin: 'Liga',
+          groups_playoffs: 'Grupos',
+          king_of_the_hill: 'Rey de la Pista'
+        };
+        return map[formatKey] || 'Torneo';
+      }
+
+      function generateDefaultTournamentName(formatKey) {
+        const prefix = getDefaultTournamentPrefix(formatKey);
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        return `${prefix} ${day}/${month} ${hours}:${minutes}`;
+      }
+
       /* ==========================================================================
        3. TOURNAMENT ENGINE
        ========================================================================== */
@@ -2646,7 +2668,7 @@
           const tournamentId = generateId();
           const tournament = {
             id: tournamentId,
-            name: name || 'Torneo Beyblade X',
+            name: (name && name.trim()) || generateDefaultTournamentName(format),
             format,
             rules,
             playerIds: shuffleArray(playerIds),
@@ -4269,6 +4291,8 @@
        5. UI CONTROLLER & VIEW RENDERING
        ========================================================================== */
       const UI = {
+        isTournamentNameManuallyEdited: false,
+
         init() {
           this.bindEvents();
           this.renderAll();
@@ -4512,10 +4536,32 @@
             btnCloseModeRules.addEventListener('click', () => this.closeModal('modal-mode-rules'));
           }
 
+          // Tournament name input listener to detect manual edits
+          const inputTournamentName = document.getElementById('input-tournament-name');
+          if (inputTournamentName) {
+            inputTournamentName.addEventListener('input', () => {
+              this.isTournamentNameManuallyEdited = true;
+            });
+            inputTournamentName.addEventListener('focus', () => {
+              if (!this.isTournamentNameManuallyEdited) {
+                inputTournamentName.select();
+              }
+            });
+          }
+
           // Format selector change in tournament creation
           const selFormat = document.getElementById('select-tournament-format');
           if (selFormat) {
-            selFormat.addEventListener('change', (e) => this.updateFormatInfoCard(e.target.value));
+            selFormat.addEventListener('change', (e) => {
+              const formatVal = e.target.value;
+              this.updateFormatInfoCard(formatVal);
+              if (!this.isTournamentNameManuallyEdited) {
+                const nameInput = document.getElementById('input-tournament-name');
+                if (nameInput) {
+                  nameInput.value = generateDefaultTournamentName(formatVal);
+                }
+              }
+            });
           }
 
           // Blader sort & export
@@ -4631,6 +4677,13 @@
         },
 
         openCreateTournamentModal() {
+          this.isTournamentNameManuallyEdited = false;
+          const currentFormat = document.getElementById('select-tournament-format').value;
+          const nameInput = document.getElementById('input-tournament-name');
+          if (nameInput) {
+            nameInput.value = generateDefaultTournamentName(currentFormat);
+          }
+
           const grid = document.getElementById('tournament-players-checkboxes');
           grid.innerHTML = '';
           const playerIds = Object.keys(AppState.players);
@@ -4650,13 +4703,14 @@
               grid.appendChild(div);
             });
           }
-          this.updateFormatInfoCard(document.getElementById('select-tournament-format').value);
+          this.updateFormatInfoCard(currentFormat);
           this.openModal('modal-tournament');
         },
 
         handleCreateTournament() {
-          const name = document.getElementById('input-tournament-name').value.trim();
           const format = document.getElementById('select-tournament-format').value;
+          const rawName = document.getElementById('input-tournament-name').value.trim();
+          const name = rawName || generateDefaultTournamentName(format);
           const preset = document.getElementById('select-rules-preset').value;
 
           const selectedPlayers = Array.from(
