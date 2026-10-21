@@ -1998,6 +1998,7 @@
         app: null,
         db: null,
         status: 'local',
+        statusLabel: 'Modo Local',
         isApplyingRemoteUpdate: false,
         syncTimeout: null,
 
@@ -2015,6 +2016,13 @@
           }
 
           try {
+            if (this.app) {
+              try {
+                this.app.delete();
+              } catch (e) {}
+              this.app = null;
+              this.db = null;
+            }
             if (!firebase.apps.length) {
               this.app = firebase.initializeApp(config);
             } else {
@@ -2079,18 +2087,26 @@
           try {
             localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify(config));
           } catch (e) {}
-          location.reload();
+          this.init();
         },
 
         disconnect() {
           try {
             localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify({ disabled: true }));
           } catch (e) {}
-          location.reload();
+          if (this.app) {
+            try {
+              this.app.delete();
+            } catch (e) {}
+            this.app = null;
+            this.db = null;
+          }
+          this.setStatus('local', 'Modo Local');
         },
 
         setStatus(status, label) {
           this.status = status;
+          this.statusLabel = label;
           const dot = document.getElementById('sync-indicator-dot');
           const text = document.getElementById('sync-indicator-text');
           const modalDot = document.getElementById('modal-sync-indicator-dot');
@@ -2116,6 +2132,10 @@
           if (text) text.textContent = label;
           if (modalDot) modalDot.style.background = color;
           if (modalText) modalText.textContent = label;
+        },
+
+        refreshUI() {
+          this.setStatus(this.status, this.statusLabel || 'Modo Local');
         },
 
         pushState() {
@@ -4327,6 +4347,7 @@
                   ? `v${APP_VERSION} (${savedSha})`
                   : `v${APP_VERSION}`;
               }
+              RealtimeSync.refreshUI();
               this.openModal('modal-sync');
             });
           }
@@ -4356,6 +4377,9 @@
                 apiKey: apiKey || 'dummy-key',
                 projectId: projectId || 'beyblade-x-tournament'
               });
+              RealtimeSync.refreshUI();
+              alert('¡Conectando a Firebase en tiempo real!');
+              this.closeModal('modal-sync');
             });
           }
 
@@ -4366,6 +4390,9 @@
                 confirm('¿Desconectar la sincronización en tiempo real? Volverás al modo local.')
               ) {
                 RealtimeSync.disconnect();
+                RealtimeSync.refreshUI();
+                alert('Sincronización desconectada. Modo local activo.');
+                this.closeModal('modal-sync');
               }
             });
           }
@@ -6092,13 +6119,32 @@
 
       // Initialize application on DOM load
       function startApp() {
-        loadState();
-        UI.init();
-        if (typeof RealtimeSync !== 'undefined' && RealtimeSync.init) {
-          RealtimeSync.init();
+        try {
+          loadState();
+        } catch (e) {
+          console.error('Error al cargar estado:', e);
         }
-        if (typeof GitHubUpdater !== 'undefined' && GitHubUpdater.checkForUpdates) {
-          GitHubUpdater.checkForUpdates(false);
+
+        try {
+          UI.init();
+        } catch (e) {
+          console.error('Error al inicializar UI:', e);
+        }
+
+        try {
+          if (typeof RealtimeSync !== 'undefined' && RealtimeSync.init) {
+            RealtimeSync.init();
+          }
+        } catch (e) {
+          console.error('Error al inicializar RealtimeSync:', e);
+        }
+
+        try {
+          if (typeof GitHubUpdater !== 'undefined' && GitHubUpdater.checkForUpdates) {
+            GitHubUpdater.checkForUpdates(false);
+          }
+        } catch (e) {
+          console.error('Error al consultar GitHubUpdater:', e);
         }
       }
 
