@@ -1,6 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Scan, Check, RefreshCw, QrCode } from 'lucide-react';
-import { CATALOG_BLADES, CATALOG_RATCHETS, CATALOG_BITS } from '../data/catalog';
+import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, AlertCircle, CheckCircle2 } from 'lucide-react';
+import {
+  analyzeCurrentFrame,
+  extractCircularColorMetrics,
+  rankCatalogByColor,
+  type FrameAnalysisResult,
+  type ScanCandidate,
+} from '../utils/visionEngine';
 import confetti from 'canvas-confetti';
 
 interface ScannerViewProps {
@@ -9,10 +15,25 @@ interface ScannerViewProps {
 
 export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [cameraActive, setCameraActive] = useState<boolean>(false);
   const [scanMode, setScanMode] = useState<'BLADE' | 'RATCHET' | 'BIT' | 'HASBRO_QR'>('BLADE');
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
-  const [detectedResult, setDetectedResult] = useState<any | null>(null);
+
+  // Live real-time analysis HUD metrics
+  const [liveMetrics, setLiveMetrics] = useState<{
+    hex: string;
+    name: string;
+    isLightingGood: boolean;
+    brightness: number;
+  } | null>(null);
+  const [liveQrFound, setLiveQrFound] = useState<string | null>(null);
+
+  // Final scan results
+  const [scanResult, setScanResult] = useState<FrameAnalysisResult | null>(null);
+  const [selectedCandidate, setSelectedCandidate] = useState<ScanCandidate | null>(null);
 
   // Start Camera
   const startCamera = async () => {
@@ -45,101 +66,178 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
     };
   }, []);
 
-  // Simulate or execute the AI inference pipeline
-  const runDetectionPipeline = (targetOverride?: string) => {
-    setIsAnalyzing(true);
-    setDetectedResult(null);
+  // Real-time Live Camera HUD Loop (Runs every 180ms when camera is active)
+  useEffect(() => {
+    if (!cameraActive) {
+      setLiveMetrics(null);
+      setLiveQrFound(null);
+      return;
+    }
 
-    setTimeout(() => {
-      setIsAnalyzing(false);
-
-      if (scanMode === 'HASBRO_QR') {
-        const blade = CATALOG_BLADES[0]; // Dran Sword Hasbro
-        setDetectedResult({
-          type: 'BLADE',
-          name: 'Sword Dran (Hasbro Starter)',
-          code: 'HAS-ST-01',
-          brand: 'HASBRO',
-          confidence: 100,
-          qrPayload: 'HBX-BLD-SWORD-DRAN-01',
-          variantId: blade.variants[1].variant_id,
-          stats: blade.stats,
-          colorHex: '#0A4DA2',
-          message: 'Código DataMatrix Hasbro decodificado instantáneamente.',
-        });
-      } else if (scanMode === 'BLADE') {
-        const blade = targetOverride === 'rod' ? CATALOG_BLADES[3] : CATALOG_BLADES[2]; // Wizard Rod or Phoenix Wing
-        setDetectedResult({
-          type: 'BLADE',
-          name: blade.display_name,
-          code: blade.system === 'UX' ? 'UX-03' : 'BX-23',
-          brand: 'TAKARA_TOMY',
-          confidence: 98.4,
-          variantId: blade.variants[0].variant_id,
-          stats: blade.stats,
-          colorHex: blade.variants[0].color_primary_hex,
-          message: 'Molde geométrico identificado + Colorimetría CIE-Lab coincidente.',
-        });
-      } else if (scanMode === 'RATCHET') {
-        const ratchet = CATALOG_RATCHETS[3]; // 9-60
-        setDetectedResult({
-          type: 'RATCHET',
-          name: '9-60 (Green / Black)',
-          code: 'UX-03',
-          brand: 'TAKARA_TOMY',
-          confidence: 96.2,
-          variantId: ratchet.variants[0].variant_id,
-          stats: ratchet.stats,
-          colorHex: '#2E7D32',
-          message: '9 salientes contados. Altura estimada: 6.0 mm.',
-        });
-      } else {
-        const bit = CATALOG_BITS[2]; // Gear Flat
-        setDetectedResult({
-          type: 'BIT',
-          name: 'Gear Flat (Crimson Red)',
-          code: 'BX-23',
-          brand: 'TAKARA_TOMY',
-          confidence: 97.8,
-          variantId: bit.variants[0].variant_id,
-          stats: bit.stats,
-          colorHex: '#B71234',
-          message: 'Engranajes Xtreme Dash y punta plana cóncava detectados.',
-        });
+    let isMounted = true;
+    const intervalId = setInterval(() => {
+      if (!videoRef.current || !canvasRef.current || videoRef.current.readyState < 2) return;
+      try {
+        const res = analyzeCurrentFrame(videoRef.current, canvasRef.current, scanMode);
+        if (isMounted) {
+          setLiveMetrics({
+            hex: res.metrics.primaryHex,
+            name: res.metrics.colorName,
+            isLightingGood: res.metrics.isLightingGood,
+            brightness: res.metrics.brightness,
+          });
+          if (res.hasQr && res.qrPayload) {
+            setLiveQrFound(res.qrPayload);
+          } else {
+            setLiveQrFound(null);
+          }
+        }
+      } catch (err) {
+        // Ignore temporary frame sampling errors
       }
-    }, 1200);
+    }, 180);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [cameraActive, scanMode]);
+
+  // Execute snapshot analysis
+  const executeScan = () => {
+    if (!videoRef.current || !canvasRef.current) {
+      // If camera is inactive, simulate with default sample
+      runSimulationSample();
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      const res = analyzeCurrentFrame(videoRef.current!, canvasRef.current!, scanMode);
+      setScanResult(res);
+      setSelectedCandidate(res.topCandidates[0] || null);
+      setIsAnalyzing(false);
+    }, 350);
   };
 
+  // Upload an image file from smartphone gallery or disk
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        if (!canvasRef.current) return;
+        const canvas = canvasRef.current;
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) return;
+
+        ctx.drawImage(img, 0, 0);
+        setIsAnalyzing(true);
+
+        setTimeout(() => {
+          const metrics = extractCircularColorMetrics(ctx, canvas.width, canvas.height);
+          const topCandidates = rankCatalogByColor(metrics.primaryLab, scanMode);
+
+          const res: FrameAnalysisResult = {
+            hasQr: false,
+            metrics,
+            topCandidates: topCandidates.slice(0, 3),
+          };
+
+          setScanResult(res);
+          setSelectedCandidate(topCandidates[0] || null);
+          setIsAnalyzing(false);
+        }, 350);
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Fallback simulator for quick demo buttons
+  const runSimulationSample = (bladeOverride?: string) => {
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      let targetLab = { L: 45, a: 15, b: -45 }; // Blue (Dran Sword)
+      if (bladeOverride === 'phoenix') {
+        targetLab = { L: 42, a: 55, b: 35 }; // Red (Phoenix Wing)
+      } else if (bladeOverride === 'rod') {
+        targetLab = { L: 75, a: 5, b: 65 }; // Gold/Yellow (Wizard Rod)
+      }
+
+      const candidates = rankCatalogByColor(targetLab, scanMode);
+      const res: FrameAnalysisResult = {
+        hasQr: scanMode === 'HASBRO_QR',
+        qrPayload: scanMode === 'HASBRO_QR' ? 'HBX-BLD-SWORD-DRAN-01' : undefined,
+        metrics: {
+          primaryHex: bladeOverride === 'phoenix' ? '#B71234' : bladeOverride === 'rod' ? '#EAB308' : '#0A4DA2',
+          primaryLab: targetLab,
+          brightness: 120,
+          colorName: bladeOverride === 'phoenix' ? 'Rojo Carmesí' : bladeOverride === 'rod' ? 'Dorado / Amarillo' : 'Azul Cobalto',
+          isLightingGood: true,
+          sampleCount: 1500,
+        },
+        topCandidates: candidates.slice(0, 3),
+      };
+
+      setScanResult(res);
+      setSelectedCandidate(res.topCandidates[0] || null);
+      setIsAnalyzing(false);
+    }, 400);
+  };
+
+  // Confirm and add to user inventory
   const handleConfirmAndAdd = () => {
-    if (detectedResult) {
-      onAddDetectedPart(detectedResult.name, detectedResult.variantId);
+    if (selectedCandidate) {
+      onAddDetectedPart(selectedCandidate.part.display_name, selectedCandidate.variantId);
       confetti({
-        particleCount: 50,
-        spread: 60,
+        particleCount: 60,
+        spread: 70,
         origin: { y: 0.8 },
       });
-      setDetectedResult(null);
+      setScanResult(null);
+      setSelectedCandidate(null);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Title */}
-      <div className="text-center mb-8">
+      {/* Hidden off-screen canvas for frame analysis */}
+      <canvas ref={canvasRef} className="hidden" />
+
+      {/* Hidden photo file input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        className="hidden"
+        onChange={handlePhotoUpload}
+      />
+
+      {/* Header */}
+      <div className="text-center mb-6">
         <h1 className="text-3xl font-black text-white flex items-center justify-center gap-3">
           <Scan className="w-8 h-8 text-cyan-400 animate-pulse" />
           <span>Escáner de Visión Inteligente</span>
         </h1>
         <p className="text-slate-400 text-sm mt-1 max-w-xl mx-auto">
-          Enfoca la pieza con tu celular. La IA aísla el contorno del metal fundido, extrae el color y busca el producto oficial en la base de datos.
+          Enfoca la pieza con la cámara de tu celular. El motor aísla el contorno, extrae la colorimetría CIE-Lab en tiempo real y busca el molde oficial con cero alucinaciones.
         </p>
       </div>
 
       {/* Mode Selector */}
       <div className="flex justify-center mb-6">
-        <div className="bg-slate-900 p-1.5 rounded-2xl border border-slate-800 flex gap-1">
+        <div className="bg-slate-900 p-1.5 rounded-2xl border border-slate-800 flex flex-wrap gap-1">
           <button
-            onClick={() => setScanMode('BLADE')}
+            onClick={() => {
+              setScanMode('BLADE');
+              setScanResult(null);
+            }}
             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
               scanMode === 'BLADE'
                 ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
@@ -149,7 +247,10 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
             Blade (Capa)
           </button>
           <button
-            onClick={() => setScanMode('RATCHET')}
+            onClick={() => {
+              setScanMode('RATCHET');
+              setScanResult(null);
+            }}
             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
               scanMode === 'RATCHET'
                 ? 'bg-blue-500 text-slate-950 shadow-md shadow-blue-500/20'
@@ -159,7 +260,10 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
             Ratchet (Disco)
           </button>
           <button
-            onClick={() => setScanMode('BIT')}
+            onClick={() => {
+              setScanMode('BIT');
+              setScanResult(null);
+            }}
             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
               scanMode === 'BIT'
                 ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
@@ -169,7 +273,10 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
             Bit (Punta)
           </button>
           <button
-            onClick={() => setScanMode('HASBRO_QR')}
+            onClick={() => {
+              setScanMode('HASBRO_QR');
+              setScanResult(null);
+            }}
             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all flex items-center gap-1.5 ${
               scanMode === 'HASBRO_QR'
                 ? 'bg-red-500 text-slate-950 shadow-md shadow-red-500/20'
@@ -177,7 +284,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
             }`}
           >
             <QrCode className="w-3.5 h-3.5" />
-            <span>Hasbro QR</span>
+            <span>Hasbro QR (100%)</span>
           </button>
         </div>
       </div>
@@ -197,45 +304,105 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
         {!cameraActive && (
           <div className="text-center p-6 z-10">
             <Camera className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <p className="text-sm text-slate-300 font-semibold mb-1">Cámara no inicializada</p>
+            <p className="text-sm text-slate-300 font-semibold mb-1">Cámara lista para conectar</p>
             <p className="text-xs text-slate-500 max-w-xs mb-4">
-              Activa la cámara del navegador o prueba una de las muestras pre-cargadas abajo.
+              Enciende la cámara en vivo de tu dispositivo o sube una foto de tu pieza física.
             </p>
-            <button
-              onClick={startCamera}
-              className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md transition-all"
-            >
-              Encender Cámara
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+              <button
+                onClick={startCamera}
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5"
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Encender Cámara</span>
+              </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition-all flex items-center justify-center gap-1.5"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Subir Foto</span>
+              </button>
+            </div>
           </div>
+        )}
+
+        {/* LIVE HUD OVERLAYS (When Camera is Active) */}
+        {cameraActive && (
+          <>
+            {/* Top HUD: Real-time Live Color & Lighting Chip */}
+            <div className="absolute top-4 inset-x-4 flex items-center justify-between pointer-events-none z-10">
+              {liveMetrics && (
+                <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800/80 shadow-lg">
+                  <span
+                    className="w-3.5 h-3.5 rounded-full border border-white/30 shrink-0"
+                    style={{ backgroundColor: liveMetrics.hex }}
+                  />
+                  <span className="text-xs font-semibold text-white font-mono">
+                    {liveMetrics.name} ({liveMetrics.hex})
+                  </span>
+                </div>
+              )}
+
+              {liveMetrics && (
+                <div
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold font-mono border backdrop-blur-md ${
+                    liveMetrics.isLightingGood
+                      ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800/80'
+                      : 'bg-amber-950/80 text-amber-400 border-amber-800/80'
+                  }`}
+                >
+                  {liveMetrics.isLightingGood ? (
+                    <>
+                      <Sun className="w-3 h-3 text-emerald-400" />
+                      <span>Luz Óptima</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="w-3 h-3 text-amber-400" />
+                      <span>Ajustar Iluminación</span>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Live Hasbro QR Banner if detected */}
+            {liveQrFound && (
+              <div className="absolute top-16 inset-x-4 bg-emerald-500/90 text-slate-950 font-black text-xs px-3 py-2 rounded-xl shadow-xl flex items-center justify-center gap-2 animate-bounce z-20">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>¡CÓDIGO HASBRO DETECTADO: {liveQrFound}!</span>
+              </div>
+            )}
+          </>
         )}
 
         {/* RETICLE OVERLAY */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           {scanMode === 'BLADE' && (
             <div className="relative w-56 h-56 rounded-full border-2 border-dashed border-cyan-400/80 flex items-center justify-center animate-pulse">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-cyan-400 bg-slate-950/80 px-2 py-0.5 rounded">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-cyan-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
                 Centrar Blade Aquí
               </span>
-              <div className="absolute top-0 w-2 h-2 bg-cyan-400 -translate-y-1"></div>
-              <div className="absolute bottom-0 w-2 h-2 bg-cyan-400 translate-y-1"></div>
-              <div className="absolute left-0 w-2 h-2 bg-cyan-400 -translate-x-1"></div>
-              <div className="absolute right-0 w-2 h-2 bg-cyan-400 translate-x-1"></div>
+              <div className="absolute top-0 w-2.5 h-2.5 bg-cyan-400 -translate-y-1 rounded-full shadow"></div>
+              <div className="absolute bottom-0 w-2.5 h-2.5 bg-cyan-400 translate-y-1 rounded-full shadow"></div>
+              <div className="absolute left-0 w-2.5 h-2.5 bg-cyan-400 -translate-x-1 rounded-full shadow"></div>
+              <div className="absolute right-0 w-2.5 h-2.5 bg-cyan-400 translate-x-1 rounded-full shadow"></div>
             </div>
           )}
 
           {(scanMode === 'RATCHET' || scanMode === 'BIT') && (
             <div className="relative w-48 h-36 border-2 border-dashed border-amber-400/80 rounded-2xl flex items-center justify-center animate-pulse">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-amber-400 bg-slate-950/80 px-2 py-0.5 rounded">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-amber-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
                 Enfoque a 45°
               </span>
             </div>
           )}
 
           {scanMode === 'HASBRO_QR' && (
-            <div className="relative w-40 h-40 border-2 border-red-500 rounded-xl flex items-center justify-center bg-red-500/5">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-red-400 bg-slate-950/80 px-2 py-0.5 rounded">
-                Código QR / Matrix
+            <div className="relative w-44 h-44 border-2 border-red-500 rounded-2xl flex items-center justify-center bg-red-500/10">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-red-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
+                Código QR / DataMatrix
               </span>
             </div>
           )}
@@ -243,11 +410,11 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
 
         {/* ANALYZING SPINNER */}
         {isAnalyzing && (
-          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-6">
+          <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md z-30 flex flex-col items-center justify-center text-center p-6">
             <RefreshCw className="w-10 h-10 text-cyan-400 animate-spin mb-3" />
-            <h4 className="text-base font-bold text-white mb-1">Analizando geometría y metal...</h4>
+            <h4 className="text-base font-bold text-white mb-1">Analizando fotograma en vivo...</h4>
             <p className="text-xs text-slate-400 font-mono">
-              Filtro CLAHE + Clasificador de Molde + Colorimetría LAB
+              Extractor CIE-Lab + DeltaE Euclídeo + Matching de Molde
             </p>
           </div>
         )}
@@ -256,73 +423,202 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
       {/* SCAN CONTROLS */}
       <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
         <button
-          onClick={() => runDetectionPipeline()}
+          onClick={executeScan}
           disabled={isAnalyzing}
           className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-sm shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5"
         >
           <Scan className="w-4 h-4" />
-          <span>Escanear Pieza Actual</span>
+          <span>Escanear Fotograma Actual</span>
         </button>
 
-        {/* Quick test simulation pills */}
-        <div className="flex items-center gap-2 mt-2 sm:mt-0">
-          <span className="text-xs text-slate-500 font-mono">Simulaciones:</span>
-          <button
-            onClick={() => runDetectionPipeline('phoenix')}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-slate-300 hover:text-cyan-400 hover:border-slate-700"
-          >
-            Phoenix Wing
-          </button>
-          <button
-            onClick={() => runDetectionPipeline('rod')}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-slate-300 hover:text-cyan-400 hover:border-slate-700"
-          >
-            Wizard Rod
-          </button>
-        </div>
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-sm border border-slate-800 flex items-center justify-center gap-2 transition-all"
+        >
+          <Upload className="w-4 h-4 text-slate-400" />
+          <span>Cargar Foto desde Dispositivo</span>
+        </button>
       </div>
 
-      {/* DETECTED RESULT CARD (HUMAN-IN-THE-LOOP CONFIRMATION) */}
-      {detectedResult && (
-        <div className="mt-8 bg-slate-900 border-2 border-cyan-500/80 rounded-3xl p-6 shadow-2xl shadow-cyan-950/40 animate-in fade-in zoom-in duration-200">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+      {/* Quick Simulation Pills (Useful for testing without physical Beyblades) */}
+      <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
+        <span className="text-xs text-slate-500 font-mono">Pruebas Rápidas:</span>
+        <button
+          onClick={() => runSimulationSample('dran')}
+          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-cyan-400 hover:bg-slate-800"
+        >
+          Dran Sword (Azul)
+        </button>
+        <button
+          onClick={() => runSimulationSample('phoenix')}
+          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-red-400 hover:bg-slate-800"
+        >
+          Phoenix Wing (Rojo)
+        </button>
+        <button
+          onClick={() => runSimulationSample('rod')}
+          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-amber-400 hover:bg-slate-800"
+        >
+          Wizard Rod (Dorado)
+        </button>
+      </div>
+
+      {/* DETECTED RESULTS SECTION (TOP 3 CANDIDATES) */}
+      {scanResult && selectedCandidate && (
+        <div className="mt-8 bg-slate-900/95 border-2 border-cyan-500/80 rounded-3xl p-6 shadow-2xl shadow-cyan-950/40 animate-in fade-in zoom-in duration-200">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-2 mb-6">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                Pieza Detectada con {detectedResult.confidence}% de certeza
+                {selectedCandidate.isQrMatch ? 'Código Hasbro 100% Verificado' : `Reconocimiento Visual (${selectedCandidate.confidence}% de certeza)`}
               </span>
             </div>
-            <span className="text-xs font-mono text-slate-400">Set: {detectedResult.code}</span>
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+              <span>Color detectado:</span>
+              <span
+                className="w-3 h-3 rounded-full border border-white/20"
+                style={{ backgroundColor: scanResult.metrics.primaryHex }}
+              />
+              <span className="text-slate-200 font-semibold">{scanResult.metrics.colorName}</span>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-6">
-            <div>
-              <h3 className="text-2xl font-black text-white flex items-center gap-3">
-                <span>{detectedResult.name}</span>
-                <div
-                  className="w-5 h-5 rounded-full border border-white/20 shrink-0"
-                  style={{ backgroundColor: detectedResult.colorHex }}
+          {/* MAIN SELECTED CANDIDATE CARD */}
+          <div className="flex flex-col md:flex-row items-center gap-6 mb-6 bg-slate-950/70 p-5 rounded-2xl border border-slate-800">
+            {/* Part Image */}
+            <div className="w-36 h-36 bg-slate-900 rounded-2xl border border-slate-800 p-3 flex items-center justify-center shrink-0 shadow-inner">
+              {selectedCandidate.part.image_url ? (
+                <img
+                  src={selectedCandidate.part.image_url}
+                  alt={selectedCandidate.part.display_name}
+                  className="max-h-full max-w-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]"
                 />
+              ) : (
+                <div
+                  className="w-16 h-16 rounded-full border border-white/20"
+                  style={{ backgroundColor: selectedCandidate.colorHex }}
+                />
+              )}
+            </div>
+
+            {/* Details & Confidence Meter */}
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono">
+                  {selectedCandidate.part.code_name}
+                </span>
+                <span className="text-xs font-semibold text-slate-400">
+                  {selectedCandidate.variantName}
+                </span>
+              </div>
+
+              <h3 className="text-2xl font-black text-white mb-2">
+                {selectedCandidate.part.display_name}
               </h3>
-              <p className="text-xs text-cyan-400 font-mono mt-1">Marca: {detectedResult.brand}</p>
-              <p className="text-xs text-slate-400 mt-2 bg-slate-950 px-3 py-2 rounded-xl border border-slate-800">
-                🔍 {detectedResult.message}
+
+              {/* Confidence Bar */}
+              <div className="mb-3">
+                <div className="flex justify-between text-xs font-mono mb-1">
+                  <span className="text-slate-400">Índice de Certeza:</span>
+                  <span
+                    className={`font-bold ${
+                      selectedCandidate.confidence >= 90
+                        ? 'text-emerald-400'
+                        : selectedCandidate.confidence >= 75
+                        ? 'text-cyan-400'
+                        : 'text-amber-400'
+                    }`}
+                  >
+                    {selectedCandidate.confidence}%
+                  </span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      selectedCandidate.confidence >= 90
+                        ? 'bg-emerald-500'
+                        : selectedCandidate.confidence >= 75
+                        ? 'bg-cyan-500'
+                        : 'bg-amber-500'
+                    }`}
+                    style={{ width: `${selectedCandidate.confidence}%` }}
+                  />
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-400 font-mono">
+                🔍 {selectedCandidate.detectionReason}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* TOP 3 CANDIDATES SELECTOR */}
+          {scanResult.topCandidates.length > 1 && (
+            <div className="mb-6">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2.5">
+                Candidatos Sugeridos por el Motor de Visión:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {scanResult.topCandidates.map((cand, idx) => {
+                  const isSelected = selectedCandidate.part.code_name === cand.part.code_name;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedCandidate(cand)}
+                      className={`p-3 rounded-xl border text-left flex items-center gap-3 transition-all ${
+                        isSelected
+                          ? 'bg-cyan-950/70 border-cyan-400 ring-2 ring-cyan-500/30'
+                          : 'bg-slate-950/50 border-slate-800 hover:border-slate-700 opacity-80 hover:opacity-100'
+                      }`}
+                    >
+                      <div className="w-10 h-10 bg-slate-900 rounded-lg p-1 shrink-0 flex items-center justify-center border border-slate-800">
+                        {cand.part.image_url ? (
+                          <img
+                            src={cand.part.image_url}
+                            alt={cand.part.display_name}
+                            className="max-h-full max-w-full object-contain"
+                          />
+                        ) : (
+                          <div
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: cand.colorHex }}
+                          />
+                        )}
+                      </div>
+                      <div className="overflow-hidden">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[11px] font-bold text-white truncate">
+                            #{idx + 1} {cand.part.display_name}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-mono text-cyan-400">
+                          {cand.confidence}% certeza
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ACTION BUTTONS */}
+          <div className="flex flex-col sm:flex-row items-center gap-3">
             <button
               onClick={handleConfirmAndAdd}
-              className="flex-1 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
+              className="w-full flex-1 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5"
             >
               <Check className="w-4 h-4 stroke-[3]" />
               <span>Confirmar y Agregar a Mi Colección</span>
             </button>
 
             <button
-              onClick={() => setDetectedResult(null)}
-              className="px-4 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-all"
+              onClick={() => {
+                setScanResult(null);
+                setSelectedCandidate(null);
+              }}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-all"
             >
               Reintentar
             </button>
