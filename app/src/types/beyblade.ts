@@ -12,6 +12,12 @@ export interface BaseStats {
   burst_resistance: number;
 }
 
+export interface GalleryImage {
+  url: string;
+  label: string;
+  tag: 'STUDIO' | 'REAL' | 'RECOLOR' | 'ANGLED' | 'COMMUNITY';
+}
+
 export interface PartVariant {
   variant_id: string;
   variant_name: string;
@@ -21,7 +27,7 @@ export interface PartVariant {
   color_secondary_hex?: string;
   hasbro_qr_payload?: string;
   image_url?: string;
-  gallery_images?: string[];
+  gallery_images?: GalleryImage[];
   included_in_products: string[];
 }
 
@@ -33,7 +39,7 @@ export interface Blade {
   weight_min_grams: number;
   weight_max_grams: number;
   image_url?: string;
-  gallery_images?: string[];
+  gallery_images?: GalleryImage[];
   training_samples_count?: number;
   stats: BaseStats;
   variants: PartVariant[];
@@ -47,7 +53,7 @@ export interface Ratchet {
   weight_min_grams: number;
   weight_max_grams: number;
   image_url?: string;
-  gallery_images?: string[];
+  gallery_images?: GalleryImage[];
   training_samples_count?: number;
   stats: {
     burst_resistance: number;
@@ -64,7 +70,7 @@ export interface Bit {
   weight_min_grams: number;
   weight_max_grams: number;
   image_url?: string;
-  gallery_images?: string[];
+  gallery_images?: GalleryImage[];
   training_samples_count?: number;
   stats: {
     attack: number;

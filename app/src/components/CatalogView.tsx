@@ -39,6 +39,25 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
     reader.readAsDataURL(file);
   };
 
+  const modalGallery = React.useMemo(() => {
+    if (!activeModalItem || activeModalItem.type === 'PRODUCT') return [];
+    const baseGallery =
+      activeModalItem.data.gallery_images && activeModalItem.data.gallery_images.length > 0
+        ? activeModalItem.data.gallery_images
+        : activeModalItem.data.image_url
+        ? [{ url: activeModalItem.data.image_url, label: 'Render Oficial de Estudio', tag: 'STUDIO' }]
+        : [];
+    const userList = (uploadedPhotos[activeModalItem.data.code_name] || []).map((imgUrl, i) => ({
+      url: imgUrl,
+      label: `Foto Casera Personal #${i + 1}`,
+      tag: 'COMMUNITY',
+    }));
+    return [...baseGallery, ...userList];
+  }, [activeModalItem, uploadedPhotos]);
+
+  const currentDisplayImage = selectedModalImage || (modalGallery[0]?.url) || activeModalItem?.data?.image_url;
+  const currentDisplayItem = modalGallery.find((g) => g.url === currentDisplayImage) || modalGallery[0];
+
   const getIncludedParts = (skuCode: string) => {
     const parts: { name: string; type: string; color: string }[] = [];
     CATALOG_BLADES.forEach((b) => {
@@ -660,10 +679,10 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
               /* PART MODAL (BLADE / RATCHET / BIT) */
               <div>
                 {/* Main Selected Image */}
-                <div className="relative w-full h-48 mx-auto mb-3 bg-slate-950 rounded-2xl border border-slate-800 p-4 flex items-center justify-center shadow-inner group">
-                  {selectedModalImage || activeModalItem.data.image_url ? (
+                <div className="relative w-full h-56 mx-auto mb-3 bg-slate-950 rounded-2xl border border-slate-800 p-4 flex items-center justify-center shadow-inner group">
+                  {currentDisplayImage ? (
                     <img
-                      src={selectedModalImage || activeModalItem.data.image_url}
+                      src={currentDisplayImage}
                       alt={activeModalItem.data.display_name}
                       className="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]"
                     />
@@ -674,10 +693,27 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
                     />
                   )}
 
-                  {/* AI Vision Reticle Tag */}
-                  <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950/90 text-cyan-400 border border-cyan-800/80 flex items-center gap-1">
+                  {/* Tag on main image */}
+                  <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-slate-900/95 border border-slate-700/80 flex items-center gap-1.5 shadow-lg">
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        currentDisplayItem?.tag === 'REAL'
+                          ? 'bg-emerald-400'
+                          : currentDisplayItem?.tag === 'ANGLED'
+                          ? 'bg-purple-400'
+                          : currentDisplayItem?.tag === 'RECOLOR'
+                          ? 'bg-amber-400'
+                          : currentDisplayItem?.tag === 'COMMUNITY'
+                          ? 'bg-cyan-400'
+                          : 'bg-blue-400'
+                      }`}
+                    />
+                    <span className="text-slate-200">{currentDisplayItem?.label || 'Vista de Pieza'}</span>
+                  </div>
+
+                  <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950/90 text-cyan-400 border border-cyan-800/80 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
-                    <span>IA Reference Target</span>
+                    <span>Dataset IA</span>
                   </div>
                 </div>
 
@@ -685,64 +721,67 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Galería de Referencia y Dataset IA
+                      Fotos Reales, Ángulos & Variantes
                     </span>
-                    <span className="text-[11px] text-cyan-400 font-mono">
-                      {1 + (uploadedPhotos[activeModalItem.data.code_name]?.length || 0)} ángulo(s)
+                    <span className="text-[11px] text-cyan-400 font-mono font-semibold">
+                      {modalGallery.length} referencias fotográficas
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                    {/* Official Studio Thumbnail */}
-                    {activeModalItem.data.image_url && (
-                      <button
-                        onClick={() => setSelectedModalImage(activeModalItem.data.image_url)}
-                        className={`w-14 h-14 rounded-xl border p-1 bg-slate-950 shrink-0 flex items-center justify-center transition-all ${
-                          selectedModalImage === activeModalItem.data.image_url
-                            ? 'border-cyan-400 ring-2 ring-cyan-500/30'
-                            : 'border-slate-800 opacity-60 hover:opacity-100'
-                        }`}
-                        title="Foto Oficial de Estudio (Cenital)"
-                      >
-                        <img
-                          src={activeModalItem.data.image_url}
-                          alt="Estudio"
-                          className="max-h-full max-w-full object-contain"
-                        />
-                      </button>
-                    )}
-
-                    {/* User-contributed real / in-the-wild photos */}
-                    {(uploadedPhotos[activeModalItem.data.code_name] || []).map((imgUrl, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedModalImage(imgUrl)}
-                        className={`relative w-14 h-14 rounded-xl border p-1 bg-slate-950 shrink-0 flex items-center justify-center transition-all ${
-                          selectedModalImage === imgUrl
-                            ? 'border-emerald-400 ring-2 ring-emerald-500/30'
-                            : 'border-slate-800 opacity-60 hover:opacity-100'
-                        }`}
-                        title={`Foto Casera #${i + 1}`}
-                      >
-                        <img
-                          src={imgUrl}
-                          alt={`Foto casera ${i + 1}`}
-                          className="max-h-full max-w-full object-cover rounded-lg"
-                        />
-                        <span className="absolute bottom-0 right-0 text-[8px] bg-emerald-950 text-emerald-300 px-1 rounded-tl font-bold">
-                          Real
-                        </span>
-                      </button>
-                    ))}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                    {modalGallery.map((gItem, idx) => {
+                      const isSelected = currentDisplayImage === gItem.url;
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedModalImage(gItem.url)}
+                          className={`relative w-16 h-16 rounded-xl border p-1 bg-slate-950 shrink-0 flex items-center justify-center transition-all ${
+                            isSelected
+                              ? 'border-cyan-400 ring-2 ring-cyan-500/40 shadow-lg'
+                              : 'border-slate-800 opacity-60 hover:opacity-100 hover:border-slate-700'
+                          }`}
+                          title={gItem.label}
+                        >
+                          <img
+                            src={gItem.url}
+                            alt={gItem.label}
+                            className="max-h-full max-w-full object-contain"
+                          />
+                          <span
+                            className={`absolute bottom-0.5 right-0.5 text-[8px] px-1 rounded font-black uppercase ${
+                              gItem.tag === 'REAL'
+                                ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                                : gItem.tag === 'ANGLED'
+                                ? 'bg-purple-950 text-purple-300 border border-purple-800'
+                                : gItem.tag === 'RECOLOR'
+                                ? 'bg-amber-950 text-amber-300 border border-amber-800'
+                                : gItem.tag === 'COMMUNITY'
+                                ? 'bg-cyan-950 text-cyan-300 border border-cyan-800'
+                                : 'bg-blue-950 text-blue-300 border border-blue-800'
+                            }`}
+                          >
+                            {gItem.tag === 'REAL'
+                              ? 'REAL'
+                              : gItem.tag === 'ANGLED'
+                              ? '3D'
+                              : gItem.tag === 'RECOLOR'
+                              ? 'COLOR'
+                              : gItem.tag === 'COMMUNITY'
+                              ? 'TU FOTO'
+                              : 'STUDIO'}
+                          </span>
+                        </button>
+                      );
+                    })}
 
                     {/* Add Photo Button */}
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-14 h-14 rounded-xl border border-dashed border-slate-700 hover:border-cyan-400 text-slate-400 hover:text-cyan-300 bg-slate-950/60 shrink-0 flex flex-col items-center justify-center gap-0.5 transition-all text-[9px] font-semibold"
-                      title="Aportar foto casera de tu pieza"
+                      className="w-16 h-16 rounded-xl border border-dashed border-slate-700 hover:border-cyan-400 text-slate-400 hover:text-cyan-300 bg-slate-950/60 shrink-0 flex flex-col items-center justify-center gap-0.5 transition-all text-[9px] font-semibold"
+                      title="Aportar tu propia foto casera para calibrar IA"
                     >
                       <Camera className="w-4 h-4" />
-                      <span>Añadir</span>
+                      <span>+ Añadir</span>
                     </button>
                   </div>
 

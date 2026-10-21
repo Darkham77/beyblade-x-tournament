@@ -2333,6 +2333,164 @@ const BIT_IMAGE_MAP: Record<string, string> = {
 };
 
 // Enriquecer objetos en memoria
+export const BLADE_GALLERY_MAP: Record<string, { url: string; label: string; tag: 'STUDIO' | 'REAL' | 'RECOLOR' | 'ANGLED' | 'COMMUNITY' }[]> = {
+  'DRAN_SWORD': [
+    { url: '/images/gallery/blades/dran_sword/dran_sword_metal_coat_blue.jpg', label: 'Metal Coat Azul (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/dran_sword/dran_sword_metal_coat_red.jpg', label: 'Metal Coat Rojo (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/dran_sword/dran_sword_bx14_black_red.png', label: 'BX-14 Negro y Rojo (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/dran_sword/dran_sword_red_ver.jpg', label: 'Dran Sword Edición Roja (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/dran_sword/dran_sword_collab.jpg', label: 'Colaboración Katsushika (Foto Real)', tag: 'REAL' },
+  ],
+  'HELLS_SCYTHE': [
+    { url: '/images/gallery/blades/hells_scythe/hells_scythe_380f.jpg', label: 'Hells Scythe 3-80F (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/hells_scythe/hells_scythe_gold.jpg', label: 'Metal Coat Dorado (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/hells_scythe/hells_scythe_bx08.png', label: 'BX-08 Deck Set (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/hells_scythe/hells_scythe_480lf.png', label: 'Hells Scythe Verde 4-80LF (Recolor)', tag: 'RECOLOR' },
+  ],
+  'WIZARD_ARROW': [
+    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_480gb.jpg', label: 'Wizard Arrow 4-80GB (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_bx05.png', label: 'BX-05 Booster Negro (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_bx08.png', label: 'BX-08 Deck Set Naranja (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_blue.png', label: 'Wizard Arrow Azul (Recolor)', tag: 'RECOLOR' },
+  ],
+  'KNIGHT_SHIELD': [
+    { url: '/images/gallery/blades/knight_shield/knight_shield_gold.png', label: 'Metal Coat Dorado (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/knight_shield/knight_shield_bx06.png', label: 'BX-06 Booster Azul (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/knight_shield/knight_shield_bx08.png', label: 'BX-08 Deck Set Verde (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/knight_shield/knight_shield_bx20.png', label: 'BX-20 Edición Blanca (Recolor)', tag: 'RECOLOR' },
+  ],
+  'KNIGHT_LANCE': [
+    { url: '/images/gallery/blades/knight_lance/knight_lance_360lf.jpg', label: 'Knight Lance 3-60LF (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/knight_lance/knight_lance_bx21.png', label: 'BX-21 Set Especial (Recolor)', tag: 'RECOLOR' },
+  ],
+  'SHARK_EDGE': [
+    { url: '/images/gallery/blades/shark_edge/shark_edge_560gf.jpg', label: 'Shark Edge 5-60GF (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/shark_edge/shark_edge_bx20.png', label: 'BX-20 Púrpura (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/shark_edge/shark_edge_bx31.png', label: 'BX-31 Random Booster (Recolor)', tag: 'RECOLOR' },
+  ],
+  'LEON_CLAW': [
+    { url: '/images/gallery/blades/leon_claw/leon_claw_gold.jpg', label: 'Metal Coat Dorado (Foto Real)', tag: 'REAL' },
+  ],
+  'VIPER_TAIL': [
+    { url: '/images/gallery/blades/viper_tail/viper_tail_bx35.png', label: 'BX-35 Random Booster (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/viper_tail/viper_tail_bx35_06.png', label: 'BX-35 Variante Azul (Recolor)', tag: 'RECOLOR' },
+  ],
+  'RHINO_HORN': [
+    { url: '/images/gallery/blades/rhino_horn/rhino_horn_380s.jpg', label: 'Rhino Horn 3-80S (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/rhino_horn/rhino_horn_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  ],
+  'DRAN_DAGGER': [
+    { url: '/images/gallery/blades/dran_dagger/dran_dagger_bx00.png', label: 'BX-00 Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/dran_dagger/dran_dagger_bx31.png', label: 'BX-31 Random Booster (Recolor)', tag: 'RECOLOR' },
+  ],
+  'HELLS_CHAIN': [
+    { url: '/images/gallery/blades/hells_chain/hells_chain_560ht.jpg', label: 'Hells Chain 5-60HT (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/hells_chain/hells_chain_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+    { url: '/images/gallery/blades/hells_chain/hells_chain_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
+  ],
+  'PHOENIX_WING': [
+    { url: '/images/gallery/blades/phoenix_wing/phoenix_wing_980db.jpg', label: 'Phoenix Wing 9-80DB (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/phoenix_wing/phoenix_wing_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/phoenix_wing/phoenix_wing_bx35.png', label: 'BX-35 Random Booster Azul (Recolor)', tag: 'RECOLOR' },
+  ],
+  'WYVERN_GALE': [
+    { url: '/images/gallery/blades/wyvern_gale/wyvern_gale_bx24.png', label: 'BX-24 Random Booster (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/wyvern_gale/wyvern_gale_ux07.png', label: 'UX-07 Set Especial (Recolor)', tag: 'RECOLOR' },
+  ],
+  'UNICORN_STING': [
+    { url: '/images/gallery/blades/unicorn_sting/unicorn_sting_370d.jpg', label: 'Unicorn Sting 3-70D (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/unicorn_sting/unicorn_sting_560gp.jpg', label: 'Unicorn Sting 5-60GP (Foto Real)', tag: 'REAL' },
+  ],
+  'SPHINX_COWL': [
+    { url: '/images/gallery/blades/sphinx_cowl/sphinx_cowl_180gf.jpg', label: 'Sphinx Cowl 1-80GF (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/sphinx_cowl/sphinx_cowl_ux07.png', label: 'UX-07 Edición Especial (Recolor)', tag: 'RECOLOR' },
+  ],
+  'TYRANNO_BEAT': [
+    { url: '/images/gallery/blades/tyranno_beat/tyranno_beat_side.jpg', label: 'Vista de Perfil 1-60RA (Foto Real)', tag: 'ANGLED' },
+    { url: '/images/gallery/blades/tyranno_beat/tyranno_beat_red.png', label: 'Metal Coat Rojo (Recolor)', tag: 'RECOLOR' },
+  ],
+  'WEISS_TIGER': [
+    { url: '/images/gallery/blades/weiss_tiger/weiss_tiger_360u.jpg', label: 'Weiss Tiger 3-60U (Foto Real)', tag: 'REAL' },
+  ],
+  'BLACK_SHELL': [
+    { url: '/images/gallery/blades/black_shell/black_shell_460d.jpg', label: 'Black Shell 4-60D (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/black_shell/black_shell_bx35.png', label: 'BX-35 Random Booster (Recolor)', tag: 'RECOLOR' },
+  ],
+  'WHALE_WAVE': [
+    { url: '/images/gallery/blades/whale_wave/whale_wave_blue.jpg', label: 'Edición Especial Pesca (Foto Real)', tag: 'REAL' },
+  ],
+  'DRAN_BUSTER': [
+    { url: '/images/gallery/blades/dran_buster/dran_buster_cyan.png', label: 'Metal Coat Cian (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/dran_buster/dran_buster_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/dran_buster/dran_buster_barca.png', label: 'FC Barcelona Edición Oficial (Recolor)', tag: 'RECOLOR' },
+  ],
+  'HELLS_HAMMER': [
+    { url: '/images/gallery/blades/hells_hammer/hells_hammer_370h.jpg', label: 'Hells Hammer 3-70H (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/hells_hammer/hells_hammer_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+    { url: '/images/gallery/blades/hells_hammer/hells_hammer_blue.png', label: 'Metal Coat Azul (Recolor)', tag: 'RECOLOR' },
+  ],
+  'WIZARD_ROD': [
+    { url: '/images/gallery/blades/wizard_rod/wizard_rod_special.jpg', label: 'Wizard Rod Edición Especial (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/wizard_rod/wizard_rod_gold.png', label: 'Metal Coat Dorado (Recolor)', tag: 'RECOLOR' },
+    { url: '/images/gallery/blades/wizard_rod/wizard_rod_bx35.png', label: 'BX-35 Random Booster (Recolor)', tag: 'RECOLOR' },
+  ],
+  'SHINOBI_SHADOW': [
+    { url: '/images/gallery/blades/shinobi_shadow/shinobi_shadow_180mn.jpg', label: 'Shinobi Shadow 1-80MN (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/shinobi_shadow/shinobi_shadow_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  ],
+  'COBALT_DRAGOON': [
+    { url: '/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_260c.jpg', label: 'Cobalt Dragoon 2-60C (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+    { url: '/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
+  ],
+  'LEON_CREST': [
+    { url: '/images/gallery/blades/leon_crest/leon_crest_760gn.jpg', label: 'Leon Crest 7-60GN (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/leon_crest/leon_crest_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  ],
+  'PHOENIX_RUDDER': [
+    { url: '/images/gallery/blades/phoenix_rudder/phoenix_rudder_970g.jpg', label: 'Phoenix Rudder 9-70G (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/phoenix_rudder/phoenix_rudder_angled.png', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  ],
+  'SAMURAI_SABER': [
+    { url: '/images/gallery/blades/samurai_saber/samurai_saber_270l.png', label: 'Samurai Saber 2-70L (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/samurai_saber/samurai_saber_angled.png', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  ],
+  'KNIGHT_MAIL': [
+    { url: '/images/gallery/blades/knight_mail/knight_mail_navy.png', label: 'Metal Coat Azul Marino (Recolor)', tag: 'RECOLOR' },
+  ],
+  'IMPACT_DRAKE': [
+    { url: '/images/gallery/blades/impact_drake/impact_drake_960lr.jpg', label: 'Impact Drake 9-60LR (Foto Real)', tag: 'REAL' },
+  ],
+  'COBALT_DRAKE': [
+    { url: '/images/gallery/blades/cobalt_drake/cobalt_drake_bx46.png', label: 'BX-46 Clear Ver. (Recolor)', tag: 'RECOLOR' },
+  ],
+  'DRANZER_SPIRAL': [
+    { url: '/images/gallery/blades/dranzer_spiral/dranzer_spiral_380t.jpg', label: 'Dranzer Spiral 3-80T (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/dranzer_spiral/dranzer_spiral_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+    { url: '/images/gallery/blades/dranzer_spiral/dranzer_spiral_black.png', label: 'Edición Negra BX-00 (Recolor)', tag: 'RECOLOR' },
+  ],
+  'DRIGER_SLASH': [
+    { url: '/images/gallery/blades/driger_slash/driger_slash_480p.jpg', label: 'Driger Slash 4-80P (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/driger_slash/driger_slash_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  ],
+  'DRAGOON_STORM': [
+    { url: '/images/gallery/blades/dragoon_storm/dragoon_storm_460ra.jpg', label: 'Dragoon Storm 4-60RA (Foto Real)', tag: 'REAL' },
+  ],
+  'LIGHTNING_L_DRAGO': [
+    { url: '/images/gallery/blades/lightning_l_drago/lightning_l_drago_rapid.jpg', label: 'Lightning L-Drago Rapid-Hit (Foto Real)', tag: 'REAL' },
+  ],
+  'BITE_CROC': [
+    { url: '/images/gallery/blades/bite_croc/bite_croc_360lf.jpg', label: 'Bite Croc 3-60LF Hasbro (Foto Real)', tag: 'REAL' },
+  ],
+  'STEEL_SAMURAI': [
+    { url: '/images/gallery/blades/steel_samurai/steel_samurai_480t.jpg', label: 'Steel Samurai 4-80T Hasbro (Foto Real)', tag: 'REAL' },
+    { url: '/images/gallery/blades/steel_samurai/steel_samurai_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  ],
+  'MAMMOTH_TUSK': [
+    { url: '/images/gallery/blades/mammoth_tusk/tusk_mammoth_360t.jpg', label: 'Mammoth Tusk 3-60T Hasbro (Foto Real)', tag: 'REAL' },
+  ],
+};
+
 CATALOG_BLADES.forEach((b) => {
   if (BLADE_IMAGE_MAP[b.code_name]) {
     b.image_url = BLADE_IMAGE_MAP[b.code_name];
@@ -2340,6 +2498,9 @@ CATALOG_BLADES.forEach((b) => {
       b.variants[0].image_url = BLADE_IMAGE_MAP[b.code_name];
     }
   }
+  const studioImg = b.image_url ? [{ url: b.image_url, label: 'Render Oficial de Estudio', tag: 'STUDIO' as const }] : [];
+  const extraImgs = BLADE_GALLERY_MAP[b.code_name] || [];
+  b.gallery_images = [...studioImg, ...extraImgs];
 });
 
 CATALOG_RATCHETS.forEach((r) => {
