@@ -1,6 +1,6 @@
 {
   "$schema": "https://fallow.tools/schema/config.json",
-  "entry": ["src/index.ts"],
+  "entry": ["src/index.ts", "sw.js"],
   "ignorePatterns": [".auditor/**", "dist/**", "scratch/**", "tests/**"],
   "typeAware": {
     "enabled": true

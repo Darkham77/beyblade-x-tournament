@@ -7,6 +7,17 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Beyblade X - Torneos &amp; Marcador</title>
+    <!-- PWA Web App Manifest & Mobile Icons -->
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="theme-color" content="#090d16" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Beyblade X" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
     <!-- Firebase Realtime Database SDK (Optional Cloud Sync) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -1034,6 +1045,29 @@
       <div class="header-actions">
         <button
           class="btn-icon"
+          id="btn-pwa-install"
+          title="Instalar como App"
+          style="
+            display: none;
+            width: auto;
+            font-size: 11px;
+            font-weight: 800;
+            border-radius: 14px;
+            padding: 4px 10px;
+            border: 1px solid rgba(57, 255, 20, 0.5);
+            background: rgba(57, 255, 20, 0.12);
+            color: #39ff14;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+          "
+        >
+          <span>📲</span>
+          <span>Instalar</span>
+        </button>
+        <button
+          class="btn-icon"
           id="btn-sync-open"
           title="Tiempo Real y Nube"
           style="
@@ -1955,6 +1989,14 @@
 
           <button class="btn btn-block" id="btn-paste-backup" style="font-size: 13px">
             📋 Pegar Respaldo (Texto)
+          </button>
+
+          <button
+            class="btn btn-block"
+            id="btn-backup-install-pwa"
+            style="border-color: var(--bx-lime); color: var(--bx-lime); font-weight: 700"
+          >
+            📲 Instalar como Aplicación (PWA)
           </button>
 
           <button
@@ -4380,6 +4422,15 @@
           document
             .getElementById('input-restore-backup')
             .addEventListener('change', (e) => this.restoreBackupJson(e));
+          const btnBackupInstall = document.getElementById('btn-backup-install-pwa');
+          if (btnBackupInstall) {
+            btnBackupInstall.addEventListener('click', () => {
+              this.closeModal('modal-backup');
+              if (typeof PWAEngine !== 'undefined' && PWAEngine.triggerInstall) {
+                PWAEngine.triggerInstall();
+              }
+            });
+          }
           document.getElementById('btn-paste-backup').addEventListener('click', () => {
             const raw = prompt('Pega aquí todo el texto copiado de tu archivo JSON de respaldo:');
             if (!raw) return;
@@ -6236,6 +6287,104 @@
         }
       };
 
+      /* ==========================================================================
+       6. PWA INSTALLATION & SERVICE WORKER ENGINE
+       ========================================================================== */
+      const PWAEngine = {
+        deferredPrompt: null,
+
+        init() {
+          this.registerServiceWorker();
+          this.setupInstallPrompt();
+        },
+
+        registerServiceWorker() {
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker
+                .register('./sw.js')
+                .then((reg) => {
+                  reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    if (installingWorker) {
+                      installingWorker.onstatechange = () => {
+                        if (
+                          installingWorker.state === 'installed' &&
+                          navigator.serviceWorker.controller
+                        ) {
+                          console.log('Nueva versión de Beyblade X lista en caché.');
+                        }
+                      };
+                    }
+                  };
+                })
+                .catch((err) => {
+                  console.warn('Error al registrar Service Worker:', err);
+                });
+            });
+          }
+        },
+
+        setupInstallPrompt() {
+          const btnInstall = document.getElementById('btn-pwa-install');
+          const isStandalone =
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
+
+          if (isStandalone) {
+            if (btnInstall) btnInstall.style.display = 'none';
+            return;
+          }
+
+          window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredPrompt = e;
+            if (btnInstall) {
+              btnInstall.style.display = 'inline-flex';
+            }
+          });
+
+          window.addEventListener('appinstalled', () => {
+            this.deferredPrompt = null;
+            if (btnInstall) {
+              btnInstall.style.display = 'none';
+            }
+          });
+
+          if (btnInstall) {
+            btnInstall.addEventListener('click', () => {
+              this.triggerInstall();
+            });
+          }
+        },
+
+        triggerInstall() {
+          if (this.deferredPrompt) {
+            this.deferredPrompt.prompt();
+            this.deferredPrompt.userChoice.then((choiceResult) => {
+              if (choiceResult.outcome === 'accepted') {
+                const btnInstall = document.getElementById('btn-pwa-install');
+                if (btnInstall) btnInstall.style.display = 'none';
+              }
+              this.deferredPrompt = null;
+            });
+            return;
+          }
+
+          const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+          if (isIos) {
+            alert(
+              '📲 Para instalar en tu iPhone o iPad:\n\n1. Tocá el botón Compartir en Safari (el ícono del cuadrado con la flecha ⬆️ hacia arriba).\n2. Deslizá hacia abajo y seleccioná "Agregar a pantalla de inicio" (➕).\n3. Tocá "Agregar" arriba a la derecha.\n\n¡Listo! Te quedará como app en tu pantalla.'
+            );
+            return;
+          }
+
+          alert(
+            '📲 Para instalar Beyblade X en tu dispositivo:\n\nAbrí el menú de tu navegador (los tres puntos arriba o abajo) y tocá "Instalar aplicación" o "Agregar a pantalla principal".'
+          );
+        }
+      };
+
       // Initialize application on DOM load
       function startApp() {
         try {
@@ -6248,6 +6397,14 @@
           UI.init();
         } catch (e) {
           console.error('Error al inicializar UI:', e);
+        }
+
+        try {
+          if (typeof PWAEngine !== 'undefined' && PWAEngine.init) {
+            PWAEngine.init();
+          }
+        } catch (e) {
+          console.error('Error al inicializar PWAEngine:', e);
         }
 
         try {

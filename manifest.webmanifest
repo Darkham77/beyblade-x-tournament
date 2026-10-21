@@ -1,0 +1,45 @@
+{
+  "name": "Beyblade X - Gestor de Torneos",
+  "short_name": "Beyblade X",
+  "description": "Marcador digital en vivo y gestor de torneos oficiales para Beyblade X con sincronización en tiempo real y soporte offline.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "beyblade-x-tournament-pwa",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090d16",
+  "theme_color": "#00f0ff",
+  "categories": ["sports", "games", "utilities"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
