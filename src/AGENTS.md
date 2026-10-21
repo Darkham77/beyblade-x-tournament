@@ -12,7 +12,13 @@ Beyblade X Tournament Architecture & Development Team.
 
 ## Key Files
 
-- [`index.ts`](./index.ts): Main exports and type definitions.
+- [`bracket.ts`](./bracket.ts): Single elimination bracket generator and winner advancement logic.
+- [`index.ts`](./index.ts): Main exports and engine re-exports.
+- [`migration.ts`](./migration.ts): Schema migration pipeline for legacy backups.
+- [`normalize.ts`](./normalize.ts): State normalization, structural validation, and auto-completion detection.
+- [`round-robin.ts`](./round-robin.ts): Round-robin league schedule generator and standings calculations.
+- [`swiss.ts`](./swiss.ts): Swiss system pairings, progression, and Buchholz tiebreaker engine.
+- [`types.ts`](./types.ts): Domain models, finish point rules, and state interfaces.
 
 ## Work Guidance
 
