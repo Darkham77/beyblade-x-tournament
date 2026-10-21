@@ -1,0 +1,338 @@
+{
+  "$schema": "https://beyblade-x-app.org/schemas/catalog-seed-v1.json",
+  "generated_at": "2026-10-21T18:40:00Z",
+  "blades": [
+    {
+      "code_name": "DRAN_SWORD",
+      "display_name": "Dran Sword",
+      "system": "BX",
+      "spin_direction": "RIGHT",
+      "weight_min_grams": 34.8,
+      "weight_max_grams": 35.6,
+      "stats": {
+        "attack": 75,
+        "defense": 25,
+        "stamina": 25,
+        "dash": 80,
+        "burst_resistance": 70
+      },
+      "variants": [
+        {
+          "variant_id": "var_b_ds_blue",
+          "variant_name": "Dran Sword (Blue Classic)",
+          "primary_brand": "TAKARA_TOMY",
+          "finish": "STANDARD_RAW_METAL",
+          "color_primary_hex": "#0A4DA2",
+          "color_secondary_hex": "#E5A823",
+          "included_in_products": ["BX-01", "BX-08"]
+        },
+        {
+          "variant_id": "var_b_ds_hasbro_pack",
+          "variant_name": "Sword Dran (Hasbro Starter)",
+          "primary_brand": "HASBRO",
+          "finish": "STANDARD_RAW_METAL",
+          "color_primary_hex": "#0A4DA2",
+          "color_secondary_hex": "#E5A823",
+          "hasbro_qr_payload": "HBX-BLD-SWORD-DRAN-01",
+          "included_in_products": ["HAS-ST-01"]
+        },
+        {
+          "variant_id": "var_b_ds_black",
+          "variant_name": "Dran Sword (Black & Red Recolor)",
+          "primary_brand": "TAKARA_TOMY",
+          "finish": "PAINTED_METAL",
+          "color_primary_hex": "#1A1A1A",
+          "color_secondary_hex": "#D11A2A",
+          "included_in_products": ["BX-14-02"]
+        }
+      ]
+    },
+    {
+      "code_name": "PHOENIX_WING",
+      "display_name": "Phoenix Wing",
+      "system": "BX",
+      "spin_direction": "RIGHT",
+      "weight_min_grams": 38.0,
+      "weight_max_grams": 38.8,
+      "stats": {
+        "attack": 85,
+        "defense": 50,
+        "stamina": 35,
+        "dash": 85,
+        "burst_resistance": 75
+      },
+      "variants": [
+        {
+          "variant_id": "var_b_pw_red",
+          "variant_name": "Phoenix Wing (Painted Red)",
+          "primary_brand": "TAKARA_TOMY",
+          "finish": "PAINTED_METAL",
+          "color_primary_hex": "#B71234",
+          "color_secondary_hex": "#F4C430",
+          "included_in_products": ["BX-23"]
+        },
+        {
+          "variant_id": "var_b_pw_silver",
+          "variant_name": "Phoenix Wing (Silver Asian Champ)",
+          "primary_brand": "TAKARA_TOMY",
+          "finish": "METALLIC_COAT",
+          "color_primary_hex": "#CCCCCC",
+          "color_secondary_hex": "#000000",
+          "included_in_products": ["BX-00-EV01"]
+        }
+      ]
+    },
+    {
+      "code_name": "WIZARD_ROD",
+      "display_name": "Wizard Rod",
+      "system": "UX",
+      "spin_direction": "RIGHT",
+      "weight_min_grams": 35.0,
+      "weight_max_grams": 35.7,
+      "stats": {
+        "attack": 25,
+        "defense": 60,
+        "stamina": 95,
+        "dash": 30,
+        "burst_resistance": 45
+      },
+      "variants": [
+        {
+          "variant_id": "var_b_wzrd_yellow",
+          "variant_name": "Wizard Rod (Yellow Standard)",
+          "primary_brand": "TAKARA_TOMY",
+          "finish": "STANDARD_RAW_METAL",
+          "color_primary_hex": "#F0C808",
+          "color_secondary_hex": "#F47A22",
+          "included_in_products": ["UX-03"]
+        }
+      ]
+    },
+    {
+      "code_name": "DRAN_BUSTER",
+      "display_name": "Dran Buster",
+      "system": "UX",
+      "spin_direction": "RIGHT",
+      "weight_min_grams": 37.3,
+      "weight_max_grams": 38.3,
+      "stats": {
+        "attack": 95,
+        "defense": 15,
+        "stamina": 15,
+        "dash": 95,
+        "burst_resistance": 80
+      },
+      "variants": [
+        {
+          "variant_id": "var_b_db_blue",
+          "variant_name": "Dran Buster (Blue Standard)",
+          "primary_brand": "TAKARA_TOMY",
+          "finish": "STANDARD_RAW_METAL",
+          "color_primary_hex": "#0B5394",
+          "color_secondary_hex": "#E06666",
+          "included_in_products": ["UX-01"]
+        }
+      ]
+    }
+  ],
+  "ratchets": [
+    {
+      "code_name": "3-60",
+      "display_name": "3-60",
+      "sides": 3,
+      "height_mm": 60,
+      "weight_min_grams": 6.1,
+      "weight_max_grams": 6.4,
+      "stats": {
+        "burst_resistance": 60,
+        "aerodynamics": 75
+      },
+      "variants": [
+        {
+          "variant_id": "var_r_360_red",
+          "variant_name": "3-60 (Red / Black)",
+          "color_primary_hex": "#C00000",
+          "color_secondary_hex": "#1A1A1A",
+          "included_in_products": ["BX-01", "BX-08"]
+        },
+        {
+          "variant_id": "var_r_360_white",
+          "variant_name": "3-60 (White / Clear)",
+          "color_primary_hex": "#FFFFFF",
+          "color_secondary_hex": "#CCCCCC",
+          "included_in_products": ["BX-03"]
+        }
+      ]
+    },
+    {
+      "code_name": "5-60",
+      "display_name": "5-60",
+      "sides": 5,
+      "height_mm": 60,
+      "weight_min_grams": 6.3,
+      "weight_max_grams": 6.6,
+      "stats": {
+        "burst_resistance": 70,
+        "aerodynamics": 70
+      },
+      "variants": [
+        {
+          "variant_id": "var_r_560_red",
+          "variant_name": "5-60 (Red / Orange)",
+          "color_primary_hex": "#B71234",
+          "color_secondary_hex": "#E65100",
+          "included_in_products": ["BX-23"]
+        }
+      ]
+    },
+    {
+      "code_name": "9-60",
+      "display_name": "9-60",
+      "sides": 9,
+      "height_mm": 60,
+      "weight_min_grams": 6.4,
+      "weight_max_grams": 6.7,
+      "stats": {
+        "burst_resistance": 85,
+        "aerodynamics": 85
+      },
+      "variants": [
+        {
+          "variant_id": "var_r_960_green",
+          "variant_name": "9-60 (Green / Black)",
+          "color_primary_hex": "#2E7D32",
+          "color_secondary_hex": "#1A1A1A",
+          "included_in_products": ["UX-03"]
+        }
+      ]
+    },
+    {
+      "code_name": "1-60",
+      "display_name": "1-60",
+      "sides": 1,
+      "height_mm": 60,
+      "weight_min_grams": 6.1,
+      "weight_max_grams": 6.4,
+      "stats": {
+        "burst_resistance": 80,
+        "aerodynamics": 60
+      },
+      "variants": [
+        {
+          "variant_id": "var_r_160_blue",
+          "variant_name": "1-60 (Blue / Black)",
+          "color_primary_hex": "#0B5394",
+          "color_secondary_hex": "#1A1A1A",
+          "included_in_products": ["UX-01"]
+        }
+      ]
+    }
+  ],
+  "bits": [
+    {
+      "code_name": "F",
+      "display_name": "Flat",
+      "category": "Attack",
+      "burst_resistance_tier": "HIGH",
+      "weight_min_grams": 2.1,
+      "weight_max_grams": 2.3,
+      "stats": {
+        "attack": 85,
+        "dash": 85,
+        "stamina": 15
+      },
+      "variants": [
+        {
+          "variant_id": "var_bit_flat_blue",
+          "variant_name": "Flat (Blue)",
+          "color_primary_hex": "#0A4DA2",
+          "included_in_products": ["BX-01", "BX-08"]
+        }
+      ]
+    },
+    {
+      "code_name": "B",
+      "display_name": "Ball",
+      "category": "Stamina",
+      "burst_resistance_tier": "NORMAL",
+      "weight_min_grams": 2.1,
+      "weight_max_grams": 2.3,
+      "stats": {
+        "attack": 10,
+        "dash": 20,
+        "stamina": 95
+      },
+      "variants": [
+        {
+          "variant_id": "var_bit_ball_yellow",
+          "variant_name": "Ball (Translucent Yellow)",
+          "color_primary_hex": "#F0C808",
+          "included_in_products": ["UX-03", "BX-02"]
+        }
+      ]
+    },
+    {
+      "code_name": "GF",
+      "display_name": "Gear Flat",
+      "category": "Attack / Dash",
+      "burst_resistance_tier": "HIGH",
+      "weight_min_grams": 2.2,
+      "weight_max_grams": 2.4,
+      "stats": {
+        "attack": 90,
+        "dash": 95,
+        "stamina": 10
+      },
+      "variants": [
+        {
+          "variant_id": "var_bit_gf_red",
+          "variant_name": "Gear Flat (Red)",
+          "color_primary_hex": "#B71234",
+          "included_in_products": ["BX-23"]
+        }
+      ]
+    }
+  ],
+  "products": [
+    {
+      "sku_code": "BX-01",
+      "brand": "TAKARA_TOMY",
+      "product_type": "STARTER",
+      "official_title": "Starter Dran Sword 3-60F",
+      "release_date": "2023-07-15",
+      "barcode_jan_upc": "4904810910541"
+    },
+    {
+      "sku_code": "BX-23",
+      "brand": "TAKARA_TOMY",
+      "product_type": "STARTER",
+      "official_title": "Starter Phoenix Wing 9-60GF (String Launcher Incl.)",
+      "release_date": "2023-12-27",
+      "barcode_jan_upc": "4904810912989"
+    },
+    {
+      "sku_code": "UX-01",
+      "brand": "TAKARA_TOMY",
+      "product_type": "STARTER",
+      "official_title": "Starter Dran Buster 1-60A",
+      "release_date": "2024-03-30",
+      "barcode_jan_upc": "4904810914440"
+    },
+    {
+      "sku_code": "UX-03",
+      "brand": "TAKARA_TOMY",
+      "product_type": "BOOSTER",
+      "official_title": "Booster Wizard Rod 5-70DB",
+      "release_date": "2024-03-30",
+      "barcode_jan_upc": "4904810914464"
+    },
+    {
+      "sku_code": "HAS-ST-01",
+      "brand": "HASBRO",
+      "product_type": "STARTER",
+      "official_title": "Beyblade X Sword Dran 3-60F Starter Pack",
+      "release_date": "2024-06-01",
+      "barcode_jan_upc": "195166249483"
+    }
+  ]
+}
