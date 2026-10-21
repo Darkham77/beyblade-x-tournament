@@ -74,6 +74,7 @@ export interface Product {
   official_title: string;
   release_date: string;
   barcode_jan_upc: string;
+  box_image_url?: string;
 }
 
 export interface BeyCombo {

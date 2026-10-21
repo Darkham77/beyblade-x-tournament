@@ -2351,3 +2351,29 @@ CATALOG_BITS.forEach((bit) => {
   }
 });
 
+const PRODUCT_BOX_MAP: Record<string, string> = {
+  'BX-01': '/images/products/bx_01_box.jpg',
+  'BX-02': '/images/products/bx_02_box.jpg',
+  'BX-03': '/images/products/bx_03_box.jpg',
+  'BX-04': '/images/products/bx_04_box.jpg',
+  'BX-07': '/images/products/bx_07_box.jpg',
+  'BX-08': '/images/products/bx_08_box.jpg',
+  'BX-13': '/images/products/bx_13_box.jpg',
+  'BX-15': '/images/products/bx_15_box.jpg',
+  'BX-17': '/images/products/bx_17_box.jpg',
+  'BX-20': '/images/products/bx_20_box.jpg',
+  'BX-21': '/images/products/bx_21_box.jpg',
+  'BX-23': '/images/products/bx_23_box.jpg',
+  'UX-01': '/images/products/ux_01_box.jpg',
+  'UX-02': '/images/products/ux_02_box.jpg',
+  'UX-03': '/images/products/ux_03_box.jpg',
+  'HAS-ST-01': '/images/products/has_st_01_box.jpg',
+  'HAS-ST-02': '/images/products/has_st_02_box.jpg',
+};
+
+CATALOG_PRODUCTS.forEach((p) => {
+  if (PRODUCT_BOX_MAP[p.sku_code]) {
+    p.box_image_url = PRODUCT_BOX_MAP[p.sku_code];
+  }
+});
+

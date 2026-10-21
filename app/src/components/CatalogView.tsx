@@ -457,22 +457,53 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
               <span className="text-xs text-slate-400">{filteredProducts.length} sets</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map((p) => (
                 <div
                   key={p.sku_code}
-                  className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all"
+                  className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all flex flex-col justify-between group shadow-lg"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-2.5 py-1 rounded-md text-xs font-black tracking-wide bg-red-950/80 text-red-400 border border-red-900/50">
-                      {p.sku_code}
-                    </span>
-                    <span className="text-xs text-slate-400">{p.brand === 'TAKARA_TOMY' ? 'Takara Tomy' : 'Hasbro'}</span>
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="px-2.5 py-1 rounded-md text-xs font-black tracking-wide bg-red-950/80 text-red-400 border border-red-900/50">
+                        {p.sku_code}
+                      </span>
+                      <span className="text-xs text-slate-400 font-semibold">{p.brand === 'TAKARA_TOMY' ? 'Takara Tomy' : 'Hasbro'}</span>
+                    </div>
+
+                    {/* Official Product Box Image */}
+                    <div className="w-full h-44 mb-4 bg-slate-950/80 rounded-xl border border-slate-800/80 flex items-center justify-center p-3 overflow-hidden group-hover:border-red-500/40 transition-colors">
+                      {p.box_image_url ? (
+                        <img
+                          src={p.box_image_url}
+                          alt={p.official_title}
+                          className="max-h-full max-w-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform"
+                          loading="lazy"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="text-center text-slate-600 text-xs font-mono">
+                          📦 Empaque Oficial {p.sku_code}
+                        </div>
+                      )}
+                    </div>
+
+                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-red-400 transition-colors">
+                      {p.official_title}
+                    </h3>
                   </div>
-                  <h3 className="text-base font-bold text-white mb-2">{p.official_title}</h3>
-                  <div className="text-xs text-slate-400 font-mono space-y-1">
-                    <p>Fecha lanzamiento: {p.release_date}</p>
-                    <p>Código barras (JAN/UPC): {p.barcode_jan_upc}</p>
+
+                  <div className="pt-3 border-t border-slate-800/80 text-xs text-slate-400 font-mono space-y-1">
+                    <p className="flex justify-between">
+                      <span className="text-slate-500">Lanzamiento:</span>
+                      <span className="text-slate-300">{p.release_date}</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-slate-500">Código de barras:</span>
+                      <span className="text-slate-300">{p.barcode_jan_upc}</span>
+                    </p>
                   </div>
                 </div>
               ))}
