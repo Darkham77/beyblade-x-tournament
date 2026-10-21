@@ -1979,11 +1979,11 @@
 
       // Configuración predeterminada (se puede completar aquí o desde el modal en la UI)
       const DEFAULT_FIREBASE_CONFIG = {
-        apiKey: '',
-        authDomain: '',
-        databaseURL: '',
-        projectId: '',
-        storageBucket: '',
+        apiKey: 'AIzaSy_beyblade_x_tournament_app',
+        authDomain: 'beyblade-gestor-de-torneos.firebaseapp.com',
+        databaseURL: 'https://beyblade-gestor-de-torneos-default-rtdb.firebaseio.com/',
+        projectId: 'beyblade-gestor-de-torneos',
+        storageBucket: 'beyblade-gestor-de-torneos.appspot.com',
         messagingSenderId: '',
         appId: ''
       };
@@ -2059,6 +2059,7 @@
             const raw = localStorage.getItem(FIREBASE_CONFIG_KEY);
             if (raw) {
               const parsed = JSON.parse(raw);
+              if (parsed && parsed.disabled) return null;
               if (parsed && parsed.databaseURL) return parsed;
             }
           } catch (e) {}
@@ -2077,7 +2078,7 @@
 
         disconnect() {
           try {
-            localStorage.removeItem(FIREBASE_CONFIG_KEY);
+            localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify({ disabled: true }));
           } catch (e) {}
           location.reload();
         },
