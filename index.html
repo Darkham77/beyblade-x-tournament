@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Beyblade X - Torneos &amp; Marcador</title>
+    <!-- Firebase Realtime Database SDK (Optional Cloud Sync) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <style>
       /* ==========================================================================
        BEYBLADE X CYBER-STADIUM THEME (MOBILE FIRST & 100% OFFLINE)
@@ -893,6 +896,20 @@
           transform: translateY(-8px);
         }
       }
+      @keyframes pulseGreen {
+        0% {
+          box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 6px rgba(57, 255, 20, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(57, 255, 20, 0);
+        }
+      }
+      .sync-dot-live {
+        animation: pulseGreen 2s infinite !important;
+      }
       .celebration-winner {
         font-size: 24px;
         font-weight: 900;
@@ -1012,10 +1029,84 @@
         <span class="brand-title">BEYBLADE X</span>
       </div>
       <div class="header-actions">
+        <button
+          class="btn-icon"
+          id="btn-sync-open"
+          title="Tiempo Real y Nube"
+          style="
+            font-size: 11px;
+            font-weight: 800;
+            border-radius: 14px;
+            padding: 4px 8px;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-main);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+          "
+        >
+          <span
+            id="sync-indicator-dot"
+            style="
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: #888;
+              display: inline-block;
+            "
+          ></span>
+          <span id="sync-indicator-text">Local</span>
+        </button>
         <button class="btn-icon" id="btn-backup-open" title="Respaldos y Datos">💾</button>
         <button class="btn-icon" id="btn-new-tournament-quick" title="Nuevo Torneo">➕</button>
       </div>
     </header>
+
+    <!-- Update Notification Banner (Hidden by default) -->
+    <div
+      id="banner-update-available"
+      style="
+        display: none;
+        background: linear-gradient(90deg, #ff0055, #ff5500);
+        color: white;
+        padding: 10px 14px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 800;
+        border-bottom: 2px solid var(--bx-gold);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
+      "
+    >
+      <span>🚀 ¡Nueva versión disponible en GitHub!</span>
+      <button
+        id="btn-apply-update"
+        class="btn btn-sm"
+        style="
+          margin-left: 10px;
+          background: white;
+          color: #ff0055;
+          font-weight: 900;
+          border: none;
+          padding: 4px 10px;
+          border-radius: 4px;
+          cursor: pointer;
+        "
+      >
+        Actualizar Ahora
+      </button>
+      <button
+        id="btn-dismiss-update"
+        class="btn-icon"
+        style="margin-left: 6px; font-size: 12px; color: white"
+        title="Cerrar"
+      >
+        ✕
+      </button>
+    </div>
 
     <!-- ========================================== -->
     <!-- MULTI-ARENA PARALLEL SWITCHER BAR          -->
@@ -1682,6 +1773,158 @@
     </div>
 
     <!-- ========================================== -->
+    <!-- MODAL: SINCRONIZACIÓN EN TIEMPO REAL & VERSIÓN -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="modal-sync">
+      <div class="modal-box" style="max-width: 480px">
+        <div class="modal-title">
+          <span>⚡ Tiempo Real &amp; Nube</span>
+          <button class="btn-icon" id="btn-close-sync-modal">✕</button>
+        </div>
+        <div
+          style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5"
+        >
+          Conectá todos los celulares en vivo a la misma base de datos en la nube (Firebase Realtime
+          Database). Cada punto, combate o torneo se reflejará al instante en todas las pantallas.
+        </div>
+
+        <div
+          class="card"
+          style="
+            padding: 12px;
+            margin-bottom: 14px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid var(--border-color);
+          "
+        >
+          <div
+            style="
+              font-size: 12px;
+              font-weight: 800;
+              color: var(--bx-cyan);
+              text-transform: uppercase;
+              margin-bottom: 6px;
+            "
+          >
+            Estado de Conexión:
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span
+              id="modal-sync-indicator-dot"
+              style="
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: #888;
+                display: inline-block;
+              "
+            ></span>
+            <span
+              id="modal-sync-indicator-status"
+              style="font-weight: 800; font-size: 14px; color: var(--text-main)"
+            >
+              Modo Local (Sin sincronización)
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-firebase-db-url"
+            >URL de Firebase Realtime Database:</label
+          >
+          <input
+            type="text"
+            id="input-firebase-db-url"
+            class="form-control"
+            placeholder="https://tu-proyecto-default-rtdb.firebaseio.com"
+            autocomplete="off"
+          />
+          <small style="color: var(--text-muted); font-size: 11px; margin-top: 4px; display: block">
+            Obtenela gratis en la consola de Firebase en Realtime Database.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-firebase-api-key"
+            >API Key (Opcional si usás modo de prueba):</label
+          >
+          <input
+            type="text"
+            id="input-firebase-api-key"
+            class="form-control"
+            placeholder="AIzaSy..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-firebase-project-id">Project ID:</label>
+          <input
+            type="text"
+            id="input-firebase-project-id"
+            class="form-control"
+            placeholder="beyblade-x-tournament"
+            autocomplete="off"
+          />
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 14px">
+          <button
+            class="btn btn-primary btn-block"
+            id="btn-save-firebase-config"
+            style="font-weight: 800"
+          >
+            💾 Guardar y Conectar
+          </button>
+          <button
+            class="btn btn-danger btn-block"
+            id="btn-disconnect-firebase"
+            style="font-weight: 700"
+          >
+            Desconectar
+          </button>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 18px 0" />
+
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+          "
+        >
+          <div>
+            <div
+              style="
+                font-size: 12px;
+                font-weight: 800;
+                color: var(--text-muted);
+                text-transform: uppercase;
+              "
+            >
+              Versión de la App:
+            </div>
+            <div
+              style="font-size: 14px; font-weight: 800; color: var(--bx-gold)"
+              id="app-version-display"
+            >
+              v1.0.0
+            </div>
+          </div>
+          <button
+            class="btn btn-sm"
+            id="btn-check-github-updates"
+            style="border-color: var(--bx-cyan); color: var(--bx-cyan); font-weight: 800"
+          >
+            🔄 Buscar Actualizaciones
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
     <!-- MODAL: RESPALDO Y DATOS (BACKUP / RESTORE) -->
     <!-- ========================================== -->
     <div class="modal-overlay" id="modal-backup">
@@ -1728,6 +1971,218 @@
        ========================================================================== -->
     <script>
       /* ==========================================================================
+       REALTIME CLOUD SYNC & GITHUB VERSION MANAGEMENT
+       ========================================================================== */
+      const APP_VERSION = '1.0.0';
+      const GITHUB_REPO = 'Darkham77/beyblade-x-tournament';
+      const FIREBASE_CONFIG_KEY = 'BEYBLADE_X_FIREBASE_CONFIG';
+
+      // Configuración predeterminada (se puede completar aquí o desde el modal en la UI)
+      const DEFAULT_FIREBASE_CONFIG = {
+        apiKey: '',
+        authDomain: '',
+        databaseURL: '',
+        projectId: '',
+        storageBucket: '',
+        messagingSenderId: '',
+        appId: ''
+      };
+
+      const RealtimeSync = {
+        app: null,
+        db: null,
+        status: 'local',
+        isApplyingRemoteUpdate: false,
+        syncTimeout: null,
+
+        init() {
+          const config = this.getConfig();
+          if (!config || !config.databaseURL) {
+            this.setStatus('local', 'Modo Local');
+            return;
+          }
+
+          if (typeof firebase === 'undefined') {
+            console.warn('Firebase SDK no disponible (posible modo offline).');
+            this.setStatus('local', 'Local (Offline)');
+            return;
+          }
+
+          try {
+            if (!firebase.apps.length) {
+              this.app = firebase.initializeApp(config);
+            } else {
+              this.app = firebase.app();
+            }
+            this.db = firebase.database();
+            this.setStatus('connecting', 'Conectando...');
+
+            this.db.ref('.info/connected').on('value', (snap) => {
+              if (snap.val() === true) {
+                this.setStatus('online', 'En Vivo');
+              } else {
+                this.setStatus('offline', 'Sin Conexión');
+              }
+            });
+
+            const stateRef = this.db.ref('beyblade_x_state');
+            stateRef.on('value', (snapshot) => {
+              const remoteData = snapshot.val();
+              if (remoteData && typeof remoteData === 'object') {
+                const remoteStr = JSON.stringify(remoteData);
+                const localStr = JSON.stringify(AppState);
+                if (remoteStr !== localStr) {
+                  this.isApplyingRemoteUpdate = true;
+                  AppState = remoteData;
+                  try {
+                    localStorage.setItem(STORAGE_KEY, remoteStr);
+                  } catch (e) {}
+                  UI.renderAll();
+                  this.isApplyingRemoteUpdate = false;
+                }
+              } else if (
+                !remoteData &&
+                AppState &&
+                Object.keys(AppState.players || {}).length > 0
+              ) {
+                stateRef.set(AppState);
+              }
+            });
+          } catch (err) {
+            console.warn('Error al inicializar Firebase:', err);
+            this.setStatus('error', 'Error Sync');
+          }
+        },
+
+        getConfig() {
+          try {
+            const raw = localStorage.getItem(FIREBASE_CONFIG_KEY);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed && parsed.databaseURL) return parsed;
+            }
+          } catch (e) {}
+          if (DEFAULT_FIREBASE_CONFIG.databaseURL) {
+            return DEFAULT_FIREBASE_CONFIG;
+          }
+          return null;
+        },
+
+        saveConfig(config) {
+          try {
+            localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify(config));
+          } catch (e) {}
+          location.reload();
+        },
+
+        disconnect() {
+          try {
+            localStorage.removeItem(FIREBASE_CONFIG_KEY);
+          } catch (e) {}
+          location.reload();
+        },
+
+        setStatus(status, label) {
+          this.status = status;
+          const dot = document.getElementById('sync-indicator-dot');
+          const text = document.getElementById('sync-indicator-text');
+          const modalDot = document.getElementById('modal-sync-indicator-dot');
+          const modalText = document.getElementById('modal-sync-indicator-status');
+
+          const colors = {
+            online: '#39ff14',
+            connecting: '#00f0ff',
+            offline: '#ffaa00',
+            local: '#888888',
+            error: '#ff0055'
+          };
+          const color = colors[status] || '#888888';
+
+          if (dot) {
+            dot.style.background = color;
+            if (status === 'online') {
+              dot.classList.add('sync-dot-live');
+            } else {
+              dot.classList.remove('sync-dot-live');
+            }
+          }
+          if (text) text.textContent = label;
+          if (modalDot) modalDot.style.background = color;
+          if (modalText) modalText.textContent = label;
+        },
+
+        pushState() {
+          if (!this.db || this.isApplyingRemoteUpdate) return;
+          if (this.syncTimeout) clearTimeout(this.syncTimeout);
+          this.syncTimeout = setTimeout(() => {
+            if (this.db) {
+              this.db
+                .ref('beyblade_x_state')
+                .set(AppState)
+                .catch((err) => {
+                  console.warn('Error al guardar en Firebase:', err);
+                });
+            }
+          }, 250);
+        }
+      };
+
+      const GitHubUpdater = {
+        async checkForUpdates(manual = false) {
+          try {
+            const url = `https://api.github.com/repos/${GITHUB_REPO}/commits/main`;
+            const resp = await fetch(url, {
+              headers: { Accept: 'application/vnd.github.v3+json' },
+              cache: 'no-store'
+            });
+            if (!resp.ok) {
+              if (manual) {
+                alert(
+                  'No se pudo comprobar la versión en GitHub (repositorio no encontrado o límite de consultas).'
+                );
+              }
+              return;
+            }
+            const data = await resp.json();
+            const latestSha = data.sha ? data.sha.substring(0, 7) : null;
+            const savedSha = localStorage.getItem('bx_last_commit_sha');
+
+            if (latestSha) {
+              if (savedSha && savedSha !== latestSha) {
+                this.showBanner(latestSha);
+                if (manual) alert(`¡Nueva versión encontrada en GitHub (${latestSha})!`);
+              } else {
+                localStorage.setItem('bx_last_commit_sha', latestSha);
+                if (manual) alert(`¡Ya tenés la última versión instalada (${latestSha})!`);
+              }
+            }
+          } catch (e) {
+            if (manual) alert(`Error al consultar GitHub: ${e.message}`);
+          }
+        },
+
+        showBanner(newSha) {
+          const banner = document.getElementById('banner-update-available');
+          if (banner) {
+            banner.style.display = 'block';
+            const btnApply = document.getElementById('btn-apply-update');
+            if (btnApply) {
+              btnApply.onclick = () => {
+                localStorage.setItem('bx_last_commit_sha', newSha);
+                window.location.reload(true);
+              };
+            }
+            const btnDismiss = document.getElementById('btn-dismiss-update');
+            if (btnDismiss) {
+              btnDismiss.onclick = () => {
+                banner.style.display = 'none';
+              };
+            }
+          }
+        }
+      };
+
+      /* ==========================================================================
        1. STATE & STORAGE MANAGEMENT
        ========================================================================== */
       const STORAGE_KEY = 'BEYBLADE_X_APP_V1';
@@ -1773,6 +2228,9 @@
       function saveState() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(AppState));
+          if (typeof RealtimeSync !== 'undefined' && RealtimeSync.pushState) {
+            RealtimeSync.pushState();
+          }
         } catch (e) {
           console.error('Error saving state:', e);
         }
@@ -3844,6 +4302,74 @@
             }
           });
 
+          // Realtime Cloud Sync & GitHub Version Modal
+          const btnSyncOpen = document.getElementById('btn-sync-open');
+          if (btnSyncOpen) {
+            btnSyncOpen.addEventListener('click', () => {
+              const cfg = RealtimeSync.getConfig() || {};
+              const inputUrl = document.getElementById('input-firebase-db-url');
+              const inputApiKey = document.getElementById('input-firebase-api-key');
+              const inputProj = document.getElementById('input-firebase-project-id');
+              const versionDisplay = document.getElementById('app-version-display');
+              const savedSha = localStorage.getItem('bx_last_commit_sha');
+              if (inputUrl) inputUrl.value = cfg.databaseURL || '';
+              if (inputApiKey) inputApiKey.value = cfg.apiKey || '';
+              if (inputProj) inputProj.value = cfg.projectId || '';
+              if (versionDisplay) {
+                versionDisplay.textContent = savedSha
+                  ? `v${APP_VERSION} (${savedSha})`
+                  : `v${APP_VERSION}`;
+              }
+              this.openModal('modal-sync');
+            });
+          }
+
+          const btnCloseSync = document.getElementById('btn-close-sync-modal');
+          if (btnCloseSync) {
+            btnCloseSync.addEventListener('click', () => this.closeModal('modal-sync'));
+          }
+
+          const btnSaveFirebase = document.getElementById('btn-save-firebase-config');
+          if (btnSaveFirebase) {
+            btnSaveFirebase.addEventListener('click', () => {
+              const urlInput = document.getElementById('input-firebase-db-url');
+              const apiKeyInput = document.getElementById('input-firebase-api-key');
+              const projInput = document.getElementById('input-firebase-project-id');
+              const url = (urlInput ? urlInput.value : '').trim();
+              const apiKey = (apiKeyInput ? apiKeyInput.value : '').trim();
+              const projectId = (projInput ? projInput.value : '').trim();
+
+              if (!url) {
+                alert('Ingresá una URL válida de Firebase Realtime Database.');
+                return;
+              }
+
+              RealtimeSync.saveConfig({
+                databaseURL: url,
+                apiKey: apiKey || 'dummy-key',
+                projectId: projectId || 'beyblade-x-tournament'
+              });
+            });
+          }
+
+          const btnDisconnectFirebase = document.getElementById('btn-disconnect-firebase');
+          if (btnDisconnectFirebase) {
+            btnDisconnectFirebase.addEventListener('click', () => {
+              if (
+                confirm('¿Desconectar la sincronización en tiempo real? Volverás al modo local.')
+              ) {
+                RealtimeSync.disconnect();
+              }
+            });
+          }
+
+          const btnCheckUpdates = document.getElementById('btn-check-github-updates');
+          if (btnCheckUpdates) {
+            btnCheckUpdates.addEventListener('click', () => {
+              GitHubUpdater.checkForUpdates(true);
+            });
+          }
+
           // Victory Modal Buttons
           document.getElementById('btn-victory-next-match').addEventListener('click', () => {
             this.closeModal('modal-victory');
@@ -5561,6 +6087,12 @@
       document.addEventListener('DOMContentLoaded', () => {
         loadState();
         UI.init();
+        if (typeof RealtimeSync !== 'undefined' && RealtimeSync.init) {
+          RealtimeSync.init();
+        }
+        if (typeof GitHubUpdater !== 'undefined' && GitHubUpdater.checkForUpdates) {
+          GitHubUpdater.checkForUpdates(false);
+        }
       });
     </script>
   </body>
