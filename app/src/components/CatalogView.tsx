@@ -55,7 +55,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
             </span>
           </h1>
           <p className="text-slate-400 text-sm mt-1">
-            Explora las piezas oficiales, pesos exactos, estadísticas y sets de lanzamiento.
+            Explora las piezas oficiales con fotos en alta definición, pesos exactos, estadísticas y sets de lanzamiento.
           </p>
         </div>
 
@@ -143,13 +143,33 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
                         </span>
                       </div>
 
+                      {/* Official Piece Image */}
+                      <div className="w-full h-32 mb-3 bg-slate-950/70 rounded-xl border border-slate-800/80 flex items-center justify-center p-2.5 overflow-hidden group-hover:border-cyan-500/40 transition-colors">
+                        {blade.image_url ? (
+                          <img
+                            src={blade.image_url}
+                            alt={blade.display_name}
+                            className="max-h-full max-w-full object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform"
+                            loading="lazy"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div
+                            className="w-10 h-10 rounded-full border border-white/20"
+                            style={{ backgroundColor: primaryVariant.color_primary_hex }}
+                          />
+                        )}
+                      </div>
+
                       {/* Title & Preview */}
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
                           {blade.display_name}
                         </h3>
                         <div
-                          className="w-4 h-4 rounded-full border border-white/20 shrink-0"
+                          className="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0 mt-1"
                           style={{ backgroundColor: primaryVariant.color_primary_hex }}
                           title={`Colorway: ${primaryVariant.variant_name}`}
                         />
@@ -205,7 +225,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
                         ) : (
                           <>
                             <Plus className="w-3.5 h-3.5" />
-                            <span>Tengo esta pieza</span>
+                            <span>Tengo esta</span>
                           </>
                         )}
                       </button>
@@ -246,12 +266,32 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
                         <span className="text-xs font-mono text-slate-400">Altura: {ratchet.height_mm / 10} mm</span>
                       </div>
 
+                      {/* Official Ratchet Image */}
+                      <div className="w-full h-28 mb-3 bg-slate-950/70 rounded-xl border border-slate-800/80 flex items-center justify-center p-2.5 overflow-hidden group-hover:border-blue-500/40 transition-colors">
+                        {ratchet.image_url ? (
+                          <img
+                            src={ratchet.image_url}
+                            alt={ratchet.display_name}
+                            className="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform"
+                            loading="lazy"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div
+                            className="w-8 h-8 rounded-full border border-white/20"
+                            style={{ backgroundColor: primaryVariant.color_primary_hex }}
+                          />
+                        )}
+                      </div>
+
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
                           {ratchet.display_name}
                         </h3>
                         <div
-                          className="w-4 h-4 rounded-full border border-white/20 shrink-0"
+                          className="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0"
                           style={{ backgroundColor: primaryVariant.color_primary_hex }}
                         />
                       </div>
@@ -333,12 +373,32 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
                         </span>
                       </div>
 
+                      {/* Official Bit Image */}
+                      <div className="w-full h-24 mb-3 bg-slate-950/70 rounded-xl border border-slate-800/80 flex items-center justify-center p-2 overflow-hidden group-hover:border-amber-500/40 transition-colors">
+                        {bit.image_url ? (
+                          <img
+                            src={bit.image_url}
+                            alt={bit.display_name}
+                            className="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform"
+                            loading="lazy"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div
+                            className="w-7 h-7 rounded-full border border-white/20"
+                            style={{ backgroundColor: primaryVariant.color_primary_hex }}
+                          />
+                        )}
+                      </div>
+
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
                           {bit.display_name} ({bit.code_name})
                         </h3>
                         <div
-                          className="w-4 h-4 rounded-full border border-white/20 shrink-0"
+                          className="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0"
                           style={{ backgroundColor: primaryVariant.color_primary_hex }}
                         />
                       </div>
@@ -432,8 +492,19 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
               ✕
             </button>
 
-            <h3 className="text-2xl font-black text-white mb-1">{activeModalItem.data.display_name}</h3>
-            <p className="text-xs text-cyan-400 font-mono mb-4">Código maestro: {activeModalItem.data.code_name}</p>
+            {/* Modal Image Header */}
+            {activeModalItem.data.image_url && (
+              <div className="w-32 h-32 mx-auto mb-4 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex items-center justify-center shadow-inner">
+                <img
+                  src={activeModalItem.data.image_url}
+                  alt={activeModalItem.data.display_name}
+                  className="max-h-full max-w-full object-contain filter drop-shadow-md"
+                />
+              </div>
+            )}
+
+            <h3 className="text-2xl font-black text-white mb-1 text-center">{activeModalItem.data.display_name}</h3>
+            <p className="text-xs text-cyan-400 font-mono mb-4 text-center">Código maestro: {activeModalItem.data.code_name}</p>
 
             <div className="space-y-4 mb-6">
               <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">

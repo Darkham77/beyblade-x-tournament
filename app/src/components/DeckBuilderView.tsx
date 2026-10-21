@@ -192,11 +192,51 @@ export const DeckBuilderView: React.FC<DeckBuilderViewProps> = ({ onGoToExport }
               </div>
 
               {/* Combo Summary Tag */}
-              <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 mb-6 text-center">
+              <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 mb-4 text-center">
                 <span className="text-xs text-slate-400 font-mono">Nombre de la Combinación:</span>
                 <p className="text-base font-extrabold text-cyan-300 mt-0.5">
                   {combo.blade.display_name} {combo.ratchet.display_name} {combo.bit.code_name}
                 </p>
+              </div>
+
+              {/* Visual Disassembled Parts Preview */}
+              <div className="flex items-center justify-center gap-2.5 py-3 px-4 bg-slate-950/90 rounded-2xl border border-slate-800/80 mb-6 shadow-inner">
+                <div className="flex flex-col items-center">
+                  <div className="w-14 h-14 bg-slate-900 rounded-xl p-1.5 border border-cyan-500/30 flex items-center justify-center">
+                    {combo.blade.image_url ? (
+                      <img src={combo.blade.image_url} alt={combo.blade.display_name} className="max-h-full max-w-full object-contain filter drop-shadow-md" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full" style={{ backgroundColor: combo.bladeVariant.color_primary_hex }} />
+                    )}
+                  </div>
+                  <span className="text-[10px] text-cyan-400 font-mono font-bold mt-1">Blade</span>
+                </div>
+
+                <span className="text-slate-600 font-black text-sm">+</span>
+
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 bg-slate-900 rounded-xl p-1.5 border border-blue-500/30 flex items-center justify-center">
+                    {combo.ratchet.image_url ? (
+                      <img src={combo.ratchet.image_url} alt={combo.ratchet.display_name} className="max-h-full max-w-full object-contain filter drop-shadow-md" />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full" style={{ backgroundColor: combo.ratchetVariant.color_primary_hex }} />
+                    )}
+                  </div>
+                  <span className="text-[10px] text-blue-400 font-mono font-bold mt-1">Ratchet</span>
+                </div>
+
+                <span className="text-slate-600 font-black text-sm">+</span>
+
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 bg-slate-900 rounded-xl p-1.5 border border-amber-500/30 flex items-center justify-center">
+                    {combo.bit.image_url ? (
+                      <img src={combo.bit.image_url} alt={combo.bit.display_name} className="max-h-full max-w-full object-contain filter drop-shadow-md" />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full" style={{ backgroundColor: combo.bitVariant.color_primary_hex }} />
+                    )}
+                  </div>
+                  <span className="text-[10px] text-amber-400 font-mono font-bold mt-1">Bit</span>
+                </div>
               </div>
 
               {/* Part Selectors */}

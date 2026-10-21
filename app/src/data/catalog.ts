@@ -2258,3 +2258,96 @@ export const CATALOG_PRODUCTS: Product[] = [
     barcode_jan_upc: '195166249575',
   },
 ];
+
+// ============================================================================
+// VINCULACIÓN DINÁMICA DE IMÁGENES OFICIALES (PNG AISLADOS)
+// ============================================================================
+const BLADE_IMAGE_MAP: Record<string, string> = {
+  'DRAN_SWORD': '/images/parts/blades/dran_sword.png',
+  'HELLS_SCYTHE': '/images/parts/blades/hells_scythe.png',
+  'WIZARD_ARROW': '/images/parts/blades/wizard_arrow.png',
+  'KNIGHT_SHIELD': '/images/parts/blades/knight_shield.png',
+  'KNIGHT_LANCE': '/images/parts/blades/knight_lance.png',
+  'SHARK_EDGE': '/images/parts/blades/shark_edge.png',
+  'LEON_CLAW': '/images/parts/blades/leon_claw.png',
+  'VIPER_TAIL': '/images/parts/blades/viper_tail.png',
+  'RHINO_HORN': '/images/parts/blades/rhino_horn.png',
+  'DRAN_DAGGER': '/images/parts/blades/dran_dagger.png',
+  'HELLS_CHAIN': '/images/parts/blades/hells_chain.png',
+  'PHOENIX_WING': '/images/parts/blades/phoenix_wing.png',
+  'WYVERN_GALE': '/images/parts/blades/wyvern_gale.png',
+  'UNICORN_STING': '/images/parts/blades/unicorn_sting.png',
+  'SPHINX_COWL': '/images/parts/blades/sphinx_cowl.png',
+  'TYRANNO_BEAT': '/images/parts/blades/tyranno_beat.png',
+  'WEISS_TIGER': '/images/parts/blades/weiss_tiger.png',
+  'BLACK_SHELL': '/images/parts/blades/black_shell.png',
+  'WHALE_WAVE': '/images/parts/blades/whale_wave.png',
+  'DRAN_BUSTER': '/images/parts/blades/dran_buster.png',
+  'HELLS_HAMMER': '/images/parts/blades/hells_hammer.png',
+  'WIZARD_ROD': '/images/parts/blades/wizard_rod.png',
+  'SHINOBI_SHADOW': '/images/parts/blades/shinobi_shadow.png',
+  'COBALT_DRAGOON': '/images/parts/blades/cobalt_dragoon.png',
+  'LEON_CREST': '/images/parts/blades/leon_crest.png',
+  'PHOENIX_RUDDER': '/images/parts/blades/phoenix_rudder.png',
+  'SILVER_WOLF': '/images/parts/blades/silver_wolf.png',
+  'SAMURAI_SABER': '/images/parts/blades/samurai_saber.png',
+  'KNIGHT_MAIL': '/images/parts/blades/knight_mail.png',
+  'IMPACT_DRAKE': '/images/parts/blades/impact_drake.png',
+  'COBALT_DRAKE': '/images/parts/blades/cobalt_drake.png',
+};
+
+const BIT_IMAGE_MAP: Record<string, string> = {
+  'F': '/images/parts/bits/bit_flat.png',
+  'LF': '/images/parts/bits/bit_low_flat.png',
+  'GF': '/images/parts/bits/bit_gear_flat.png',
+  'A': '/images/parts/bits/bit_accel.png',
+  'R': '/images/parts/bits/bit_rush.png',
+  'Q': '/images/parts/bits/bit_quake.png',
+  'C': '/images/parts/bits/bit_cyclone.png',
+  'L': '/images/parts/bits/bit_level.png',
+  'LR': '/images/parts/bits/bit_metal_needle.png',
+  'B': '/images/parts/bits/bit_ball.png',
+  'DB': '/images/parts/bits/bit_disc_ball.png',
+  'O': '/images/parts/bits/bit_orb.png',
+  'G': '/images/parts/bits/bit_glide.png',
+  'FB': '/images/parts/bits/bit_free_ball.png',
+  'N': '/images/parts/bits/bit_needle.png',
+  'HN': '/images/parts/bits/bit_high_needle.png',
+  'GN': '/images/parts/bits/bit_gear_needle.png',
+  'H': '/images/parts/bits/bit_hexa.png',
+  'MN': '/images/parts/bits/bit_metal_needle.png',
+  'BS': '/images/parts/bits/bit_needle.png',
+  'T': '/images/parts/bits/bit_taper.png',
+  'HT': '/images/parts/bits/bit_high_taper.png',
+  'P': '/images/parts/bits/bit_point.png',
+  'GP': '/images/parts/bits/bit_gear_point.png',
+  'U': '/images/parts/bits/bit_unite.png',
+  'E': '/images/parts/bits/bit_elevate.png',
+};
+
+// Enriquecer objetos en memoria
+CATALOG_BLADES.forEach((b) => {
+  if (BLADE_IMAGE_MAP[b.code_name]) {
+    b.image_url = BLADE_IMAGE_MAP[b.code_name];
+    if (b.variants[0]) {
+      b.variants[0].image_url = BLADE_IMAGE_MAP[b.code_name];
+    }
+  }
+});
+
+CATALOG_RATCHETS.forEach((r) => {
+  r.image_url = `/images/parts/ratchets/ratchet_${r.code_name.toLowerCase()}.png`;
+  if (r.variants[0]) {
+    r.variants[0].image_url = r.image_url;
+  }
+});
+
+CATALOG_BITS.forEach((bit) => {
+  if (BIT_IMAGE_MAP[bit.code_name]) {
+    bit.image_url = BIT_IMAGE_MAP[bit.code_name];
+    if (bit.variants[0]) {
+      bit.variants[0].image_url = BIT_IMAGE_MAP[bit.code_name];
+    }
+  }
+});
+

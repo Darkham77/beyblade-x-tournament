@@ -31,6 +31,7 @@ export interface Blade {
   spin_direction: SpinDirection;
   weight_min_grams: number;
   weight_max_grams: number;
+  image_url?: string;
   stats: BaseStats;
   variants: PartVariant[];
 }
@@ -42,6 +43,7 @@ export interface Ratchet {
   height_mm: number;
   weight_min_grams: number;
   weight_max_grams: number;
+  image_url?: string;
   stats: {
     burst_resistance: number;
     aerodynamics: number;
@@ -56,6 +58,7 @@ export interface Bit {
   burst_resistance_tier: 'NORMAL' | 'HIGH';
   weight_min_grams: number;
   weight_max_grams: number;
+  image_url?: string;
   stats: {
     attack: number;
     dash: number;
