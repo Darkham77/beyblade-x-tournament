@@ -6,13 +6,12 @@ const CACHE_NAME = 'beyblade-x-v1.0.1';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
-  './manifest.webmanifest',
+  './manifest.json',
   './icons/favicon.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-192.png',
-  './icons/icon-maskable-512.png',
-  './icons/icon.svg'
+  './icons/icon-maskable-512.png'
 ];
 
 function putInCache(request, response) {

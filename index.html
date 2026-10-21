@@ -8,13 +8,12 @@
     <meta http-equiv="Expires" content="0" />
     <title>Beyblade X - Torneos &amp; Marcador</title>
     <!-- PWA Web App Manifest & Mobile Icons -->
-    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#090d16" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Beyblade X" />
-    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
@@ -2334,6 +2333,46 @@
               match.targetPoints = tournament.rules.targetPoints || 4;
             }
           });
+
+          // Auto-detect completed status for tournaments where all matches are finished
+          const matchesList = Object.values(tournament.matches);
+          const hasMatches = matchesList.length > 0;
+          const allMatchesDone = hasMatches && matchesList.every((m) => m.status === 'completed');
+
+          if (allMatchesDone && tournament.status !== 'completed') {
+            tournament.status = 'completed';
+            if (!tournament.winnerId) {
+              const scores = {};
+              tournament.playerIds.forEach((pId) => {
+                scores[pId] = { id: pId, pts: 0, diff: 0, pf: 0 };
+              });
+              matchesList.forEach((m) => {
+                if (m.player1Id && m.player2Id && m.winnerId) {
+                  if (!scores[m.player1Id]) {
+                    scores[m.player1Id] = { id: m.player1Id, pts: 0, diff: 0, pf: 0 };
+                  }
+                  if (!scores[m.player2Id]) {
+                    scores[m.player2Id] = { id: m.player2Id, pts: 0, diff: 0, pf: 0 };
+                  }
+                  scores[m.player1Id].pf += m.score1 || 0;
+                  scores[m.player2Id].pf += m.score2 || 0;
+                  scores[m.player1Id].diff += (m.score1 || 0) - (m.score2 || 0);
+                  scores[m.player2Id].diff += (m.score2 || 0) - (m.score1 || 0);
+                  if (m.winnerId === m.player1Id) {
+                    scores[m.player1Id].pts += 3;
+                  } else if (m.winnerId === m.player2Id) {
+                    scores[m.player2Id].pts += 3;
+                  }
+                }
+              });
+              const sorted = Object.values(scores).sort(
+                (a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf
+              );
+              if (sorted.length > 0) {
+                tournament.winnerId = sorted[0].id;
+              }
+            }
+          }
         });
         return state;
       }
@@ -4940,7 +4979,11 @@
           }
           saveState();
           this.renderAll();
-          this.switchView('view-scoreboard');
+          if (t && t.status === 'completed') {
+            this.switchView('view-brackets');
+          } else {
+            this.switchView('view-scoreboard');
+          }
         },
 
         deleteTournament(tournamentId) {
