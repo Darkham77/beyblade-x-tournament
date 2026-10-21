@@ -21,6 +21,7 @@ export interface PartVariant {
   color_secondary_hex?: string;
   hasbro_qr_payload?: string;
   image_url?: string;
+  gallery_images?: string[];
   included_in_products: string[];
 }
 
@@ -32,6 +33,8 @@ export interface Blade {
   weight_min_grams: number;
   weight_max_grams: number;
   image_url?: string;
+  gallery_images?: string[];
+  training_samples_count?: number;
   stats: BaseStats;
   variants: PartVariant[];
 }
@@ -44,6 +47,8 @@ export interface Ratchet {
   weight_min_grams: number;
   weight_max_grams: number;
   image_url?: string;
+  gallery_images?: string[];
+  training_samples_count?: number;
   stats: {
     burst_resistance: number;
     aerodynamics: number;
@@ -59,6 +64,8 @@ export interface Bit {
   weight_min_grams: number;
   weight_max_grams: number;
   image_url?: string;
+  gallery_images?: string[];
+  training_samples_count?: number;
   stats: {
     attack: number;
     dash: number;
