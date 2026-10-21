@@ -1044,6 +1044,27 @@
       <div class="header-actions">
         <button
           class="btn-icon"
+          id="btn-bgm-toggle"
+          title="Música de Fondo (Activar / Silenciar)"
+          aria-label="Música de fondo"
+          style="
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--bx-cyan);
+            background: rgba(0, 240, 255, 0.08);
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          "
+        >
+          <span id="bgm-icon">🔊</span>
+        </button>
+        <button
+          class="btn-icon"
           id="btn-pwa-install"
           title="Instalar como App"
           style="
@@ -3662,9 +3683,129 @@
       };
 
       /* ==========================================================================
-       4. COUNTDOWN ENGINE (3, 2, 1... GO SHOOT!)
+       4. BGM ENGINE & COUNTDOWN ENGINE (3, 2, 1... GO SHOOT!)
        ========================================================================== */
+      const BGM_AUDIO_URL = './audio/bgm.mp3';
       const GO_SHOOT_AUDIO_URL = './audio/go-shoot.mp3';
+
+      const BgmEngine = {
+        audio: null,
+        naturalVolume: 0.35,
+        isDucked: false,
+        fadeTimer: null,
+        isMuted: false,
+
+        init() {
+          if (!this.audio) {
+            this.audio = new Audio(BGM_AUDIO_URL);
+            this.audio.loop = true;
+            this.audio.preload = 'auto';
+          }
+
+          const savedMute = localStorage.getItem('beyblade_bgm_muted');
+          this.isMuted = savedMute === 'true';
+
+          this.updateIcon();
+
+          if (!this.isMuted) {
+            this.audio.volume = this.naturalVolume;
+            const playPromise = this.audio.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(() => {
+                const startOnInteraction = () => {
+                  if (!this.isMuted && this.audio && this.audio.paused) {
+                    this.audio.play().catch(() => {});
+                  }
+                  window.removeEventListener('click', startOnInteraction);
+                  window.removeEventListener('touchstart', startOnInteraction);
+                };
+                window.addEventListener('click', startOnInteraction, { once: true });
+                window.addEventListener('touchstart', startOnInteraction, { once: true });
+              });
+            }
+          } else {
+            this.audio.volume = 0;
+          }
+        },
+
+        toggle() {
+          if (!this.audio) this.init();
+          this.isMuted = !this.isMuted;
+          localStorage.setItem('beyblade_bgm_muted', String(this.isMuted));
+
+          if (this.isMuted) {
+            this.fadeVolume(0, 200, () => {
+              if (this.audio) this.audio.pause();
+            });
+          } else {
+            const targetVol = this.isDucked ? this.naturalVolume * 0.1 : this.naturalVolume;
+            this.audio.play().catch(() => {});
+            this.fadeVolume(targetVol, 200);
+          }
+          this.updateIcon();
+        },
+
+        duck() {
+          if (!this.audio || this.isMuted || this.audio.paused) return;
+          this.isDucked = true;
+          const duckedVol = this.naturalVolume * 0.1; // 90% reducción del volumen
+          this.fadeVolume(duckedVol, 250);
+        },
+
+        unduck() {
+          if (!this.audio || this.isMuted) return;
+          this.isDucked = false;
+          if (!this.audio.paused) {
+            this.fadeVolume(this.naturalVolume, 300);
+          }
+        },
+
+        fadeVolume(targetVol, durationMs = 250, onComplete = null) {
+          if (!this.audio) return;
+          if (this.fadeTimer) {
+            clearInterval(this.fadeTimer);
+            this.fadeTimer = null;
+          }
+          const startVol = this.audio.volume;
+          const diff = targetVol - startVol;
+          if (Math.abs(diff) < 0.01) {
+            this.audio.volume = Math.max(0, Math.min(1, targetVol));
+            if (onComplete) onComplete();
+            return;
+          }
+          const steps = 15;
+          const interval = durationMs / steps;
+          let currentStep = 0;
+
+          this.fadeTimer = setInterval(() => {
+            currentStep++;
+            const progress = currentStep / steps;
+            const newVol = Math.max(0, Math.min(1, startVol + diff * progress));
+            if (this.audio) this.audio.volume = newVol;
+            if (currentStep >= steps) {
+              clearInterval(this.fadeTimer);
+              this.fadeTimer = null;
+              if (this.audio) this.audio.volume = Math.max(0, Math.min(1, targetVol));
+              if (onComplete) onComplete();
+            }
+          }, interval);
+        },
+
+        updateIcon() {
+          const btn = document.getElementById('btn-bgm-toggle');
+          const icon = document.getElementById('bgm-icon');
+          if (icon) {
+            icon.textContent = this.isMuted ? '🔇' : '🔊';
+          }
+          if (btn) {
+            btn.title = this.isMuted
+              ? 'Música: Silenciada (Activar)'
+              : 'Música: Sonando (Silenciar)';
+            btn.style.opacity = this.isMuted ? '0.6' : '1';
+            btn.style.borderColor = this.isMuted ? 'rgba(255, 255, 255, 0.2)' : 'var(--bx-cyan)';
+          }
+        }
+      };
 
       const CountdownEngine = {
         timerIds: [],
@@ -3674,6 +3815,11 @@
         start() {
           this.stop();
           this.isRunning = true;
+
+          // Duck background music by 90% while countdown audio is playing
+          if (typeof BgmEngine !== 'undefined') {
+            BgmEngine.duck();
+          }
 
           const modal = document.getElementById('modal-countdown');
           if (modal) modal.classList.add('active');
@@ -3759,6 +3905,12 @@
             } catch (e) {}
             this.audioPlayer = null;
           }
+
+          // Restore background music back to its natural volume
+          if (typeof BgmEngine !== 'undefined') {
+            BgmEngine.unduck();
+          }
+
           const modal = document.getElementById('modal-countdown');
           if (modal) modal.classList.remove('active');
           const display = document.getElementById('countdown-display');
@@ -6087,6 +6239,14 @@
 
       // Initialize application on DOM load
       function startApp() {
+        try {
+          if (typeof BgmEngine !== 'undefined' && BgmEngine.init) {
+            BgmEngine.init();
+          }
+        } catch (e) {
+          console.error('Error al inicializar BgmEngine:', e);
+        }
+
         try {
           loadState();
         } catch (e) {
