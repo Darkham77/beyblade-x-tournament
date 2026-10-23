@@ -48,14 +48,14 @@ const SESSIONS: Record<ScanModeKey, SessionData> = {
   RATCHET: {
     sessionPromise: null,
     classesPromise: null,
-    modelUrl: '/models/ratchet_mobilenet_v3.onnx?v=v2_ratchets_real_gallery',
-    classesUrl: '/models/ratchet_classes.json?v=v2_ratchets_real_gallery',
+    modelUrl: '/models/ratchet_mobilenet_v3.onnx?v=v4_wood_final',
+    classesUrl: '/models/ratchet_classes.json?v=v4_wood_final',
   },
   BIT: {
     sessionPromise: null,
     classesPromise: null,
-    modelUrl: '/models/bit_mobilenet_v3.onnx?v=v3_bits_real_gallery',
-    classesUrl: '/models/bit_classes.json?v=v3_bits_real_gallery',
+    modelUrl: '/models/bit_mobilenet_v3.onnx?v=v5_wood_final',
+    classesUrl: '/models/bit_classes.json?v=v5_wood_final',
   },
 };
 
@@ -156,15 +156,37 @@ function preprocessToTensor(
 
     ctx.drawImage(source, sx, sy, cropSize, cropSize, 0, 0, targetSize, targetSize);
   } else {
-    // For uploaded static images / photos: Preserve complete aspect ratio with black letterboxing
-    // This guarantees the tips of Bits and edges of Blades/Ratchets are never cropped out
-    const scale = Math.min(targetSize / sw, targetSize / sh);
-    const dw = Math.round(sw * scale);
-    const dh = Math.round(sh * scale);
-    const dx = Math.round((targetSize - dw) / 2);
-    const dy = Math.round((targetSize - dh) / 2);
+    // For uploaded static photos:
+    // If the image is non-square (like vertical or landscape phone captures),
+    // focus on the central region where the user centered the piece (simulating the reticle focus).
+    const aspect = sw / sh;
+    if (aspect < 0.85 || aspect > 1.15) {
+      // Rectangular capture: crop the central 70% of the shortest dimension
+      const minDim = Math.min(sw, sw > sh ? sh : sw);
+      const cropSize = Math.max(160, Math.floor(minDim * 0.70));
+      const sx = Math.floor((sw - cropSize) / 2);
+      const sy = Math.floor((sh - cropSize) / 2);
+      ctx.drawImage(source, sx, sy, cropSize, cropSize, 0, 0, targetSize, targetSize);
+    } else {
+      // Already roughly square: fit with minimal padding
+      ctx.drawImage(source, 0, 0, sw, sh, 0, 0, targetSize, targetSize);
+    }
+  }
 
-    ctx.drawImage(source, 0, 0, sw, sh, dx, dy, dw, dh);
+  // Adaptive Lighting / Contrast Normalization (Simulate flashlight under dim conditions)
+  const initialData = ctx.getImageData(0, 0, targetSize, targetSize).data;
+  let totalLuma = 0;
+  for (let i = 0; i < initialData.length; i += 4) {
+    totalLuma += 0.299 * initialData[i] + 0.587 * initialData[i + 1] + 0.114 * initialData[i + 2];
+  }
+  const avgLuma = totalLuma / (targetSize * targetSize);
+
+  // If dim lighting detected (mean luma < 110), apply a dynamic contrast & brightness boost
+  if (avgLuma < 110) {
+    const boostContrast = Math.min(1.45, Math.max(1.15, 120 / Math.max(avgLuma, 35)));
+    ctx.filter = `contrast(${boostContrast.toFixed(2)}) brightness(1.22)`;
+    ctx.drawImage(offscreen, 0, 0);
+    ctx.filter = 'none';
   }
 
   const imgData = ctx.getImageData(0, 0, targetSize, targetSize);

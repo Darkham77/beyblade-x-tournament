@@ -98,15 +98,26 @@ if os.path.exists(BIT_DIR):
 
 print(f'Found {len(samples)} total Bit sample images across gallery & base renders.')
 
+table_bg_aug = augmentations.RealisticTableBackground(p=0.80)
+
 def pad_to_square(img: Image.Image) -> Image.Image:
+    if img.mode == 'RGBA':
+        return table_bg_aug(img)
+    
     w, h = img.size
+    aspect = w / h
+    if aspect < 0.85 or aspect > 1.15:
+        min_dim = min(w, h)
+        crop_size = max(160, int(min_dim * 0.70))
+        left = (w - crop_size) // 2
+        top = (h - crop_size) // 2
+        img = img.crop((left, top, left + crop_size, top + crop_size))
+        return img.resize((224, 224), Image.Resampling.BILINEAR)
+
     max_d = max(w, h)
     side = int(max_d * 1.05)
     new_img = Image.new('RGB', (side, side), (0, 0, 0))
-    if img.mode == 'RGBA':
-        new_img.paste(img, ((side - w) // 2, (side - h) // 2), mask=img.split()[3])
-    else:
-        new_img.paste(img.convert('RGB'), ((side - w) // 2, (side - h) // 2))
+    new_img.paste(img.convert('RGB'), ((side - w) // 2, (side - h) // 2))
     return new_img.resize((224, 224), Image.Resampling.BILINEAR)
 
 train_transforms = T.Compose([

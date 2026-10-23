@@ -66,14 +66,14 @@ print(f'Found {len(samples)} total Ratchet sample images across gallery & base r
 
 # Training transforms for Ratchets:
 # - Full 360-degree rotation invariance
+# - Flash reflections and dark wood table synthesis
 # - Color jitter to ignore plastic recolors
-# - Flash reflections
 train_transforms = T.Compose([
     T.RandomRotation(degrees=180, interpolation=T.InterpolationMode.BILINEAR, expand=False),
-    augmentations.SpecularFlashGlare(p=0.45),
-    T.RandomResizedCrop(224, scale=(0.85, 1.05), ratio=(0.95, 1.05), interpolation=T.InterpolationMode.BILINEAR),
-    T.ColorJitter(brightness=0.35, contrast=0.35, saturation=0.35, hue=0.25),
-    T.RandomGrayscale(p=0.20),
+    augmentations.SpecularFlashGlare(p=0.50),
+    T.RandomResizedCrop(224, scale=(0.75, 1.05), ratio=(0.95, 1.05), interpolation=T.InterpolationMode.BILINEAR),
+    T.ColorJitter(brightness=0.40, contrast=0.40, saturation=0.35, hue=0.15),
+    T.RandomGrayscale(p=0.15),
     T.ToTensor(),
     T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
@@ -84,8 +84,10 @@ val_transforms = T.Compose([
     T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
+table_bg_aug = augmentations.RealisticTableBackground(p=0.80)
+
 class AugmentedRatchetDataset(Dataset):
-    def __init__(self, samples, transform, samples_per_epoch=1500):
+    def __init__(self, samples, transform, samples_per_epoch=1800):
         self.samples = samples
         self.transform = transform
         self.samples_per_epoch = samples_per_epoch
@@ -96,14 +98,15 @@ class AugmentedRatchetDataset(Dataset):
     def __getitem__(self, idx):
         path, cls_idx = random.choice(self.samples)
         try:
-            img = Image.open(path).convert('RGB')
+            raw = Image.open(path)
+            img = table_bg_aug(raw)
             return self.transform(img), cls_idx
         except Exception:
-            path, cls_idx = self.samples[0]
-            img = Image.open(path).convert('RGB')
-            return self.transform(img), cls_idx
+            raw = Image.open(self.samples[0][0])
+            img = table_bg_aug(raw)
+            return self.transform(img), self.samples[0][1]
 
-train_ds = AugmentedRatchetDataset(samples, train_transforms, samples_per_epoch=1500)
+train_ds = AugmentedRatchetDataset(samples, train_transforms, samples_per_epoch=1800)
 train_loader = DataLoader(train_ds, batch_size=32, shuffle=True)
 
 # Build Model

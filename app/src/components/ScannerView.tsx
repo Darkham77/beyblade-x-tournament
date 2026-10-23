@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, AlertCircle, CheckCircle2, Cpu } from 'lucide-react';
+import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, AlertCircle, CheckCircle2, Cpu, Zap } from 'lucide-react';
 import {
   analyzeCurrentFrame,
   rankCatalogByVision,
@@ -36,6 +36,25 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
   const [scanResult, setScanResult] = useState<FrameAnalysisResult | null>(null);
   const [selectedCandidate, setSelectedCandidate] = useState<ScanCandidate | null>(null);
 
+  const [isTorchOn, setIsTorchOn] = useState<boolean>(false);
+  const [isTorchSupported, setIsTorchSupported] = useState<boolean>(false);
+
+  const toggleTorch = async () => {
+    if (!videoRef.current || !videoRef.current.srcObject) return;
+    const stream = videoRef.current.srcObject as MediaStream;
+    const track = stream.getVideoTracks()[0];
+    if (!track) return;
+    try {
+      const nextState = !isTorchOn;
+      await (track as any).applyConstraints({
+        advanced: [{ torch: nextState }],
+      });
+      setIsTorchOn(nextState);
+    } catch (err) {
+      console.warn('Torch control not supported or failed:', err);
+    }
+  };
+
   // Start Camera
   const startCamera = async () => {
     try {
@@ -46,6 +65,10 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
         videoRef.current.srcObject = stream;
         videoRef.current.play();
         setCameraActive(true);
+        const track = stream.getVideoTracks()[0];
+        const capabilities = (track as any)?.getCapabilities ? (track as any).getCapabilities() : null;
+        setIsTorchSupported(Boolean(capabilities && 'torch' in capabilities));
+        setIsTorchOn(false);
       }
     } catch (err: any) {
       console.warn('Camera access denied or unavailable:', err);
@@ -58,6 +81,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach((track) => track.stop());
       setCameraActive(false);
+      setIsTorchOn(false);
     }
   };
 
@@ -374,27 +398,44 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
                 </div>
               )}
 
-              {liveMetrics && (
-                <div
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold font-mono border backdrop-blur-md ${
-                    liveMetrics.isLightingGood
-                      ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800/80'
-                      : 'bg-amber-950/80 text-amber-400 border-amber-800/80'
-                  }`}
-                >
-                  {liveMetrics.isLightingGood ? (
-                    <>
-                      <Sun className="w-3 h-3 text-emerald-400" />
-                      <span>Luz Óptima</span>
-                    </>
-                  ) : (
-                    <>
-                      <AlertCircle className="w-3 h-3 text-amber-400" />
-                      <span>Ajustar Iluminación</span>
-                    </>
-                  )}
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                {liveMetrics && (
+                  <div
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold font-mono border backdrop-blur-md ${
+                      liveMetrics.isLightingGood
+                        ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800/80'
+                        : 'bg-amber-950/80 text-amber-400 border-amber-800/80'
+                    }`}
+                  >
+                    {liveMetrics.isLightingGood ? (
+                      <>
+                        <Sun className="w-3 h-3 text-emerald-400" />
+                        <span>Luz Óptima</span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-3 h-3 text-amber-400" />
+                        <span>Ajustar Luz</span>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {isTorchSupported && (
+                  <button
+                    onClick={toggleTorch}
+                    className={`pointer-events-auto px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 transition-all shadow-md ${
+                      isTorchOn
+                        ? 'bg-amber-400 text-slate-950 shadow-amber-400/30'
+                        : 'bg-slate-950/80 text-slate-300 hover:text-white border border-slate-700/80 backdrop-blur-md'
+                    }`}
+                    title="Alternar linterna del celular"
+                  >
+                    <Zap className={`w-3.5 h-3.5 ${isTorchOn ? 'fill-current' : ''}`} />
+                    <span>{isTorchOn ? 'Flash ON' : 'Flash'}</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Live Hasbro QR Banner if detected */}
@@ -471,6 +512,20 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
           <Scan className="w-4 h-4" />
           <span>Escanear Fotograma Actual</span>
         </button>
+
+        {cameraActive && isTorchSupported && (
+          <button
+            onClick={toggleTorch}
+            className={`w-full sm:w-auto px-5 py-3.5 rounded-2xl font-bold text-sm border flex items-center justify-center gap-2 transition-all ${
+              isTorchOn
+                ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-lg shadow-amber-400/20'
+                : 'bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-800'
+            }`}
+          >
+            <Zap className={`w-4 h-4 ${isTorchOn ? 'fill-current' : ''}`} />
+            <span>{isTorchOn ? 'Linterna Encendida' : 'Encender Linterna'}</span>
+          </button>
+        )}
 
         <button
           onClick={() => fileInputRef.current?.click()}
