@@ -19,6 +19,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'Training Ratchet Model on: {DEVICE}')
 
 RATCHET_DIR = r'C:\Users\Ro\.gemini\antigravity\scratch\scanner-de-beys\app\public\images\parts\ratchets'
+RATCHET_GALLERY_DIR = r'C:\Users\Ro\.gemini\antigravity\scratch\scanner-de-beys\app\public\images\gallery\ratchets'
 MODELS_DIR = r'C:\Users\Ro\.gemini\antigravity\scratch\scanner-de-beys\app\public\models'
 
 with open(os.path.join(MODELS_DIR, 'ratchet_classes.json'), 'r', encoding='utf-8') as f:
@@ -28,23 +29,40 @@ class_to_idx = {name: i for i, name in enumerate(RATCHET_CLASSES)}
 num_classes = len(RATCHET_CLASSES)
 print(f'Total Ratchet Classes: {num_classes}')
 
-# Map files in RATCHET_DIR to class
+# Map files in RATCHET_GALLERY_DIR and RATCHET_DIR to class
 samples = []
-for f in os.listdir(RATCHET_DIR):
-    if not f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
-        continue
-    # Name format: ratchet_3-60.png
-    base = os.path.splitext(f)[0]
-    code = base.replace('ratchet_', '').upper()
-    if code in class_to_idx:
-        samples.append((os.path.join(RATCHET_DIR, f), class_to_idx[code]))
-    elif code.lower() in [c.lower() for c in class_to_idx]:
+
+# 1. From Gallery directories (real photos & variants)
+if os.path.exists(RATCHET_GALLERY_DIR):
+    for sub in os.listdir(RATCHET_GALLERY_DIR):
+        sub_path = os.path.join(RATCHET_GALLERY_DIR, sub)
+        if not os.path.isdir(sub_path):
+            continue
+        # Find matching class
+        cls_key = None
         for c in class_to_idx:
-            if c.lower() == code.lower():
+            if c.lower() == sub.lower():
+                cls_key = c
+                break
+        if not cls_key:
+            continue
+        c_idx = class_to_idx[cls_key]
+        for img_name in os.listdir(sub_path):
+            if img_name.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+                samples.append((os.path.join(sub_path, img_name), c_idx))
+
+# 2. From base parts dir (official catalog render)
+if os.path.exists(RATCHET_DIR):
+    for f in os.listdir(RATCHET_DIR):
+        if not f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+            continue
+        base = os.path.splitext(f)[0].replace('ratchet_', '').upper()
+        for c in class_to_idx:
+            if c.upper() == base:
                 samples.append((os.path.join(RATCHET_DIR, f), class_to_idx[c]))
                 break
 
-print(f'Found {len(samples)} base Ratchet sample images.')
+print(f'Found {len(samples)} total Ratchet sample images across gallery & base renders.')
 
 # Training transforms for Ratchets:
 # - Full 360-degree rotation invariance

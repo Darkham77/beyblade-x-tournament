@@ -19,6 +19,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'Training Bit Model on: {DEVICE}')
 
 BIT_DIR = r'C:\Users\Ro\.gemini\antigravity\scratch\scanner-de-beys\app\public\images\parts\bits'
+BIT_GALLERY_DIR = r'C:\Users\Ro\.gemini\antigravity\scratch\scanner-de-beys\app\public\images\gallery\bits'
 MODELS_DIR = r'C:\Users\Ro\.gemini\antigravity\scratch\scanner-de-beys\app\public\models'
 
 with open(os.path.join(MODELS_DIR, 'bit_classes.json'), 'r', encoding='utf-8') as f:
@@ -65,15 +66,37 @@ NAME_MAPPING = {
 }
 
 samples = []
-for f in os.listdir(BIT_DIR):
-    if not f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
-        continue
-    base = os.path.splitext(f)[0].replace('bit_', '').lower()
-    code = NAME_MAPPING.get(base)
-    if code and code in class_to_idx:
-        samples.append((os.path.join(BIT_DIR, f), class_to_idx[code]))
 
-print(f'Found {len(samples)} base Bit sample images.')
+# 1. From Gallery directories (real photos & variants)
+if os.path.exists(BIT_GALLERY_DIR):
+    for sub in os.listdir(BIT_GALLERY_DIR):
+        sub_path = os.path.join(BIT_GALLERY_DIR, sub)
+        if not os.path.isdir(sub_path):
+            continue
+        # Subfolder is directly the bit code, e.g. 'F', 'LF', 'B'
+        cls_key = None
+        for c in class_to_idx:
+            if c.upper() == sub.upper():
+                cls_key = c
+                break
+        if not cls_key:
+            continue
+        c_idx = class_to_idx[cls_key]
+        for img_name in os.listdir(sub_path):
+            if img_name.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+                samples.append((os.path.join(sub_path, img_name), c_idx))
+
+# 2. From base parts dir (official catalog render)
+if os.path.exists(BIT_DIR):
+    for f in os.listdir(BIT_DIR):
+        if not f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+            continue
+        base = os.path.splitext(f)[0].replace('bit_', '').lower()
+        code = NAME_MAPPING.get(base)
+        if code and code in class_to_idx:
+            samples.append((os.path.join(BIT_DIR, f), class_to_idx[code]))
+
+print(f'Found {len(samples)} total Bit sample images across gallery & base renders.')
 
 def pad_to_square(img: Image.Image) -> Image.Image:
     w, h = img.size
@@ -118,7 +141,7 @@ class AugmentedBitDataset(Dataset):
             padded = pad_to_square(img)
             return self.transform(padded), cls_idx
 
-train_ds = AugmentedBitDataset(samples, train_transforms, samples_per_epoch=1200)
+train_ds = AugmentedBitDataset(samples, train_transforms, samples_per_epoch=1600)
 train_loader = DataLoader(train_ds, batch_size=32, shuffle=True)
 
 weights = MobileNet_V3_Small_Weights.DEFAULT
@@ -142,7 +165,7 @@ optimizer = torch.optim.AdamW([
     {'params': model.classifier.parameters(), 'lr': 1.2e-3},
 ], weight_decay=1e-4)
 
-epochs = 12
+epochs = 6
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-5)
 
 print(f'\nStarting Bit Model Training ({epochs} epochs)...')

@@ -48,14 +48,14 @@ const SESSIONS: Record<ScanModeKey, SessionData> = {
   RATCHET: {
     sessionPromise: null,
     classesPromise: null,
-    modelUrl: '/models/ratchet_mobilenet_v3.onnx?v=v1_ratchets',
-    classesUrl: '/models/ratchet_classes.json?v=v1_ratchets',
+    modelUrl: '/models/ratchet_mobilenet_v3.onnx?v=v2_ratchets_real_gallery',
+    classesUrl: '/models/ratchet_classes.json?v=v2_ratchets_real_gallery',
   },
   BIT: {
     sessionPromise: null,
     classesPromise: null,
-    modelUrl: '/models/bit_mobilenet_v3.onnx?v=v2_bits_square',
-    classesUrl: '/models/bit_classes.json?v=v2_bits_square',
+    modelUrl: '/models/bit_mobilenet_v3.onnx?v=v3_bits_real_gallery',
+    classesUrl: '/models/bit_classes.json?v=v3_bits_real_gallery',
   },
 };
 
