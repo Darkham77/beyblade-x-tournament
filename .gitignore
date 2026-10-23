@@ -19,3 +19,18 @@ __pycache__/
 
 # Ignore raw pytorch checkpoints if in repo (ONNX is the production runtime)
 *.pth
+
+# Machine learning training datasets and bulky raw images (reproducible via scripts)
+dataset/
+ml_training/dataset/
+ml_training/scratch_crops/
+ml_training/reticle_crops/
+ml_training/dran_check/
+ml_training/*.jpg
+ml_training/*.jpeg
+ml_training/*.png
+
+# Bulk training galleries for ratchets & bits (downloaded via scripts/download_parts_galleries.mjs)
+app/public/images/gallery/ratchets/
+app/public/images/gallery/bits/
+
