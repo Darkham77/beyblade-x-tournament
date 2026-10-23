@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, AlertCircle, CheckCircle2, Cpu } from 'lucide-react';
 import {
   analyzeCurrentFrame,
-  extractCircularColorMetrics,
-  rankCatalogByColor,
+  rankCatalogByVision,
   type FrameAnalysisResult,
   type ScanCandidate,
+  type ExtractedColorMetrics,
 } from '../utils/visionEngine';
+import { analyzeWithNeuralVision } from '../utils/neuralVisionEngine';
 import confetti from 'canvas-confetti';
 
 interface ScannerViewProps {
@@ -104,7 +105,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
   }, [cameraActive, scanMode]);
 
   // Execute snapshot analysis
-  const executeScan = () => {
+  const executeScan = async () => {
     if (!videoRef.current || !canvasRef.current) {
       // If camera is inactive, simulate with default sample
       runSimulationSample();
@@ -112,12 +113,24 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
     }
 
     setIsAnalyzing(true);
-    setTimeout(() => {
-      const res = analyzeCurrentFrame(videoRef.current!, canvasRef.current!, scanMode);
-      setScanResult(res);
-      setSelectedCandidate(res.topCandidates[0] || null);
+    try {
+      if (scanMode === 'BLADE' || scanMode === 'RATCHET' || scanMode === 'BIT') {
+        const res = await analyzeWithNeuralVision(videoRef.current, scanMode);
+        setScanResult(res);
+        setSelectedCandidate(res.topCandidates[0] || null);
+      } else {
+        const res = analyzeCurrentFrame(videoRef.current, canvasRef.current, scanMode);
+        setScanResult(res);
+        setSelectedCandidate(res.topCandidates[0] || null);
+      }
+    } catch (err) {
+      console.warn('Neural inference error, falling back to heuristic:', err);
+      const fallback = analyzeCurrentFrame(videoRef.current, canvasRef.current, scanMode);
+      setScanResult(fallback);
+      setSelectedCandidate(fallback.topCandidates[0] || null);
+    } finally {
       setIsAnalyzing(false);
-    }, 350);
+    }
   };
 
   // Upload an image file from smartphone gallery or disk
@@ -128,31 +141,28 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
-      img.onload = () => {
-        if (!canvasRef.current) return;
-        const canvas = canvasRef.current;
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        if (!ctx) return;
-
-        ctx.drawImage(img, 0, 0);
+      img.onload = async () => {
         setIsAnalyzing(true);
-
-        setTimeout(() => {
-          const metrics = extractCircularColorMetrics(ctx, canvas.width, canvas.height);
-          const topCandidates = rankCatalogByColor(metrics.primaryLab, scanMode);
-
-          const res: FrameAnalysisResult = {
-            hasQr: false,
-            metrics,
-            topCandidates: topCandidates.slice(0, 3),
-          };
-
-          setScanResult(res);
-          setSelectedCandidate(topCandidates[0] || null);
+        try {
+          if (scanMode === 'BLADE' || scanMode === 'RATCHET' || scanMode === 'BIT') {
+            const res = await analyzeWithNeuralVision(img, scanMode);
+            setScanResult(res);
+            setSelectedCandidate(res.topCandidates[0] || null);
+          } else if (canvasRef.current) {
+            const res = analyzeCurrentFrame(img, canvasRef.current, scanMode);
+            setScanResult(res);
+            setSelectedCandidate(res.topCandidates[0] || null);
+          }
+        } catch (err) {
+          console.warn('Neural inference error on upload, falling back to heuristic:', err);
+          if (canvasRef.current) {
+            const fallback = analyzeCurrentFrame(img, canvasRef.current, scanMode);
+            setScanResult(fallback);
+            setSelectedCandidate(fallback.topCandidates[0] || null);
+          }
+        } finally {
           setIsAnalyzing(false);
-        }, 350);
+        }
       };
       img.src = event.target?.result as string;
     };
@@ -164,24 +174,44 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
     setIsAnalyzing(true);
     setTimeout(() => {
       let targetLab = { L: 45, a: 15, b: -45 }; // Blue (Dran Sword)
+      let secLab: { L: number; a: number; b: number } | undefined = undefined;
+      let wings = 3;
+      let primaryHex = '#0A4DA2';
+      let secHex: string | undefined = undefined;
+      let colorName = 'Azul Cobalto';
+
       if (bladeOverride === 'phoenix') {
         targetLab = { L: 42, a: 55, b: 35 }; // Red (Phoenix Wing)
+        secLab = { L: 72, a: 5, b: 65 }; // Yellow core
+        wings = 3;
+        primaryHex = '#B71234';
+        secHex = '#EAB308';
+        colorName = 'Rojo Carmesí / Dorado';
       } else if (bladeOverride === 'rod') {
         targetLab = { L: 75, a: 5, b: 65 }; // Gold/Yellow (Wizard Rod)
+        wings = 3;
+        primaryHex = '#EAB308';
+        colorName = 'Dorado / Amarillo';
       }
 
-      const candidates = rankCatalogByColor(targetLab, scanMode);
+      const metrics: ExtractedColorMetrics = {
+        primaryHex,
+        primaryLab: targetLab,
+        secondaryHex: secHex,
+        secondaryLab: secLab,
+        brightness: 120,
+        colorName,
+        isLightingGood: true,
+        sampleCount: 1500,
+        detectedWings: wings,
+        symmetryConfidence: 8.5,
+      };
+
+      const candidates = rankCatalogByVision(metrics, scanMode, wings, 8.5);
       const res: FrameAnalysisResult = {
         hasQr: scanMode === 'HASBRO_QR',
         qrPayload: scanMode === 'HASBRO_QR' ? 'HBX-BLD-SWORD-DRAN-01' : undefined,
-        metrics: {
-          primaryHex: bladeOverride === 'phoenix' ? '#B71234' : bladeOverride === 'rod' ? '#EAB308' : '#0A4DA2',
-          primaryLab: targetLab,
-          brightness: 120,
-          colorName: bladeOverride === 'phoenix' ? 'Rojo Carmesí' : bladeOverride === 'rod' ? 'Dorado / Amarillo' : 'Azul Cobalto',
-          isLightingGood: true,
-          sampleCount: 1500,
-        },
+        metrics,
         topCandidates: candidates.slice(0, 3),
       };
 
@@ -223,10 +253,10 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
       <div className="text-center mb-6">
         <h1 className="text-3xl font-black text-white flex items-center justify-center gap-3">
           <Scan className="w-8 h-8 text-cyan-400 animate-pulse" />
-          <span>Escáner de Visión Inteligente</span>
+          <span>Escáner de Visión con IA Neuronal</span>
         </h1>
         <p className="text-slate-400 text-sm mt-1 max-w-xl mx-auto">
-          Enfoca la pieza con la cámara de tu celular. El motor aísla el contorno, extrae la colorimetría CIE-Lab en tiempo real y busca el molde oficial con cero alucinaciones.
+          Enfoca cualquier pieza (<span className="text-cyan-400 font-semibold">Blade</span>, <span className="text-blue-400 font-semibold">Ratchet</span> o <span className="text-amber-400 font-semibold">Bit</span>) o sube una foto. Redes neuronales <span className="text-cyan-400 font-semibold font-mono">MobileNetV3</span> especializadas e independientes para cada tipo de pieza (invariantes a color de plástico, rotación 360° y reflejos). Inferencia local 100% offline.
         </p>
       </div>
 
@@ -391,10 +421,18 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
             </div>
           )}
 
-          {(scanMode === 'RATCHET' || scanMode === 'BIT') && (
-            <div className="relative w-48 h-36 border-2 border-dashed border-amber-400/80 rounded-2xl flex items-center justify-center animate-pulse">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-amber-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
-                Enfoque a 45°
+          {scanMode === 'RATCHET' && (
+            <div className="relative w-48 h-48 rounded-full border-2 border-dashed border-amber-400/80 flex items-center justify-center animate-pulse">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-amber-400 bg-slate-950/90 px-2.5 py-1 rounded shadow text-center max-w-[170px]">
+                Apoyá el Ratchet Plano (Vista Superior)
+              </span>
+            </div>
+          )}
+
+          {scanMode === 'BIT' && (
+            <div className="relative w-44 h-44 border-2 border-dashed border-purple-400/80 rounded-2xl flex items-center justify-center animate-pulse">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-purple-300 bg-slate-950/90 px-2.5 py-1 rounded shadow text-center max-w-[160px]">
+                Apoyá el Bit sobre la Mesa
               </span>
             </div>
           )}
@@ -412,9 +450,12 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
         {isAnalyzing && (
           <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md z-30 flex flex-col items-center justify-center text-center p-6">
             <RefreshCw className="w-10 h-10 text-cyan-400 animate-spin mb-3" />
-            <h4 className="text-base font-bold text-white mb-1">Analizando fotograma en vivo...</h4>
+            <h4 className="text-base font-bold text-white mb-1 flex items-center justify-center gap-2">
+              <Cpu className="w-4 h-4 text-cyan-400" />
+              <span>Inferencia Neuronal MobileNetV3...</span>
+            </h4>
             <p className="text-xs text-slate-400 font-mono">
-              Extractor CIE-Lab + DeltaE Euclídeo + Matching de Molde
+              Procesamiento de Tensores ONNX On-Device (0 ms Latencia de Servidor)
             </p>
           </div>
         )}
@@ -468,38 +509,90 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
         <div className="mt-8 bg-slate-900/95 border-2 border-cyan-500/80 rounded-3xl p-6 shadow-2xl shadow-cyan-950/40 animate-in fade-in zoom-in duration-200">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-2 mb-6">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={`w-3 h-3 rounded-full animate-pulse ${selectedCandidate.confidence >= 60 || selectedCandidate.isQrMatch ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
+              <span className={`text-xs font-bold uppercase tracking-wider ${selectedCandidate.confidence >= 60 || selectedCandidate.isQrMatch ? 'text-emerald-400' : 'text-amber-400'}`}>
                 {selectedCandidate.isQrMatch ? 'Código Hasbro 100% Verificado' : `Reconocimiento Visual (${selectedCandidate.confidence}% de certeza)`}
               </span>
+              {scanResult.isNeural && (
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-mono flex items-center gap-1">
+                  ⚡ Red Neuronal (MobileNetV3)
+                </span>
+              )}
             </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-400 flex-wrap">
               <span>Color detectado:</span>
               <span
                 className="w-3 h-3 rounded-full border border-white/20"
                 style={{ backgroundColor: scanResult.metrics.primaryHex }}
               />
               <span className="text-slate-200 font-semibold">{scanResult.metrics.colorName}</span>
+              {scanResult.metrics.secondaryHex && (
+                <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                  <span>+ Núcleo:</span>
+                  <span
+                    className="w-2.5 h-2.5 rounded-full border border-white/20"
+                    style={{ backgroundColor: scanResult.metrics.secondaryHex }}
+                  />
+                </span>
+              )}
+              {scanResult.metrics.detectedWings && (
+                <span className="ml-1 px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-mono">
+                  {scanResult.metrics.detectedWings} Alas (Simetría k={scanResult.metrics.detectedWings})
+                </span>
+              )}
             </div>
           </div>
 
+          {/* LOW CONFIDENCE / OUT-OF-DISTRIBUTION WARNING BANNER */}
+          {selectedCandidate.confidence < 60 && !selectedCandidate.isQrMatch && (
+            <div className="mb-6 p-4 bg-amber-950/40 border border-amber-500/60 rounded-2xl flex items-start gap-3.5 text-amber-200">
+              <span className="text-xl shrink-0">⚠️</span>
+              <div className="text-xs leading-relaxed">
+                <p className="font-bold text-amber-300 text-sm mb-0.5">
+                  Certeza Visual Reducida ({selectedCandidate.confidence}%)
+                </p>
+                <p className="text-amber-200/90">
+                  La red neuronal encontró afinidad morfológica con <strong>{selectedCandidate.part.display_name}</strong>, pero el umbral de certeza es inferior al 60%. Esto suele ocurrir si la pieza es una edición de color no habitual, una personalización, o un modelo nuevo aún no catalogado. Revisa también los candidatos alternativos abajo.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* MAIN SELECTED CANDIDATE CARD */}
           <div className="flex flex-col md:flex-row items-center gap-6 mb-6 bg-slate-950/70 p-5 rounded-2xl border border-slate-800">
-            {/* Part Image */}
-            <div className="w-36 h-36 bg-slate-900 rounded-2xl border border-slate-800 p-3 flex items-center justify-center shrink-0 shadow-inner">
-              {selectedCandidate.part.image_url ? (
-                <img
-                  src={selectedCandidate.part.image_url}
-                  alt={selectedCandidate.part.display_name}
-                  className="max-h-full max-w-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]"
-                />
-              ) : (
-                <div
-                  className="w-16 h-16 rounded-full border border-white/20"
-                  style={{ backgroundColor: selectedCandidate.colorHex }}
-                />
+            {/* Visual Comparison: User Snapshot vs Catalog Render */}
+            <div className="flex items-center gap-3 shrink-0">
+              {scanResult.snapshotUrl && (
+                <div className="flex flex-col items-center">
+                  <div className="w-28 h-28 bg-slate-900 rounded-2xl border-2 border-cyan-500/60 p-1 overflow-hidden shadow-inner flex items-center justify-center">
+                    <img
+                      src={scanResult.snapshotUrl}
+                      alt="Captura de Cámara"
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                  </div>
+                  <span className="text-[10px] font-bold text-cyan-400 mt-1 uppercase tracking-wider">Tu Captura</span>
+                </div>
               )}
+
+              <div className="flex flex-col items-center">
+                <div className="w-28 h-28 bg-slate-900 rounded-2xl border border-slate-800 p-2 flex items-center justify-center shadow-inner">
+                  {selectedCandidate.part.image_url ? (
+                    <img
+                      src={selectedCandidate.part.image_url}
+                      alt={selectedCandidate.part.display_name}
+                      className="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
+                    />
+                  ) : (
+                    <div
+                      className="w-14 h-14 rounded-full border border-white/20"
+                      style={{ backgroundColor: selectedCandidate.colorHex }}
+                    />
+                  )}
+                </div>
+                <span className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Catálogo</span>
+              </div>
             </div>
 
             {/* Details & Confidence Meter */}

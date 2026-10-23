@@ -34,6 +34,8 @@ export interface PartVariant {
 export interface Blade {
   code_name: string;
   display_name: string;
+  hasbro_name?: string;
+  release_code?: string;
   system: BladeSystem;
   spin_direction: SpinDirection;
   weight_min_grams: number;
@@ -41,6 +43,12 @@ export interface Blade {
   image_url?: string;
   gallery_images?: GalleryImage[];
   training_samples_count?: number;
+  is_modular?: boolean;
+  cx_components?: {
+    lock_chip?: string;
+    assist_blade?: string;
+    main_blade?: string;
+  };
   stats: BaseStats;
   variants: PartVariant[];
 }

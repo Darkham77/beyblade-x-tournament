@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Python cache & temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+*.tmp
+
+# Ignore raw pytorch checkpoints if in repo (ONNX is the production runtime)
+*.pth
