@@ -43,12 +43,12 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+    <div className="min-h-screen w-full overflow-x-hidden bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-cyan-500/80 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200">
-          <CheckCircle2 className="w-5 h-5 text-cyan-400" />
-          <span className="text-sm font-bold">{toastMessage}</span>
+        <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 bg-slate-900 border border-cyan-500/80 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200 max-w-[90vw]">
+          <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0" />
+          <span className="text-xs sm:text-sm font-bold truncate">{toastMessage}</span>
         </div>
       )}
 
@@ -56,7 +56,7 @@ export const App: React.FC = () => {
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} inventoryCount={inventory.length} />
 
       {/* Main View Area */}
-      <main className="flex-1 pb-16">
+      <main className="flex-1 pb-24 md:pb-16 w-full max-w-full overflow-x-hidden">
         {activeTab === 'catalog' && (
           <CatalogView onAddToInventory={handleAddToInventory} inventory={inventory} />
         )}

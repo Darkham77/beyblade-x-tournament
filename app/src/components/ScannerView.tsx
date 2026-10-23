@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, AlertCircle, CheckCircle2, Cpu, Zap } from 'lucide-react';
+import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, CheckCircle2, Cpu, Zap } from 'lucide-react';
 import {
   analyzeCurrentFrame,
   rankCatalogByVision,
@@ -260,7 +260,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-6 w-full overflow-x-hidden">
       {/* Hidden off-screen canvas for frame analysis */}
       <canvas ref={canvasRef} className="hidden" />
 
@@ -274,71 +274,71 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
       />
 
       {/* Header */}
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-black text-white flex items-center justify-center gap-3">
-          <Scan className="w-8 h-8 text-cyan-400 animate-pulse" />
-          <span>Escáner de Visión con IA Neuronal</span>
+      <div className="text-center mb-4 sm:mb-6 px-1">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white flex items-center justify-center gap-2 sm:gap-3 text-center">
+          <Scan className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 animate-pulse shrink-0" />
+          <span>Escáner de Visión con IA</span>
         </h1>
-        <p className="text-slate-400 text-sm mt-1 max-w-xl mx-auto">
-          Enfoca cualquier pieza (<span className="text-cyan-400 font-semibold">Blade</span>, <span className="text-blue-400 font-semibold">Ratchet</span> o <span className="text-amber-400 font-semibold">Bit</span>) o sube una foto. Redes neuronales <span className="text-cyan-400 font-semibold font-mono">MobileNetV3</span> especializadas e independientes para cada tipo de pieza (invariantes a color de plástico, rotación 360° y reflejos). Inferencia local 100% offline.
+        <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-xl mx-auto leading-relaxed">
+          Enfoca cualquier pieza (<span className="text-cyan-400 font-semibold">Blade</span>, <span className="text-blue-400 font-semibold">Ratchet</span> o <span className="text-amber-400 font-semibold">Bit</span>) o sube una foto. Inferencia local 100% offline con <span className="text-cyan-400 font-semibold font-mono">MobileNetV3</span>.
         </p>
       </div>
 
       {/* Mode Selector */}
-      <div className="flex justify-center mb-6">
-        <div className="bg-slate-900 p-1.5 rounded-2xl border border-slate-800 flex flex-wrap gap-1">
+      <div className="flex justify-center mb-4 sm:mb-6 w-full">
+        <div className="w-full max-w-md bg-slate-900 p-1 sm:p-1.5 rounded-2xl border border-slate-800 grid grid-cols-4 gap-1">
           <button
             onClick={() => {
               setScanMode('BLADE');
               setScanResult(null);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+            className={`py-2 px-1 rounded-xl text-[11px] sm:text-xs font-bold uppercase transition-all truncate text-center ${
               scanMode === 'BLADE'
                 ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Blade (Capa)
+            Blade
           </button>
           <button
             onClick={() => {
               setScanMode('RATCHET');
               setScanResult(null);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+            className={`py-2 px-1 rounded-xl text-[11px] sm:text-xs font-bold uppercase transition-all truncate text-center ${
               scanMode === 'RATCHET'
                 ? 'bg-blue-500 text-slate-950 shadow-md shadow-blue-500/20'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Ratchet (Disco)
+            Ratchet
           </button>
           <button
             onClick={() => {
               setScanMode('BIT');
               setScanResult(null);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+            className={`py-2 px-1 rounded-xl text-[11px] sm:text-xs font-bold uppercase transition-all truncate text-center ${
               scanMode === 'BIT'
                 ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Bit (Punta)
+            Bit
           </button>
           <button
             onClick={() => {
               setScanMode('HASBRO_QR');
               setScanResult(null);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all flex items-center gap-1.5 ${
+            className={`py-2 px-1 rounded-xl text-[11px] sm:text-xs font-bold uppercase transition-all flex items-center justify-center gap-1 truncate text-center ${
               scanMode === 'HASBRO_QR'
                 ? 'bg-red-500 text-slate-950 shadow-md shadow-red-500/20'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <QrCode className="w-3.5 h-3.5" />
-            <span>Hasbro QR (100%)</span>
+            <QrCode className="w-3.5 h-3.5 shrink-0" />
+            <span>QR</span>
           </button>
         </div>
       </div>
@@ -385,53 +385,44 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
         {cameraActive && (
           <>
             {/* Top HUD: Real-time Live Color & Lighting Chip */}
-            <div className="absolute top-4 inset-x-4 flex items-center justify-between pointer-events-none z-10">
+            <div className="absolute top-2.5 inset-x-2.5 sm:top-4 sm:inset-x-4 flex items-center justify-between pointer-events-none z-10 gap-1.5">
               {liveMetrics && (
-                <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800/80 shadow-lg">
+                <div className="flex items-center gap-1.5 bg-slate-950/85 backdrop-blur-md px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-slate-800 shadow-lg">
                   <span
-                    className="w-3.5 h-3.5 rounded-full border border-white/30 shrink-0"
+                    className="w-3 h-3 rounded-full border border-white/30 shrink-0"
                     style={{ backgroundColor: liveMetrics.hex }}
                   />
-                  <span className="text-xs font-semibold text-white font-mono">
-                    {liveMetrics.name} ({liveMetrics.hex})
+                  <span className="text-[10px] sm:text-xs font-semibold text-white font-mono truncate max-w-[85px] sm:max-w-none">
+                    <span className="hidden sm:inline">{liveMetrics.name} </span>{liveMetrics.hex}
                   </span>
                 </div>
               )}
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-1.5">
                 {liveMetrics && (
                   <div
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold font-mono border backdrop-blur-md ${
+                    className={`flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] sm:text-[11px] font-bold font-mono border backdrop-blur-md ${
                       liveMetrics.isLightingGood
                         ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800/80'
                         : 'bg-amber-950/80 text-amber-400 border-amber-800/80'
                     }`}
                   >
-                    {liveMetrics.isLightingGood ? (
-                      <>
-                        <Sun className="w-3 h-3 text-emerald-400" />
-                        <span>Luz Óptima</span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="w-3 h-3 text-amber-400" />
-                        <span>Ajustar Luz</span>
-                      </>
-                    )}
+                    <Sun className="w-3 h-3 shrink-0" />
+                    <span className="hidden sm:inline">{liveMetrics.isLightingGood ? 'Luz Óptima' : 'Ajustar Luz'}</span>
                   </div>
                 )}
 
                 {isTorchSupported && (
                   <button
                     onClick={toggleTorch}
-                    className={`pointer-events-auto px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 transition-all shadow-md ${
+                    className={`pointer-events-auto px-2 py-1 rounded-xl text-[10px] sm:text-xs font-bold flex items-center gap-1 transition-all shadow-md ${
                       isTorchOn
                         ? 'bg-amber-400 text-slate-950 shadow-amber-400/30'
                         : 'bg-slate-950/80 text-slate-300 hover:text-white border border-slate-700/80 backdrop-blur-md'
                     }`}
                     title="Alternar linterna del celular"
                   >
-                    <Zap className={`w-3.5 h-3.5 ${isTorchOn ? 'fill-current' : ''}`} />
+                    <Zap className={`w-3 h-3 ${isTorchOn ? 'fill-current' : ''}`} />
                     <span>{isTorchOn ? 'Flash ON' : 'Flash'}</span>
                   </button>
                 )}
@@ -440,40 +431,40 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
 
             {/* Live Hasbro QR Banner if detected */}
             {liveQrFound && (
-              <div className="absolute top-16 inset-x-4 bg-emerald-500/90 text-slate-950 font-black text-xs px-3 py-2 rounded-xl shadow-xl flex items-center justify-center gap-2 animate-bounce z-20">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>¡CÓDIGO HASBRO DETECTADO: {liveQrFound}!</span>
+              <div className="absolute top-14 sm:top-16 inset-x-3 sm:inset-x-4 bg-emerald-500/90 text-slate-950 font-black text-xs px-3 py-2 rounded-xl shadow-xl flex items-center justify-center gap-2 animate-bounce z-20">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span className="truncate">¡CÓDIGO HASBRO: {liveQrFound}!</span>
               </div>
             )}
           </>
         )}
 
         {/* RETICLE OVERLAY */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
           {scanMode === 'BLADE' && (
-            <div className="relative w-56 h-56 rounded-full border-2 border-dashed border-cyan-400/80 flex items-center justify-center animate-pulse">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-cyan-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
-                Centrar Blade Aquí
+            <div className="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full border-2 border-dashed border-cyan-400/80 flex items-center justify-center animate-pulse">
+              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-cyan-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
+                Centrar Blade
               </span>
-              <div className="absolute top-0 w-2.5 h-2.5 bg-cyan-400 -translate-y-1 rounded-full shadow"></div>
-              <div className="absolute bottom-0 w-2.5 h-2.5 bg-cyan-400 translate-y-1 rounded-full shadow"></div>
-              <div className="absolute left-0 w-2.5 h-2.5 bg-cyan-400 -translate-x-1 rounded-full shadow"></div>
-              <div className="absolute right-0 w-2.5 h-2.5 bg-cyan-400 translate-x-1 rounded-full shadow"></div>
+              <div className="absolute top-0 w-2 h-2 bg-cyan-400 -translate-y-1 rounded-full shadow"></div>
+              <div className="absolute bottom-0 w-2 h-2 bg-cyan-400 translate-y-1 rounded-full shadow"></div>
+              <div className="absolute left-0 w-2 h-2 bg-cyan-400 -translate-x-1 rounded-full shadow"></div>
+              <div className="absolute right-0 w-2 h-2 bg-cyan-400 translate-x-1 rounded-full shadow"></div>
             </div>
           )}
 
           {scanMode === 'RATCHET' && (
-            <div className="relative w-48 h-48 rounded-full border-2 border-dashed border-amber-400/80 flex items-center justify-center animate-pulse">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-amber-400 bg-slate-950/90 px-2.5 py-1 rounded shadow text-center max-w-[170px]">
-                Apoyá el Ratchet Plano (Vista Superior)
+            <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full border-2 border-dashed border-amber-400/80 flex items-center justify-center animate-pulse">
+              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-amber-400 bg-slate-950/90 px-2 py-1 rounded shadow text-center max-w-[130px] sm:max-w-[170px]">
+                Ratchet Plano (Superior)
               </span>
             </div>
           )}
 
           {scanMode === 'BIT' && (
-            <div className="relative w-44 h-44 border-2 border-dashed border-purple-400/80 rounded-2xl flex items-center justify-center animate-pulse">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-purple-300 bg-slate-950/90 px-2.5 py-1 rounded shadow text-center max-w-[160px]">
-                Apoyá el Bit sobre la Mesa
+            <div className="relative w-36 h-36 sm:w-44 sm:h-44 border-2 border-dashed border-purple-400/80 rounded-2xl flex items-center justify-center animate-pulse">
+              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-purple-300 bg-slate-950/90 px-2 py-1 rounded shadow text-center max-w-[120px] sm:max-w-[160px]">
+                Apoyá el Bit
               </span>
             </div>
           )}
@@ -503,97 +494,99 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
       </div>
 
       {/* SCAN CONTROLS */}
-      <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 w-full max-w-lg mx-auto">
         <button
           onClick={executeScan}
           disabled={isAnalyzing}
-          className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-sm shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5"
+          className="w-full sm:flex-1 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-sm shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition-all transform active:scale-95"
         >
-          <Scan className="w-4 h-4" />
-          <span>Escanear Fotograma Actual</span>
+          <Scan className="w-4 h-4 shrink-0" />
+          <span>Escanear Fotograma</span>
         </button>
 
-        {cameraActive && isTorchSupported && (
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {cameraActive && isTorchSupported && (
+            <button
+              onClick={toggleTorch}
+              className={`flex-1 sm:flex-initial px-4 py-3.5 rounded-2xl font-bold text-xs sm:text-sm border flex items-center justify-center gap-2 transition-all ${
+                isTorchOn
+                  ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-lg shadow-amber-400/20'
+                  : 'bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-800'
+              }`}
+            >
+              <Zap className={`w-4 h-4 shrink-0 ${isTorchOn ? 'fill-current' : ''}`} />
+              <span>{isTorchOn ? 'Flash ON' : 'Flash'}</span>
+            </button>
+          )}
+
           <button
-            onClick={toggleTorch}
-            className={`w-full sm:w-auto px-5 py-3.5 rounded-2xl font-bold text-sm border flex items-center justify-center gap-2 transition-all ${
-              isTorchOn
-                ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-lg shadow-amber-400/20'
-                : 'bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-800'
-            }`}
+            onClick={() => fileInputRef.current?.click()}
+            className="flex-1 sm:flex-initial px-4 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-xs sm:text-sm border border-slate-800 flex items-center justify-center gap-2 transition-all"
           >
-            <Zap className={`w-4 h-4 ${isTorchOn ? 'fill-current' : ''}`} />
-            <span>{isTorchOn ? 'Linterna Encendida' : 'Encender Linterna'}</span>
+            <Upload className="w-4 h-4 text-slate-400 shrink-0" />
+            <span>Subir Foto</span>
           </button>
-        )}
-
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-sm border border-slate-800 flex items-center justify-center gap-2 transition-all"
-        >
-          <Upload className="w-4 h-4 text-slate-400" />
-          <span>Cargar Foto desde Dispositivo</span>
-        </button>
+        </div>
       </div>
 
       {/* Quick Simulation Pills (Useful for testing without physical Beyblades) */}
-      <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
-        <span className="text-xs text-slate-500 font-mono">Pruebas Rápidas:</span>
+      <div className="mt-3 sm:mt-4 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap px-1">
+        <span className="text-[10px] sm:text-xs text-slate-500 font-mono">Simular:</span>
         <button
           onClick={() => runSimulationSample('dran')}
-          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-cyan-400 hover:bg-slate-800"
+          className="px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[10px] sm:text-[11px] font-semibold text-cyan-400 hover:bg-slate-800 active:scale-95 transition-transform"
         >
-          Dran Sword (Azul)
+          Dran Sword
         </button>
         <button
           onClick={() => runSimulationSample('phoenix')}
-          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-red-400 hover:bg-slate-800"
+          className="px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[10px] sm:text-[11px] font-semibold text-red-400 hover:bg-slate-800 active:scale-95 transition-transform"
         >
-          Phoenix Wing (Rojo)
+          Phoenix Wing
         </button>
         <button
           onClick={() => runSimulationSample('rod')}
-          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-amber-400 hover:bg-slate-800"
+          className="px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[10px] sm:text-[11px] font-semibold text-amber-400 hover:bg-slate-800 active:scale-95 transition-transform"
         >
-          Wizard Rod (Dorado)
+          Wizard Rod
         </button>
       </div>
 
       {/* DETECTED RESULTS SECTION (TOP 3 CANDIDATES) */}
       {scanResult && selectedCandidate && (
-        <div className="mt-8 bg-slate-900/95 border-2 border-cyan-500/80 rounded-3xl p-6 shadow-2xl shadow-cyan-950/40 animate-in fade-in zoom-in duration-200">
+        <div className="mt-6 sm:mt-8 bg-slate-900/95 border-2 border-cyan-500/80 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-2xl shadow-cyan-950/40 animate-in fade-in zoom-in duration-200 w-full overflow-hidden">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-2 mb-6">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className={`w-3 h-3 rounded-full animate-pulse ${selectedCandidate.confidence >= 60 || selectedCandidate.isQrMatch ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
-              <span className={`text-xs font-bold uppercase tracking-wider ${selectedCandidate.confidence >= 60 || selectedCandidate.isQrMatch ? 'text-emerald-400' : 'text-amber-400'}`}>
-                {selectedCandidate.isQrMatch ? 'Código Hasbro 100% Verificado' : `Reconocimiento Visual (${selectedCandidate.confidence}% de certeza)`}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 sm:pb-4 border-b border-slate-800 gap-2 mb-4 sm:mb-6 w-full">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${selectedCandidate.confidence >= 60 || selectedCandidate.isQrMatch ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
+              <span className={`text-[11px] sm:text-xs font-bold uppercase tracking-wider ${selectedCandidate.confidence >= 60 || selectedCandidate.isQrMatch ? 'text-emerald-400' : 'text-amber-400'}`}>
+                {selectedCandidate.isQrMatch ? 'Código Hasbro 100%' : `Visual (${selectedCandidate.confidence}% certeza)`}
               </span>
               {scanResult.isNeural && (
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-mono flex items-center gap-1">
-                  ⚡ Red Neuronal (MobileNetV3)
+                <span className="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-mono flex items-center gap-1">
+                  ⚡ MobileNetV3
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-400 flex-wrap">
-              <span>Color detectado:</span>
+            <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-slate-400 flex-wrap">
+              <span>Color:</span>
               <span
-                className="w-3 h-3 rounded-full border border-white/20"
+                className="w-2.5 h-2.5 rounded-full border border-white/20"
                 style={{ backgroundColor: scanResult.metrics.primaryHex }}
               />
               <span className="text-slate-200 font-semibold">{scanResult.metrics.colorName}</span>
               {scanResult.metrics.secondaryHex && (
-                <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                  <span>+ Núcleo:</span>
+                <span className="flex items-center gap-1 text-[10px] text-slate-400">
+                  <span>+</span>
                   <span
-                    className="w-2.5 h-2.5 rounded-full border border-white/20"
+                    className="w-2 h-2 rounded-full border border-white/20"
                     style={{ backgroundColor: scanResult.metrics.secondaryHex }}
                   />
                 </span>
               )}
               {scanResult.metrics.detectedWings && (
-                <span className="ml-1 px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-mono">
-                  {scanResult.metrics.detectedWings} Alas (Simetría k={scanResult.metrics.detectedWings})
+                <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-mono">
+                  {scanResult.metrics.detectedWings} Alas
                 </span>
               )}
             </div>
@@ -601,38 +594,38 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
 
           {/* LOW CONFIDENCE / OUT-OF-DISTRIBUTION WARNING BANNER */}
           {selectedCandidate.confidence < 60 && !selectedCandidate.isQrMatch && (
-            <div className="mb-6 p-4 bg-amber-950/40 border border-amber-500/60 rounded-2xl flex items-start gap-3.5 text-amber-200">
-              <span className="text-xl shrink-0">⚠️</span>
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-950/40 border border-amber-500/60 rounded-xl sm:rounded-2xl flex items-start gap-2.5 sm:gap-3.5 text-amber-200">
+              <span className="text-lg sm:text-xl shrink-0">⚠️</span>
               <div className="text-xs leading-relaxed">
-                <p className="font-bold text-amber-300 text-sm mb-0.5">
+                <p className="font-bold text-amber-300 text-xs sm:text-sm mb-0.5">
                   Certeza Visual Reducida ({selectedCandidate.confidence}%)
                 </p>
-                <p className="text-amber-200/90">
-                  La red neuronal encontró afinidad morfológica con <strong>{selectedCandidate.part.display_name}</strong>, pero el umbral de certeza es inferior al 60%. Esto suele ocurrir si la pieza es una edición de color no habitual, una personalización, o un modelo nuevo aún no catalogado. Revisa también los candidatos alternativos abajo.
+                <p className="text-amber-200/90 text-[11px] sm:text-xs">
+                  Afinidad morfológica con <strong>{selectedCandidate.part.display_name}</strong>, pero el umbral es &lt;60%. Revisa los candidatos abajo.
                 </p>
               </div>
             </div>
           )}
 
           {/* MAIN SELECTED CANDIDATE CARD */}
-          <div className="flex flex-col md:flex-row items-center gap-6 mb-6 bg-slate-950/70 p-5 rounded-2xl border border-slate-800">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-4 sm:mb-6 bg-slate-950/70 p-3 sm:p-5 rounded-2xl border border-slate-800 w-full">
             {/* Visual Comparison: User Snapshot vs Catalog Render */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center justify-center gap-2.5 sm:gap-3 shrink-0">
               {scanResult.snapshotUrl && (
                 <div className="flex flex-col items-center">
-                  <div className="w-28 h-28 bg-slate-900 rounded-2xl border-2 border-cyan-500/60 p-1 overflow-hidden shadow-inner flex items-center justify-center">
+                  <div className="w-20 h-20 xs:w-24 xs:h-24 sm:w-28 sm:h-28 bg-slate-900 rounded-xl sm:rounded-2xl border-2 border-cyan-500/60 p-1 overflow-hidden shadow-inner flex items-center justify-center">
                     <img
                       src={scanResult.snapshotUrl}
                       alt="Captura de Cámara"
-                      className="w-full h-full object-cover rounded-xl"
+                      className="w-full h-full object-cover rounded-lg sm:rounded-xl"
                     />
                   </div>
-                  <span className="text-[10px] font-bold text-cyan-400 mt-1 uppercase tracking-wider">Tu Captura</span>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-cyan-400 mt-1 uppercase tracking-wider">Tu Captura</span>
                 </div>
               )}
 
               <div className="flex flex-col items-center">
-                <div className="w-28 h-28 bg-slate-900 rounded-2xl border border-slate-800 p-2 flex items-center justify-center shadow-inner">
+                <div className="w-20 h-20 xs:w-24 xs:h-24 sm:w-28 sm:h-28 bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-800 p-2 flex items-center justify-center shadow-inner">
                   {selectedCandidate.part.image_url ? (
                     <img
                       src={selectedCandidate.part.image_url}
@@ -641,34 +634,34 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
                     />
                   ) : (
                     <div
-                      className="w-14 h-14 rounded-full border border-white/20"
+                      className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-white/20"
                       style={{ backgroundColor: selectedCandidate.colorHex }}
                     />
                   )}
                 </div>
-                <span className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Catálogo</span>
+                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Catálogo</span>
               </div>
             </div>
 
             {/* Details & Confidence Meter */}
-            <div className="flex-1 text-center md:text-left">
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1">
-                <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono">
+            <div className="flex-1 text-center sm:text-left w-full min-w-0">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mb-1">
+                <span className="px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono">
                   {selectedCandidate.part.code_name}
                 </span>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-xs font-semibold text-slate-400 truncate">
                   {selectedCandidate.variantName}
                 </span>
               </div>
 
-              <h3 className="text-2xl font-black text-white mb-2">
+              <h3 className="text-lg sm:text-2xl font-black text-white mb-2 break-words">
                 {selectedCandidate.part.display_name}
               </h3>
 
               {/* Confidence Bar */}
-              <div className="mb-3">
-                <div className="flex justify-between text-xs font-mono mb-1">
-                  <span className="text-slate-400">Índice de Certeza:</span>
+              <div className="mb-2 sm:mb-3">
+                <div className="flex justify-between text-[11px] sm:text-xs font-mono mb-1">
+                  <span className="text-slate-400">Certeza:</span>
                   <span
                     className={`font-bold ${
                       selectedCandidate.confidence >= 90
@@ -695,7 +688,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
                 </div>
               </div>
 
-              <p className="text-xs text-slate-400 font-mono">
+              <p className="text-[10px] sm:text-xs text-slate-400 font-mono break-words">
                 🔍 {selectedCandidate.detectionReason}
               </p>
             </div>
@@ -703,24 +696,24 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
 
           {/* TOP 3 CANDIDATES SELECTOR */}
           {scanResult.topCandidates.length > 1 && (
-            <div className="mb-6">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2.5">
-                Candidatos Sugeridos por el Motor de Visión:
+            <div className="mb-4 sm:mb-6">
+              <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                Candidatos Sugeridos:
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {scanResult.topCandidates.map((cand, idx) => {
                   const isSelected = selectedCandidate.part.code_name === cand.part.code_name;
                   return (
                     <button
                       key={idx}
                       onClick={() => setSelectedCandidate(cand)}
-                      className={`p-3 rounded-xl border text-left flex items-center gap-3 transition-all ${
+                      className={`p-2.5 sm:p-3 rounded-xl border text-left flex items-center gap-2.5 transition-all w-full min-w-0 ${
                         isSelected
                           ? 'bg-cyan-950/70 border-cyan-400 ring-2 ring-cyan-500/30'
                           : 'bg-slate-950/50 border-slate-800 hover:border-slate-700 opacity-80 hover:opacity-100'
                       }`}
                     >
-                      <div className="w-10 h-10 bg-slate-900 rounded-lg p-1 shrink-0 flex items-center justify-center border border-slate-800">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 rounded-lg p-1 shrink-0 flex items-center justify-center border border-slate-800">
                         {cand.part.image_url ? (
                           <img
                             src={cand.part.image_url}
@@ -734,13 +727,13 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
                           />
                         )}
                       </div>
-                      <div className="overflow-hidden">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[11px] font-bold text-white truncate">
+                      <div className="overflow-hidden min-w-0 flex-1">
+                        <div className="flex items-center gap-1">
+                          <span className="text-[11px] font-bold text-white truncate block">
                             #{idx + 1} {cand.part.display_name}
                           </span>
                         </div>
-                        <span className="text-[10px] font-mono text-cyan-400">
+                        <span className="text-[10px] font-mono text-cyan-400 block truncate">
                           {cand.confidence}% certeza
                         </span>
                       </div>
@@ -752,13 +745,13 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
           )}
 
           {/* ACTION BUTTONS */}
-          <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full">
             <button
               onClick={handleConfirmAndAdd}
-              className="w-full flex-1 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5"
+              className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all text-center"
             >
-              <Check className="w-4 h-4 stroke-[3]" />
-              <span>Confirmar y Agregar a Mi Colección</span>
+              <Check className="w-4 h-4 stroke-[3] shrink-0" />
+              <span>Confirmar y Agregar a Colección</span>
             </button>
 
             <button
@@ -766,7 +759,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
                 setScanResult(null);
                 setSelectedCandidate(null);
               }}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-all"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 text-xs sm:text-sm font-semibold transition-all text-center"
             >
               Reintentar
             </button>

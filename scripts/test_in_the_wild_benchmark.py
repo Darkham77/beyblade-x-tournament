@@ -67,12 +67,14 @@ def run_benchmark(mode: str, test_dir: str):
     root_dir = r'C:\Users\Ro\.gemini\antigravity\scratch\scanner-de-beys'
     models_dir = os.path.join(root_dir, 'app', 'public', 'models')
     
-    classes_file = os.path.join(models_dir, f'{mode}_classes.json')
+    classes_filename = 'beyblade_classes.json' if mode == 'blade' else f'{mode}_classes.json'
+    classes_file = os.path.join(models_dir, classes_filename)
     with open(classes_file, 'r', encoding='utf-8') as f:
         classes = json.load(f)
     class_to_idx = {name.upper(): i for i, name in enumerate(classes)}
 
-    weights_path = os.path.join(r'C:\Users\Ro\.gemini\antigravity\scratch\ml_training', f'{mode}_mobilenet_v3.pth')
+    weights_filename = 'beyblade_mobilenet_v3.pth' if mode == 'blade' else f'{mode}_mobilenet_v3.pth'
+    weights_path = os.path.join(r'C:\Users\Ro\.gemini\antigravity\scratch\ml_training', weights_filename)
     model = load_model(mode, len(classes), weights_path)
 
     # Gather test samples: test_dir/<class_name>/<filename>
