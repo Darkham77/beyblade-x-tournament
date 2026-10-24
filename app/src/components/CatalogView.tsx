@@ -45,14 +45,24 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
       activeModalItem.data.gallery_images && activeModalItem.data.gallery_images.length > 0
         ? activeModalItem.data.gallery_images
         : activeModalItem.data.image_url
-        ? [{ url: activeModalItem.data.image_url, label: 'Render Oficial de Estudio', tag: 'STUDIO' }]
+        ? [{ url: activeModalItem.data.image_url, label: 'Render Oficial de Estudio', tag: 'STUDIO' as const }]
         : [];
     const userList = (uploadedPhotos[activeModalItem.data.code_name] || []).map((imgUrl, i) => ({
       url: imgUrl,
       label: `Foto Casera Personal #${i + 1}`,
-      tag: 'COMMUNITY',
+      tag: 'COMMUNITY' as const,
     }));
-    return [...baseGallery, ...userList];
+    
+    // Strict deduplication by normalized URL to prevent duplicate thumbnails
+    const combined = [...baseGallery, ...userList];
+    const seenUrls = new Set<string>();
+    return combined.filter((item) => {
+      if (!item || !item.url) return false;
+      const cleanUrl = item.url.trim().toLowerCase();
+      if (seenUrls.has(cleanUrl)) return false;
+      seenUrls.add(cleanUrl);
+      return true;
+    });
   }, [activeModalItem, uploadedPhotos]);
 
   const currentDisplayImage = selectedModalImage || (modalGallery[0]?.url) || activeModalItem?.data?.image_url;
@@ -724,7 +734,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ onAddToInventory, inve
                       Fotos Reales, Ángulos & Variantes
                     </span>
                     <span className="text-[11px] text-cyan-400 font-mono font-semibold">
-                      {modalGallery.length} referencias fotográficas
+                      {modalGallery.length} {modalGallery.length === 1 ? 'referencia fotográfica' : 'referencias fotográficas'}
                     </span>
                   </div>
 

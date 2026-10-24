@@ -3,6 +3,11 @@ const require = createRequire(import.meta.url);
 const puppeteer = require('C:/Users/Ro/node_modules/puppeteer-core');
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
+
+function computeBufferHash(buf) {
+  return crypto.createHash('md5').update(buf).digest('hex');
+}
 
 const EDGE_PATH = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
 const ROOT_DIR = 'C:\\Users\\Ro\\.gemini\\antigravity\\scratch\\scanner-de-beys';
@@ -206,7 +211,7 @@ async function main() {
     const targetDir = path.join(RATCHET_GALLERY_DIR, ratchetCode.toLowerCase());
     fs.mkdirSync(targetDir, { recursive: true });
 
-    // Copiar base render si existe
+    const seenHashes = new Set();
     const baseFiles = [
       `ratchet_${ratchetCode.toLowerCase()}.png`,
       `ratchet_${ratchetCode.toUpperCase()}.png`
@@ -214,7 +219,7 @@ async function main() {
     for (const bf of baseFiles) {
       const src = path.join(RATCHET_PARTS_DIR, bf);
       if (fs.existsSync(src)) {
-        fs.copyFileSync(src, path.join(targetDir, '00_base_render.png'));
+        seenHashes.add(computeBufferHash(fs.readFileSync(src)));
         break;
       }
     }
@@ -242,7 +247,9 @@ async function main() {
         const resp = await page.goto(item.url, { waitUntil: 'domcontentloaded' });
         if (resp && resp.status() === 200) {
           const buf = await resp.buffer();
-          if (buf.length > 5000) { // Mayor a 5KB para evitar miniaturas rotas
+          const bufHash = computeBufferHash(buf);
+          if (buf.length > 5000 && !seenHashes.has(bufHash)) {
+            seenHashes.add(bufHash);
             fs.writeFileSync(destFile, buf);
             downloadedCount++;
             idx++;
@@ -264,8 +271,7 @@ async function main() {
     const targetDir = path.join(BIT_GALLERY_DIR, bitCode);
     fs.mkdirSync(targetDir, { recursive: true });
 
-    // Copiar base render si existe
-    // Encontrar nombre de archivo base
+    const seenHashes = new Set();
     let baseFileName = '';
     for (const [name, code] of Object.entries(BIT_NAME_TO_CODE)) {
       if (code === bitCode) {
@@ -277,7 +283,7 @@ async function main() {
       }
     }
     if (baseFileName) {
-      fs.copyFileSync(path.join(BIT_PARTS_DIR, baseFileName), path.join(targetDir, '00_base_render.png'));
+      seenHashes.add(computeBufferHash(fs.readFileSync(path.join(BIT_PARTS_DIR, baseFileName))));
     }
 
     const wikiTitles = BIT_CODE_TO_WIKI[bitCode] || [];
@@ -299,7 +305,9 @@ async function main() {
         const resp = await page.goto(item.url, { waitUntil: 'domcontentloaded' });
         if (resp && resp.status() === 200) {
           const buf = await resp.buffer();
-          if (buf.length > 3000) {
+          const bufHash = computeBufferHash(buf);
+          if (buf.length > 3000 && !seenHashes.has(bufHash)) {
+            seenHashes.add(bufHash);
             fs.writeFileSync(destFile, buf);
             downloadedCount++;
             idx++;

@@ -3199,1078 +3199,971 @@ const BIT_IMAGE_MAP: Record<string, string> = {
 
 // Enriquecer objetos en memoria
 export const BLADE_GALLERY_MAP: Record<string, { url: string; label: string; tag: 'STUDIO' | 'REAL' | 'RECOLOR' | 'ANGLED' | 'COMMUNITY' }[]> = {
-  'DRAN_SWORD': [
-    { url: '/images/gallery/blades/dran_sword/dran_sword_metal_coat_blue.jpg', label: 'Metal Coat Azul (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/dran_sword/dran_sword_metal_coat_red.jpg', label: 'Metal Coat Rojo (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/dran_sword/dran_sword_bx14_black_red.png', label: 'BX-14 Negro y Rojo (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/dran_sword/dran_sword_red_ver.jpg', label: 'Dran Sword Edición Roja (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/dran_sword/dran_sword_collab.jpg', label: 'Colaboración Katsushika (Foto Real)', tag: 'REAL' },
+  "AERO_PEGASUS": [
+    {
+      "url": "/images/gallery/blades/aero_pegasus/aero_pegasus_1.png",
+      "label": "aero pegasus Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/aero_pegasus/aero_pegasus_2.png",
+      "label": "aero pegasus Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'HELLS_SCYTHE': [
-    { url: '/images/gallery/blades/hells_scythe/hells_scythe_380f.jpg', label: 'Hells Scythe 3-80F (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/hells_scythe/hells_scythe_gold.jpg', label: 'Metal Coat Dorado (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/hells_scythe/hells_scythe_bx08.png', label: 'BX-08 Deck Set (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/hells_scythe/hells_scythe_480lf.png', label: 'Hells Scythe Verde 4-80LF (Recolor)', tag: 'RECOLOR' },
+  "BLACK_SHELL": [
+    {
+      "url": "/images/gallery/blades/black_shell/black_shell_460d.jpg",
+      "label": "black shell Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'WIZARD_ARROW': [
-    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_480gb.jpg', label: 'Wizard Arrow 4-80GB (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_bx05.png', label: 'BX-05 Booster Negro (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_bx08.png', label: 'BX-08 Deck Set Naranja (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/wizard_arrow/wizard_arrow_blue.png', label: 'Wizard Arrow Azul (Recolor)', tag: 'RECOLOR' },
+  "CERBERUS_FLAME": [
+    {
+      "url": "/images/gallery/blades/cerberus_flame/cerberus_flame_1.png",
+      "label": "cerberus flame Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/cerberus_flame/cerberus_flame_2.png",
+      "label": "cerberus flame Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'KNIGHT_SHIELD': [
-    { url: '/images/gallery/blades/knight_shield/knight_shield_gold.png', label: 'Metal Coat Dorado (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/knight_shield/knight_shield_bx06.png', label: 'BX-06 Booster Azul (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/knight_shield/knight_shield_bx08.png', label: 'BX-08 Deck Set Verde (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/knight_shield/knight_shield_bx20.png', label: 'BX-20 Edición Blanca (Recolor)', tag: 'RECOLOR' },
+  "COBALT_DRAGOON": [
+    {
+      "url": "/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_260c.jpg",
+      "label": "cobalt dragoon Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_angled.jpg",
+      "label": "cobalt dragoon Perspectiva Angular",
+      "tag": "ANGLED"
+    },
+    {
+      "url": "/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_black.png",
+      "label": "cobalt dragoon Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'KNIGHT_LANCE': [
-    { url: '/images/gallery/blades/knight_lance/knight_lance_360lf.jpg', label: 'Knight Lance 3-60LF (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/knight_lance/knight_lance_bx21.png', label: 'BX-21 Set Especial (Recolor)', tag: 'RECOLOR' },
+  "COBALT_DRAKE": [
+    {
+      "url": "/images/gallery/blades/cobalt_drake/cobalt_drake_bx46.png",
+      "label": "cobalt drake Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'SHARK_EDGE': [
-    { url: '/images/gallery/blades/shark_edge/shark_edge_560gf.jpg', label: 'Shark Edge 5-60GF (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/shark_edge/shark_edge_bx20.png', label: 'BX-20 Púrpura (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/shark_edge/shark_edge_bx31.png', label: 'BX-31 Random Booster (Recolor)', tag: 'RECOLOR' },
+  "CRIMSON_GARUDA": [
+    {
+      "url": "/images/gallery/blades/crimson_garuda/crimson_garuda_1.png",
+      "label": "crimson garuda Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/crimson_garuda/crimson_garuda_2.png",
+      "label": "crimson garuda Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'LEON_CLAW': [
-    { url: '/images/gallery/blades/leon_claw/leon_claw_gold.jpg', label: 'Metal Coat Dorado (Foto Real)', tag: 'REAL' },
+  "DRACIEL_SHIELD": [
+    {
+      "url": "/images/gallery/blades/draciel_shield/draciel_shield_1.png",
+      "label": "draciel shield Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'VIPER_TAIL': [
-    { url: '/images/gallery/blades/viper_tail/viper_tail_bx35.png', label: 'BX-35 Random Booster (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/viper_tail/viper_tail_bx35_06.png', label: 'BX-35 Variante Azul (Recolor)', tag: 'RECOLOR' },
+  "DRAGOON_STORM": [
+    {
+      "url": "/images/gallery/blades/dragoon_storm/dragoon_storm_460ra.jpg",
+      "label": "dragoon storm Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'RHINO_HORN': [
-    { url: '/images/gallery/blades/rhino_horn/rhino_horn_380s.jpg', label: 'Rhino Horn 3-80S (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/rhino_horn/rhino_horn_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  "DRANZER_SPIRAL": [
+    {
+      "url": "/images/gallery/blades/dranzer_spiral/dranzer_spiral_380t.jpg",
+      "label": "dranzer spiral Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/dranzer_spiral/dranzer_spiral_angled.jpg",
+      "label": "dranzer spiral Perspectiva Angular",
+      "tag": "ANGLED"
+    },
+    {
+      "url": "/images/gallery/blades/dranzer_spiral/dranzer_spiral_black.png",
+      "label": "dranzer spiral Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'DRAN_DAGGER': [
-    { url: '/images/gallery/blades/dran_dagger/dran_dagger_bx00.png', label: 'BX-00 Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/dran_dagger/dran_dagger_bx31.png', label: 'BX-31 Random Booster (Recolor)', tag: 'RECOLOR' },
+  "DRAN_BRAVE": [
+    {
+      "url": "/images/gallery/blades/dran_brave/dran_brave_1.png",
+      "label": "dran brave Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/dran_brave/dran_brave_2.png",
+      "label": "dran brave Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'HELLS_CHAIN': [
-    { url: '/images/gallery/blades/hells_chain/hells_chain_560ht.jpg', label: 'Hells Chain 5-60HT (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/hells_chain/hells_chain_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
-    { url: '/images/gallery/blades/hells_chain/hells_chain_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
+  "DRAN_BUSTER": [
+    {
+      "url": "/images/gallery/blades/dran_buster/dran_buster_barca.png",
+      "label": "dran buster Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/dran_buster/dran_buster_black.png",
+      "label": "dran buster Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/dran_buster/dran_buster_cyan.png",
+      "label": "dran buster Variante #3",
+      "tag": "REAL"
+    }
   ],
-  'PHOENIX_WING': [
-    { url: '/images/gallery/blades/phoenix_wing/user_phoenix_wing.jpg', label: 'Phoenix Wing 9-60GF (Foto Real del Usuario)', tag: 'REAL' },
-    { url: '/images/gallery/blades/phoenix_wing/phoenix_wing_980db.jpg', label: 'Phoenix Wing 9-80DB (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/phoenix_wing/phoenix_wing_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/phoenix_wing/phoenix_wing_bx35.png', label: 'BX-35 Random Booster Azul (Recolor)', tag: 'RECOLOR' },
+  "DRAN_DAGGER": [
+    {
+      "url": "/images/gallery/blades/dran_dagger/dran_dagger_bx00.png",
+      "label": "dran dagger Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/dran_dagger/dran_dagger_bx31.png",
+      "label": "dran dagger Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'WYVERN_GALE': [
-    { url: '/images/gallery/blades/wyvern_gale/wyvern_gale_bx24.png', label: 'BX-24 Random Booster (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/wyvern_gale/wyvern_gale_ux07.png', label: 'UX-07 Set Especial (Recolor)', tag: 'RECOLOR' },
+  "DRAN_SWORD": [
+    {
+      "url": "/images/gallery/blades/dran_sword/dran_sword_bx14_black_red.png",
+      "label": "dran sword Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/dran_sword/dran_sword_collab.jpg",
+      "label": "dran sword Variante #2",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/dran_sword/dran_sword_metal_coat_blue.jpg",
+      "label": "dran sword Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/dran_sword/dran_sword_metal_coat_red.jpg",
+      "label": "dran sword Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/dran_sword/dran_sword_red_ver.jpg",
+      "label": "dran sword Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'UNICORN_STING': [
-    { url: '/images/gallery/blades/unicorn_sting/user_unicorn_sting.jpg', label: 'Unicorn Sting 5-60GP (Foto Real del Usuario)', tag: 'REAL' },
-    { url: '/images/gallery/blades/unicorn_sting/unicorn_sting_370d.jpg', label: 'Unicorn Sting 3-70D (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/unicorn_sting/unicorn_sting_560gp.jpg', label: 'Unicorn Sting 5-60GP (Foto Real)', tag: 'REAL' },
+  "DRIGER_SLASH": [
+    {
+      "url": "/images/gallery/blades/driger_slash/driger_slash_480p.jpg",
+      "label": "driger slash Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/driger_slash/driger_slash_angled.jpg",
+      "label": "driger slash Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'SPHINX_COWL': [
-    { url: '/images/gallery/blades/sphinx_cowl/sphinx_cowl_180gf.jpg', label: 'Sphinx Cowl 1-80GF (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/sphinx_cowl/sphinx_cowl_ux07.png', label: 'UX-07 Edición Especial (Recolor)', tag: 'RECOLOR' },
+  "FOX_BRUSH": [
+    {
+      "url": "/images/gallery/blades/fox_brush/fox_brush_1.png",
+      "label": "fox brush Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'TYRANNO_BEAT': [
-    { url: '/images/gallery/blades/tyranno_beat/tyranno_beat_side.jpg', label: 'Vista de Perfil 1-60RA (Foto Real)', tag: 'ANGLED' },
-    { url: '/images/gallery/blades/tyranno_beat/tyranno_beat_red.png', label: 'Metal Coat Rojo (Recolor)', tag: 'RECOLOR' },
+  "GHOST_CIRCLE": [
+    {
+      "url": "/images/gallery/blades/ghost_circle/ghost_circle_1.png",
+      "label": "ghost circle Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/ghost_circle/ghost_circle_2.png",
+      "label": "ghost circle Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'WEISS_TIGER': [
-    { url: '/images/gallery/blades/weiss_tiger/weiss_tiger_360u.jpg', label: 'Weiss Tiger 3-60U (Foto Real)', tag: 'REAL' },
+  "HELLS_CHAIN": [
+    {
+      "url": "/images/gallery/blades/hells_chain/hells_chain_560ht.jpg",
+      "label": "hells chain Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/hells_chain/hells_chain_angled.jpg",
+      "label": "hells chain Perspectiva Angular",
+      "tag": "ANGLED"
+    },
+    {
+      "url": "/images/gallery/blades/hells_chain/hells_chain_black.png",
+      "label": "hells chain Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'BLACK_SHELL': [
-    { url: '/images/gallery/blades/black_shell/black_shell_460d.jpg', label: 'Black Shell 4-60D (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/black_shell/black_shell_bx35.png', label: 'BX-35 Random Booster (Recolor)', tag: 'RECOLOR' },
+  "HELLS_HAMMER": [
+    {
+      "url": "/images/gallery/blades/hells_hammer/hells_hammer_370h.jpg",
+      "label": "hells hammer Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/hells_hammer/hells_hammer_angled.jpg",
+      "label": "hells hammer Perspectiva Angular",
+      "tag": "ANGLED"
+    },
+    {
+      "url": "/images/gallery/blades/hells_hammer/hells_hammer_blue.png",
+      "label": "hells hammer Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'WHALE_WAVE': [
-    { url: '/images/gallery/blades/whale_wave/whale_wave_blue.jpg', label: 'Edición Especial Pesca (Foto Real)', tag: 'REAL' },
+  "HELLS_REAPER": [
+    {
+      "url": "/images/gallery/blades/hells_reaper/hells_reaper_1.png",
+      "label": "hells reaper Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/hells_reaper/hells_reaper_2.png",
+      "label": "hells reaper Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'DRAN_BUSTER': [
-    { url: '/images/gallery/blades/dran_buster/dran_buster_cyan.png', label: 'Metal Coat Cian (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/dran_buster/dran_buster_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/dran_buster/dran_buster_barca.png', label: 'FC Barcelona Edición Oficial (Recolor)', tag: 'RECOLOR' },
+  "HELLS_SCYTHE": [
+    {
+      "url": "/images/gallery/blades/hells_scythe/hells_scythe_380f.jpg",
+      "label": "hells scythe Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/hells_scythe/hells_scythe_480lf.png",
+      "label": "hells scythe Variante #2",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/hells_scythe/hells_scythe_bx08.png",
+      "label": "hells scythe Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/hells_scythe/hells_scythe_gold.jpg",
+      "label": "hells scythe Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'HELLS_HAMMER': [
-    { url: '/images/gallery/blades/hells_hammer/hells_hammer_370h.jpg', label: 'Hells Hammer 3-70H (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/hells_hammer/hells_hammer_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
-    { url: '/images/gallery/blades/hells_hammer/hells_hammer_blue.png', label: 'Metal Coat Azul (Recolor)', tag: 'RECOLOR' },
+  "IMPACT_DRAKE": [
+    {
+      "url": "/images/gallery/blades/impact_drake/impact_drake_960lr.jpg",
+      "label": "impact drake Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'WIZARD_ROD': [
-    { url: '/images/gallery/blades/wizard_rod/user_wizard_rod.jpg', label: 'Wizard Rod 5-70DB (Foto Real del Usuario)', tag: 'REAL' },
-    { url: '/images/gallery/blades/wizard_rod/wizard_rod_special.jpg', label: 'Wizard Rod Edición Especial (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/wizard_rod/wizard_rod_gold.png', label: 'Metal Coat Dorado (Recolor)', tag: 'RECOLOR' },
-    { url: '/images/gallery/blades/wizard_rod/wizard_rod_bx35.png', label: 'BX-35 Random Booster (Recolor)', tag: 'RECOLOR' },
+  "KNIGHT_LANCE": [
+    {
+      "url": "/images/gallery/blades/knight_lance/knight_lance_360lf.jpg",
+      "label": "knight lance Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/knight_lance/knight_lance_bx21.png",
+      "label": "knight lance Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'SHINOBI_SHADOW': [
-    { url: '/images/gallery/blades/shinobi_shadow/shinobi_shadow_180mn.jpg', label: 'Shinobi Shadow 1-80MN (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/shinobi_shadow/shinobi_shadow_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  "KNIGHT_MAIL": [
+    {
+      "url": "/images/gallery/blades/knight_mail/knight_mail_navy.png",
+      "label": "knight mail Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'COBALT_DRAGOON': [
-    { url: '/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_260c.jpg', label: 'Cobalt Dragoon 2-60C (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
-    { url: '/images/gallery/blades/cobalt_dragoon/cobalt_dragoon_black.png', label: 'Metal Coat Negro (Recolor)', tag: 'RECOLOR' },
+  "KNIGHT_SHIELD": [
+    {
+      "url": "/images/gallery/blades/knight_shield/knight_shield_bx06.png",
+      "label": "knight shield Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/knight_shield/knight_shield_bx08.png",
+      "label": "knight shield Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/knight_shield/knight_shield_bx20.png",
+      "label": "knight shield Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/knight_shield/knight_shield_gold.png",
+      "label": "knight shield Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'LEON_CREST': [
-    { url: '/images/gallery/blades/leon_crest/leon_crest_760gn.jpg', label: 'Leon Crest 7-60GN (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/leon_crest/leon_crest_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  "LEON_CLAW": [
+    {
+      "url": "/images/gallery/blades/leon_claw/leon_claw_gold.jpg",
+      "label": "leon claw Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'PHOENIX_RUDDER': [
-    { url: '/images/gallery/blades/phoenix_rudder/phoenix_rudder_970g.jpg', label: 'Phoenix Rudder 9-70G (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/phoenix_rudder/phoenix_rudder_angled.png', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  "LEON_CREST": [
+    {
+      "url": "/images/gallery/blades/leon_crest/leon_crest_760gn.jpg",
+      "label": "leon crest Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/leon_crest/leon_crest_angled.jpg",
+      "label": "leon crest Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'SAMURAI_SABER': [
-    { url: '/images/gallery/blades/samurai_saber/samurai_saber_270l.png', label: 'Samurai Saber 2-70L (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/samurai_saber/samurai_saber_angled.png', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  "LIGHTNING_L_DRAGO": [
+    {
+      "url": "/images/gallery/blades/lightning_l_drago/lightning_l_drago_rapid.jpg",
+      "label": "lightning l drago Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'KNIGHT_MAIL': [
-    { url: '/images/gallery/blades/knight_mail/knight_mail_navy.png', label: 'Metal Coat Azul Marino (Recolor)', tag: 'RECOLOR' },
+  "MAMMOTH_TUSK": [
+    {
+      "url": "/images/gallery/blades/mammoth_tusk/tusk_mammoth_360t.jpg",
+      "label": "mammoth tusk Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/mammoth_tusk/user_tusk_mammoth.jpg",
+      "label": "mammoth tusk (Foto Real de Usuario)",
+      "tag": "REAL"
+    }
   ],
-  'IMPACT_DRAKE': [
-    { url: '/images/gallery/blades/impact_drake/impact_drake_960lr.jpg', label: 'Impact Drake 9-60LR (Foto Real)', tag: 'REAL' },
+  "OROCHI_CLUSTER": [
+    {
+      "url": "/images/gallery/blades/orochi_cluster/orochi_cluster_1.png",
+      "label": "orochi cluster Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/orochi_cluster/orochi_cluster_2.png",
+      "label": "orochi cluster Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'COBALT_DRAKE': [
-    { url: '/images/gallery/blades/cobalt_drake/cobalt_drake_bx46.png', label: 'BX-46 Clear Ver. (Recolor)', tag: 'RECOLOR' },
+  "PERSEUS_DARK": [
+    {
+      "url": "/images/gallery/blades/perseus_dark/perseus_dark_1.png",
+      "label": "perseus dark Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/perseus_dark/perseus_dark_2.png",
+      "label": "perseus dark Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'DRANZER_SPIRAL': [
-    { url: '/images/gallery/blades/dranzer_spiral/dranzer_spiral_380t.jpg', label: 'Dranzer Spiral 3-80T (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/dranzer_spiral/dranzer_spiral_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
-    { url: '/images/gallery/blades/dranzer_spiral/dranzer_spiral_black.png', label: 'Edición Negra BX-00 (Recolor)', tag: 'RECOLOR' },
+  "PHOENIX_RUDDER": [
+    {
+      "url": "/images/gallery/blades/phoenix_rudder/phoenix_rudder_970g.jpg",
+      "label": "phoenix rudder Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/phoenix_rudder/phoenix_rudder_angled.png",
+      "label": "phoenix rudder Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'DRIGER_SLASH': [
-    { url: '/images/gallery/blades/driger_slash/driger_slash_480p.jpg', label: 'Driger Slash 4-80P (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/driger_slash/driger_slash_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  "PHOENIX_WING": [
+    {
+      "url": "/images/gallery/blades/phoenix_wing/phoenix_wing_980db.jpg",
+      "label": "phoenix wing Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/phoenix_wing/phoenix_wing_black.png",
+      "label": "phoenix wing Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/phoenix_wing/phoenix_wing_bx35.png",
+      "label": "phoenix wing Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/phoenix_wing/user_phoenix_wing.jpg",
+      "label": "phoenix wing (Foto Real de Usuario)",
+      "tag": "REAL"
+    }
   ],
-  'DRAGOON_STORM': [
-    { url: '/images/gallery/blades/dragoon_storm/dragoon_storm_460ra.jpg', label: 'Dragoon Storm 4-60RA (Foto Real)', tag: 'REAL' },
+  "RHINO_HORN": [
+    {
+      "url": "/images/gallery/blades/rhino_horn/rhino_horn_380s.jpg",
+      "label": "rhino horn Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/rhino_horn/rhino_horn_angled.jpg",
+      "label": "rhino horn Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'LIGHTNING_L_DRAGO': [
-    { url: '/images/gallery/blades/lightning_l_drago/lightning_l_drago_rapid.jpg', label: 'Lightning L-Drago Rapid-Hit (Foto Real)', tag: 'REAL' },
+  "ROAR_TYRANNO": [
+    {
+      "url": "/images/gallery/blades/roar_tyranno/roar_tyranno_1.png",
+      "label": "roar tyranno Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'BITE_CROC': [
-    { url: '/images/gallery/blades/bite_croc/bite_croc_360lf.jpg', label: 'Bite Croc 3-60LF Hasbro (Foto Real)', tag: 'REAL' },
+  "SAMURAI_SABER": [
+    {
+      "url": "/images/gallery/blades/samurai_saber/samurai_saber_270l.png",
+      "label": "samurai saber Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/samurai_saber/samurai_saber_angled.png",
+      "label": "samurai saber Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'STEEL_SAMURAI': [
-    { url: '/images/gallery/blades/steel_samurai/steel_samurai_480t.jpg', label: 'Steel Samurai 4-80T Hasbro (Foto Real)', tag: 'REAL' },
-    { url: '/images/gallery/blades/steel_samurai/steel_samurai_angled.jpg', label: 'Perspectiva 3D Angular (Foto Real)', tag: 'ANGLED' },
+  "SHARK_EDGE": [
+    {
+      "url": "/images/gallery/blades/shark_edge/shark_edge_560gf.jpg",
+      "label": "shark edge Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/shark_edge/shark_edge_bx20.png",
+      "label": "shark edge Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/shark_edge/shark_edge_bx31.png",
+      "label": "shark edge Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'MAMMOTH_TUSK': [
-    { url: '/images/gallery/blades/mammoth_tusk/user_tusk_mammoth.jpg', label: 'Tusk Mammoth 3-60T (Foto Real del Usuario)', tag: 'REAL' },
-    { url: '/images/gallery/blades/mammoth_tusk/tusk_mammoth_360t.jpg', label: 'Mammoth Tusk 3-60T Hasbro (Foto Real)', tag: 'REAL' },
+  "SHELTER_DRAKE": [
+    {
+      "url": "/images/gallery/blades/shelter_drake/shelter_drake_1.png",
+      "label": "shelter drake Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/shelter_drake/shelter_drake_2.png",
+      "label": "shelter drake Variante #2",
+      "tag": "REAL"
+    }
   ],
-
-  'AERO_PEGASUS': [
-      {
-          "url": "/images/gallery/blades/aero_pegasus/aero_pegasus_0.png",
-          "label": "aero_pegasus Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/aero_pegasus/aero_pegasus_1.png",
-          "label": "aero_pegasus Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/aero_pegasus/aero_pegasus_2.png",
-          "label": "aero_pegasus Variante #3",
-          "tag": "REAL"
-      }
+  "SHINOBI_KNIFE": [
+    {
+      "url": "/images/gallery/blades/shinobi_knife/shinobi_knife_2.png",
+      "label": "shinobi knife Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'CERBERUS_FLAME': [
-      {
-          "url": "/images/gallery/blades/cerberus_flame/cerberus_flame_0.png",
-          "label": "cerberus_flame Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/cerberus_flame/cerberus_flame_1.png",
-          "label": "cerberus_flame Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/cerberus_flame/cerberus_flame_2.png",
-          "label": "cerberus_flame Variante #3",
-          "tag": "REAL"
-      }
+  "SHINOBI_SHADOW": [
+    {
+      "url": "/images/gallery/blades/shinobi_shadow/shinobi_shadow_180mn.jpg",
+      "label": "shinobi shadow Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/shinobi_shadow/shinobi_shadow_angled.jpg",
+      "label": "shinobi shadow Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'CRIMSON_GARUDA': [
-      {
-          "url": "/images/gallery/blades/crimson_garuda/crimson_garuda_0.png",
-          "label": "crimson_garuda Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/crimson_garuda/crimson_garuda_1.png",
-          "label": "crimson_garuda Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/crimson_garuda/crimson_garuda_2.png",
-          "label": "crimson_garuda Variante #3",
-          "tag": "REAL"
-      }
+  "SPHINX_COWL": [
+    {
+      "url": "/images/gallery/blades/sphinx_cowl/sphinx_cowl_180gf.jpg",
+      "label": "sphinx cowl Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/sphinx_cowl/sphinx_cowl_ux07.png",
+      "label": "sphinx cowl Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'DRACIEL_SHIELD': [
-      {
-          "url": "/images/gallery/blades/draciel_shield/draciel_shield_0.png",
-          "label": "draciel_shield Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/draciel_shield/draciel_shield_1.png",
-          "label": "draciel_shield Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/draciel_shield/draciel_shield_2.png",
-          "label": "draciel_shield Variante #3",
-          "tag": "REAL"
-      }
+  "STEEL_SAMURAI": [
+    {
+      "url": "/images/gallery/blades/steel_samurai/steel_samurai_angled.jpg",
+      "label": "steel samurai Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'DRAN_BRAVE': [
-      {
-          "url": "/images/gallery/blades/dran_brave/dran_brave_0.png",
-          "label": "dran_brave Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/dran_brave/dran_brave_1.png",
-          "label": "dran_brave Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/dran_brave/dran_brave_2.png",
-          "label": "dran_brave Variante #3",
-          "tag": "REAL"
-      }
+  "STORM_PEGASIS": [
+    {
+      "url": "/images/gallery/blades/storm_pegasis/storm_pegasis_1.png",
+      "label": "storm pegasis Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/storm_pegasis/storm_pegasis_2.png",
+      "label": "storm pegasis Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'FOX_BRUSH': [
-      {
-          "url": "/images/gallery/blades/fox_brush/fox_brush_0.png",
-          "label": "fox_brush Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/fox_brush/fox_brush_1.png",
-          "label": "fox_brush Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/fox_brush/fox_brush_2.png",
-          "label": "fox_brush Variante #3",
-          "tag": "REAL"
-      }
+  "TALON_PTERA": [
+    {
+      "url": "/images/gallery/blades/talon_ptera/talon_ptera_1.png",
+      "label": "talon ptera Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'GHOST_CIRCLE': [
-      {
-          "url": "/images/gallery/blades/ghost_circle/ghost_circle_0.png",
-          "label": "ghost_circle Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/ghost_circle/ghost_circle_1.png",
-          "label": "ghost_circle Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/ghost_circle/ghost_circle_2.png",
-          "label": "ghost_circle Variante #3",
-          "tag": "REAL"
-      }
+  "TYRANNO_BEAT": [
+    {
+      "url": "/images/gallery/blades/tyranno_beat/tyranno_beat_red.png",
+      "label": "tyranno beat Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/tyranno_beat/tyranno_beat_side.jpg",
+      "label": "tyranno beat Perspectiva Angular",
+      "tag": "ANGLED"
+    }
   ],
-  'HELLS_REAPER': [
-      {
-          "url": "/images/gallery/blades/hells_reaper/hells_reaper_0.png",
-          "label": "hells_reaper Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/hells_reaper/hells_reaper_1.png",
-          "label": "hells_reaper Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/hells_reaper/hells_reaper_2.png",
-          "label": "hells_reaper Variante #3",
-          "tag": "REAL"
-      }
+  "UNICORN_STING": [
+    {
+      "url": "/images/gallery/blades/unicorn_sting/unicorn_sting_370d.jpg",
+      "label": "unicorn sting Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/unicorn_sting/unicorn_sting_560gp.jpg",
+      "label": "unicorn sting Variante #2",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/unicorn_sting/user_unicorn_sting.jpg",
+      "label": "unicorn sting (Foto Real de Usuario)",
+      "tag": "REAL"
+    }
   ],
-  'OROCHI_CLUSTER': [
-      {
-          "url": "/images/gallery/blades/orochi_cluster/orochi_cluster_0.png",
-          "label": "orochi_cluster Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/orochi_cluster/orochi_cluster_1.png",
-          "label": "orochi_cluster Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/orochi_cluster/orochi_cluster_2.png",
-          "label": "orochi_cluster Variante #3",
-          "tag": "REAL"
-      }
+  "VICTORY_VALKYRIE": [
+    {
+      "url": "/images/gallery/blades/victory_valkyrie/victory_valkyrie_1.png",
+      "label": "victory valkyrie Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/victory_valkyrie/victory_valkyrie_2.png",
+      "label": "victory valkyrie Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'PERSEUS_DARK': [
-      {
-          "url": "/images/gallery/blades/perseus_dark/perseus_dark_0.png",
-          "label": "perseus_dark Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/perseus_dark/perseus_dark_1.png",
-          "label": "perseus_dark Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/perseus_dark/perseus_dark_2.png",
-          "label": "perseus_dark Variante #3",
-          "tag": "REAL"
-      }
+  "VIPER_TAIL": [
+    {
+      "url": "/images/gallery/blades/viper_tail/viper_tail_bx35.png",
+      "label": "viper tail Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/viper_tail/viper_tail_bx35_06.png",
+      "label": "viper tail Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'ROAR_TYRANNO': [
-      {
-          "url": "/images/gallery/blades/roar_tyranno/roar_tyranno_0.png",
-          "label": "roar_tyranno Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/roar_tyranno/roar_tyranno_1.png",
-          "label": "roar_tyranno Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/roar_tyranno/roar_tyranno_2.png",
-          "label": "roar_tyranno Variante #3",
-          "tag": "REAL"
-      }
+  "WEISS_TIGER": [
+    {
+      "url": "/images/gallery/blades/weiss_tiger/weiss_tiger_360u.jpg",
+      "label": "weiss tiger Variante #1",
+      "tag": "REAL"
+    }
   ],
-  'SHELTER_DRAKE': [
-      {
-          "url": "/images/gallery/blades/shelter_drake/shelter_drake_0.png",
-          "label": "shelter_drake Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/shelter_drake/shelter_drake_1.png",
-          "label": "shelter_drake Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/shelter_drake/shelter_drake_2.png",
-          "label": "shelter_drake Variante #3",
-          "tag": "REAL"
-      }
+  "WHALE_WAVE": [
+    {
+      "url": "/images/gallery/blades/whale_wave/whale_wave_blue.jpg",
+      "label": "whale wave Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'SHINOBI_KNIFE': [
-      {
-          "url": "/images/gallery/blades/shinobi_knife/shinobi_knife_0.png",
-          "label": "shinobi_knife Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/shinobi_knife/shinobi_knife_1.png",
-          "label": "shinobi_knife Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/shinobi_knife/shinobi_knife_2.png",
-          "label": "shinobi_knife Variante #3",
-          "tag": "REAL"
-      }
+  "WIZARD_ARC": [
+    {
+      "url": "/images/gallery/blades/wizard_arc/wizard_arc_1.png",
+      "label": "wizard arc Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/wizard_arc/wizard_arc_2.png",
+      "label": "wizard arc Variante #2",
+      "tag": "REAL"
+    }
   ],
-  'STORM_PEGASIS': [
-      {
-          "url": "/images/gallery/blades/storm_pegasis/storm_pegasis_0.png",
-          "label": "storm_pegasis Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/storm_pegasis/storm_pegasis_1.png",
-          "label": "storm_pegasis Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/storm_pegasis/storm_pegasis_2.png",
-          "label": "storm_pegasis Variante #3",
-          "tag": "REAL"
-      }
+  "WIZARD_ARROW": [
+    {
+      "url": "/images/gallery/blades/wizard_arrow/wizard_arrow_480gb.jpg",
+      "label": "wizard arrow Variante #1",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/wizard_arrow/wizard_arrow_blue.png",
+      "label": "wizard arrow Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/wizard_arrow/wizard_arrow_bx05.png",
+      "label": "wizard arrow Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/wizard_arrow/wizard_arrow_bx08.png",
+      "label": "wizard arrow Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'TALON_PTERA': [
-      {
-          "url": "/images/gallery/blades/talon_ptera/talon_ptera_0.png",
-          "label": "talon_ptera Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/talon_ptera/talon_ptera_1.png",
-          "label": "talon_ptera Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/talon_ptera/talon_ptera_2.png",
-          "label": "talon_ptera Variante #3",
-          "tag": "REAL"
-      }
+  "WIZARD_ROD": [
+    {
+      "url": "/images/gallery/blades/wizard_rod/user_wizard_rod.jpg",
+      "label": "wizard rod (Foto Real de Usuario)",
+      "tag": "REAL"
+    },
+    {
+      "url": "/images/gallery/blades/wizard_rod/wizard_rod_bx35.png",
+      "label": "wizard rod Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/wizard_rod/wizard_rod_gold.png",
+      "label": "wizard rod Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/wizard_rod/wizard_rod_special.jpg",
+      "label": "wizard rod Variante #4",
+      "tag": "REAL"
+    }
   ],
-  'VICTORY_VALKYRIE': [
-      {
-          "url": "/images/gallery/blades/victory_valkyrie/victory_valkyrie_0.png",
-          "label": "victory_valkyrie Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/victory_valkyrie/victory_valkyrie_1.png",
-          "label": "victory_valkyrie Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/victory_valkyrie/victory_valkyrie_2.png",
-          "label": "victory_valkyrie Variante #3",
-          "tag": "REAL"
-      }
+  "WYVERN_GALE": [
+    {
+      "url": "/images/gallery/blades/wyvern_gale/wyvern_gale_bx24.png",
+      "label": "wyvern gale Recolor / Colorway",
+      "tag": "RECOLOR"
+    },
+    {
+      "url": "/images/gallery/blades/wyvern_gale/wyvern_gale_ux07.png",
+      "label": "wyvern gale Recolor / Colorway",
+      "tag": "RECOLOR"
+    }
   ],
-  'WIZARD_ARC': [
-      {
-          "url": "/images/gallery/blades/wizard_arc/wizard_arc_0.png",
-          "label": "wizard_arc Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/wizard_arc/wizard_arc_1.png",
-          "label": "wizard_arc Variante #2",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/wizard_arc/wizard_arc_2.png",
-          "label": "wizard_arc Variante #3",
-          "tag": "REAL"
-      }
-  ],
-  'YELL_KONG': [
-      {
-          "url": "/images/gallery/blades/yell_kong/yell_kong_0.png",
-          "label": "yell_kong Variante #1",
-          "tag": "REAL"
-      },
-      {
-          "url": "/images/gallery/blades/yell_kong/yell_kong_1.png",
-          "label": "yell_kong Variante #2",
-          "tag": "REAL"
-      }
-  ],
+  "YELL_KONG": [
+    {
+      "url": "/images/gallery/blades/yell_kong/yell_kong_1.png",
+      "label": "yell kong Variante #1",
+      "tag": "REAL"
+    }
+  ]
 };
 
-
 export const RATCHET_GALLERY_MAP: Record<string, { url: string; label: string; tag: 'STUDIO' | 'REAL' | 'RECOLOR' | 'ANGLED' | 'COMMUNITY' }[]> = {
-  "0-60": [
-    {
-      "url": "/images/gallery/ratchets/0-60/00_base_render.png",
-      "label": "0-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/0-60/variant_01.png",
-      "label": "0-60 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "0-70": [
-    {
-      "url": "/images/gallery/ratchets/0-70/00_base_render.png",
-      "label": "0-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/0-70/variant_01.png",
-      "label": "0-70 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
   "0-80": [
     {
-      "url": "/images/gallery/ratchets/0-80/00_base_render.png",
-      "label": "0-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/0-80/variant_01.png",
-      "label": "0-80 Colorway #1",
+      "label": "0-80 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "1-60": [
     {
-      "url": "/images/gallery/ratchets/1-60/00_base_render.png",
-      "label": "1-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/1-60/variant_01.png",
-      "label": "1-60 Colorway #1",
+      "label": "1-60 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/1-60/variant_02.png",
-      "label": "1-60 Colorway #2",
+      "label": "1-60 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/1-60/variant_03.png",
-      "label": "1-60 Colorway #3",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/1-60/variant_04.png",
-      "label": "1-60 Colorway #4",
+      "label": "1-60 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/1-60/variant_05.png",
-      "label": "1-60 Colorway #5",
-      "tag": "RECOLOR"
-    }
-  ],
-  "1-70": [
-    {
-      "url": "/images/gallery/ratchets/1-70/00_base_render.png",
-      "label": "1-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/1-70/variant_01.png",
-      "label": "1-70 Colorway #1",
+      "label": "1-60 Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     }
   ],
   "1-80": [
     {
-      "url": "/images/gallery/ratchets/1-80/00_base_render.png",
-      "label": "1-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/1-80/variant_01.png",
-      "label": "1-80 Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/1-80/variant_02.png",
-      "label": "1-80 Colorway #2",
+      "label": "1-80 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "2-60": [
     {
-      "url": "/images/gallery/ratchets/2-60/00_base_render.png",
-      "label": "2-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/2-60/variant_01.png",
-      "label": "2-60 Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/2-60/variant_02.png",
-      "label": "2-60 Colorway #2",
-      "tag": "RECOLOR"
-    }
-  ],
-  "2-70": [
-    {
-      "url": "/images/gallery/ratchets/2-70/00_base_render.png",
-      "label": "2-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/2-70/variant_01.png",
-      "label": "2-70 Colorway #1",
+      "label": "2-60 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "2-80": [
     {
-      "url": "/images/gallery/ratchets/2-80/00_base_render.png",
-      "label": "2-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/2-80/variant_01.png",
-      "label": "2-80 Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/2-80/variant_02.png",
-      "label": "2-80 Colorway #2",
+      "label": "2-80 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "3-60": [
     {
-      "url": "/images/gallery/ratchets/3-60/00_base_render.png",
-      "label": "3-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/3-60/variant_01.png",
-      "label": "3-60 Colorway #1",
+      "label": "3-60 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-60/variant_02.png",
-      "label": "3-60 Colorway #2",
+      "label": "3-60 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-60/variant_03.png",
-      "label": "3-60 Colorway #3",
+      "label": "3-60 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-60/variant_04.png",
-      "label": "3-60 Colorway #4",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/3-60/variant_05.png",
-      "label": "3-60 Colorway #5",
+      "label": "3-60 Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-60/variant_06.png",
-      "label": "3-60 Colorway #6",
+      "label": "3-60 Colorway / Variante Oficial #5",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-60/variant_07.png",
-      "label": "3-60 Colorway #7",
-      "tag": "RECOLOR"
-    }
-  ],
-  "3-70": [
-    {
-      "url": "/images/gallery/ratchets/3-70/00_base_render.png",
-      "label": "3-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/3-70/variant_01.png",
-      "label": "3-70 Colorway #1",
+      "label": "3-60 Colorway / Variante Oficial #6",
       "tag": "RECOLOR"
     }
   ],
   "3-80": [
     {
-      "url": "/images/gallery/ratchets/3-80/00_base_render.png",
-      "label": "3-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/3-80/variant_01.png",
-      "label": "3-80 Colorway #1",
+      "label": "3-80 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-80/variant_02.png",
-      "label": "3-80 Colorway #2",
+      "label": "3-80 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-80/variant_03.png",
-      "label": "3-80 Colorway #3",
+      "label": "3-80 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-80/variant_04.png",
-      "label": "3-80 Colorway #4",
+      "label": "3-80 Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-80/variant_05.png",
-      "label": "3-80 Colorway #5",
+      "label": "3-80 Colorway / Variante Oficial #5",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-80/variant_06.png",
-      "label": "3-80 Colorway #6",
+      "label": "3-80 Colorway / Variante Oficial #6",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-80/variant_07.png",
-      "label": "3-80 Colorway #7",
+      "label": "3-80 Colorway / Variante Oficial #7",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-80/variant_08.png",
-      "label": "3-80 Colorway #8",
+      "label": "3-80 Colorway / Variante Oficial #8",
       "tag": "RECOLOR"
     }
   ],
   "3-85": [
     {
-      "url": "/images/gallery/ratchets/3-85/00_base_render.png",
-      "label": "3-85 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/3-85/variant_01.png",
-      "label": "3-85 Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/3-85/variant_02.png",
-      "label": "3-85 Colorway #2",
+      "label": "3-85 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-85/variant_03.png",
-      "label": "3-85 Colorway #3",
+      "label": "3-85 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/3-85/variant_04.png",
-      "label": "3-85 Colorway #4",
-      "tag": "RECOLOR"
-    }
-  ],
-  "4-55": [
-    {
-      "url": "/images/gallery/ratchets/4-55/00_base_render.png",
-      "label": "4-55 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/4-55/variant_01.png",
-      "label": "4-55 Colorway #1",
+      "label": "3-85 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     }
   ],
   "4-60": [
     {
-      "url": "/images/gallery/ratchets/4-60/00_base_render.png",
-      "label": "4-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/4-60/variant_01.png",
-      "label": "4-60 Colorway #1",
+      "label": "4-60 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-60/variant_02.png",
-      "label": "4-60 Colorway #2",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/4-60/variant_03.png",
-      "label": "4-60 Colorway #3",
+      "label": "4-60 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-60/variant_04.png",
-      "label": "4-60 Colorway #4",
+      "label": "4-60 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-60/variant_05.png",
-      "label": "4-60 Colorway #5",
+      "label": "4-60 Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-60/variant_06.png",
-      "label": "4-60 Colorway #6",
+      "label": "4-60 Colorway / Variante Oficial #5",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-60/variant_07.png",
-      "label": "4-60 Colorway #7",
+      "label": "4-60 Colorway / Variante Oficial #6",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-60/variant_08.png",
-      "label": "4-60 Colorway #8",
+      "label": "4-60 Colorway / Variante Oficial #7",
       "tag": "RECOLOR"
     }
   ],
   "4-70": [
     {
-      "url": "/images/gallery/ratchets/4-70/00_base_render.png",
-      "label": "4-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/4-70/variant_01.png",
-      "label": "4-70 Colorway #1",
+      "label": "4-70 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-70/variant_02.png",
-      "label": "4-70 Colorway #2",
+      "label": "4-70 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-70/variant_03.png",
-      "label": "4-70 Colorway #3",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/4-70/variant_04.png",
-      "label": "4-70 Colorway #4",
+      "label": "4-70 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     }
   ],
   "4-80": [
     {
-      "url": "/images/gallery/ratchets/4-80/00_base_render.png",
-      "label": "4-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/4-80/variant_01.png",
-      "label": "4-80 Colorway #1",
+      "label": "4-80 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-80/variant_02.png",
-      "label": "4-80 Colorway #2",
+      "label": "4-80 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-80/variant_03.png",
-      "label": "4-80 Colorway #3",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/4-80/variant_04.png",
-      "label": "4-80 Colorway #4",
+      "label": "4-80 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/4-80/variant_05.png",
-      "label": "4-80 Colorway #5",
+      "label": "4-80 Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     }
   ],
   "5-60": [
     {
-      "url": "/images/gallery/ratchets/5-60/00_base_render.png",
-      "label": "5-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/5-60/variant_01.png",
-      "label": "5-60 Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/5-60/variant_02.png",
-      "label": "5-60 Colorway #2",
+      "label": "5-60 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/5-60/variant_03.png",
-      "label": "5-60 Colorway #3",
+      "label": "5-60 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/5-60/variant_04.png",
-      "label": "5-60 Colorway #4",
+      "label": "5-60 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/5-60/variant_05.png",
-      "label": "5-60 Colorway #5",
+      "label": "5-60 Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     }
   ],
   "5-70": [
     {
-      "url": "/images/gallery/ratchets/5-70/00_base_render.png",
-      "label": "5-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/5-70/user_wizard_rod_570.jpg",
-      "label": "5-70 Foto Real del Usuario",
+      "label": "5-70 Foto Real de Usuario",
       "tag": "REAL"
     },
     {
       "url": "/images/gallery/ratchets/5-70/variant_01.png",
-      "label": "5-70 Colorway #2",
+      "label": "5-70 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/5-70/variant_02.png",
-      "label": "5-70 Colorway #3",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/5-70/variant_03.png",
-      "label": "5-70 Colorway #4",
+      "label": "5-70 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/5-70/variant_04.png",
-      "label": "5-70 Colorway #5",
+      "label": "5-70 Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     }
   ],
   "5-80": [
     {
-      "url": "/images/gallery/ratchets/5-80/00_base_render.png",
-      "label": "5-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/5-80/variant_01.png",
-      "label": "5-80 Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/5-80/variant_02.png",
-      "label": "5-80 Colorway #2",
+      "label": "5-80 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/5-80/variant_03.png",
-      "label": "5-80 Colorway #3",
+      "label": "5-80 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/ratchets/5-80/variant_04.png",
-      "label": "5-80 Colorway #4",
-      "tag": "RECOLOR"
-    }
-  ],
-  "6-60": [
-    {
-      "url": "/images/gallery/ratchets/6-60/00_base_render.png",
-      "label": "6-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/6-60/variant_01.png",
-      "label": "6-60 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "6-80": [
-    {
-      "url": "/images/gallery/ratchets/6-80/00_base_render.png",
-      "label": "6-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/6-80/variant_01.png",
-      "label": "6-80 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "7-60": [
-    {
-      "url": "/images/gallery/ratchets/7-60/00_base_render.png",
-      "label": "7-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/7-60/variant_01.png",
-      "label": "7-60 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "7-70": [
-    {
-      "url": "/images/gallery/ratchets/7-70/00_base_render.png",
-      "label": "7-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/7-70/variant_01.png",
-      "label": "7-70 Colorway #1",
+      "label": "5-80 Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     }
   ],
   "7-80": [
     {
-      "url": "/images/gallery/ratchets/7-80/00_base_render.png",
-      "label": "7-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/7-80/variant_01.png",
-      "label": "7-80 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "8-80": [
-    {
-      "url": "/images/gallery/ratchets/8-80/00_base_render.png",
-      "label": "8-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/8-80/variant_01.png",
-      "label": "8-80 Colorway #1",
+      "label": "7-80 Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "9-60": [
     {
-      "url": "/images/gallery/ratchets/9-60/00_base_render.png",
-      "label": "9-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/ratchets/9-60/user_phoenix_wing_960.jpg",
-      "label": "9-60 Foto Real del Usuario",
+      "label": "9-60 Foto Real de Usuario",
       "tag": "REAL"
     },
     {
       "url": "/images/gallery/ratchets/9-60/variant_01.png",
-      "label": "9-60 Colorway #2",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/ratchets/9-60/variant_02.png",
-      "label": "9-60 Colorway #3",
-      "tag": "RECOLOR"
-    }
-  ],
-  "9-70": [
-    {
-      "url": "/images/gallery/ratchets/9-70/00_base_render.png",
-      "label": "9-70 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/9-70/variant_01.png",
-      "label": "9-70 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "9-80": [
-    {
-      "url": "/images/gallery/ratchets/9-80/00_base_render.png",
-      "label": "9-80 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/9-80/variant_01.png",
-      "label": "9-80 Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "s6-60": [
-    {
-      "url": "/images/gallery/ratchets/s6-60/00_base_render.png",
-      "label": "s6-60 Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/ratchets/s6-60/variant_01.png",
-      "label": "s6-60 Colorway #1",
+      "label": "9-60 Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ]
@@ -4279,617 +4172,301 @@ export const RATCHET_GALLERY_MAP: Record<string, { url: string; label: string; t
 export const BIT_GALLERY_MAP: Record<string, { url: string; label: string; tag: 'STUDIO' | 'REAL' | 'RECOLOR' | 'ANGLED' | 'COMMUNITY' }[]> = {
   "A": [
     {
-      "url": "/images/gallery/bits/A/00_base_render.png",
-      "label": "A Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/A/user_accel_tip.jpg",
-      "label": "A Foto Real del Usuario",
+      "label": "A Foto Real de Usuario",
       "tag": "REAL"
     },
     {
       "url": "/images/gallery/bits/A/variant_01.png",
-      "label": "A Colorway #2",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/bits/A/variant_02.png",
-      "label": "A Colorway #3",
+      "label": "A Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "B": [
     {
-      "url": "/images/gallery/bits/B/00_base_render.png",
-      "label": "B Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/B/variant_01.png",
-      "label": "B Colorway #1",
+      "label": "B Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/B/variant_02.png",
-      "label": "B Colorway #2",
-      "tag": "RECOLOR"
-    },
-    {
-      "url": "/images/gallery/bits/B/variant_03.png",
-      "label": "B Colorway #3",
+      "label": "B Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/B/variant_04.png",
-      "label": "B Colorway #4",
+      "label": "B Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/B/variant_05.png",
-      "label": "B Colorway #5",
+      "label": "B Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     }
   ],
   "BS": [
     {
-      "url": "/images/gallery/bits/BS/00_base_render.png",
-      "label": "BS Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/BS/variant_01.png",
-      "label": "BS Colorway #1",
+      "label": "BS Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/BS/variant_02.png",
-      "label": "BS Colorway #2",
+      "label": "BS Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "C": [
     {
-      "url": "/images/gallery/bits/C/00_base_render.png",
-      "label": "C Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/C/user_cyclone_gear.jpg",
-      "label": "C Foto Real del Usuario",
+      "label": "C Foto Real de Usuario",
       "tag": "REAL"
-    },
-    {
-      "url": "/images/gallery/bits/C/variant_01.png",
-      "label": "C Colorway #2",
-      "tag": "RECOLOR"
     }
   ],
   "D": [
     {
-      "url": "/images/gallery/bits/D/00_base_render.png",
-      "label": "D Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/D/variant_01.png",
-      "label": "D Colorway #1",
+      "label": "D Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "DB": [
     {
-      "url": "/images/gallery/bits/DB/00_base_render.png",
-      "label": "DB Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/DB/variant_01.png",
-      "label": "DB Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/DB/variant_02.png",
-      "label": "DB Colorway #2",
+      "label": "DB Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/DB/variant_03.png",
-      "label": "DB Colorway #3",
+      "label": "DB Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/DB/variant_04.png",
-      "label": "DB Colorway #4",
+      "label": "DB Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     }
   ],
   "E": [
     {
-      "url": "/images/gallery/bits/E/00_base_render.png",
-      "label": "E Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/E/variant_01.png",
-      "label": "E Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/E/variant_02.png",
-      "label": "E Colorway #2",
+      "label": "E Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/E/variant_03.png",
-      "label": "E Colorway #3",
+      "label": "E Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/E/variant_04.png",
-      "label": "E Colorway #4",
+      "label": "E Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     }
   ],
   "F": [
     {
-      "url": "/images/gallery/bits/F/00_base_render.png",
-      "label": "F Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/F/variant_01.png",
-      "label": "F Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/F/variant_02.png",
-      "label": "F Colorway #2",
+      "label": "F Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/F/variant_03.png",
-      "label": "F Colorway #3",
+      "label": "F Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/F/variant_04.png",
-      "label": "F Colorway #4",
+      "label": "F Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/F/variant_05.png",
-      "label": "F Colorway #5",
-      "tag": "RECOLOR"
-    }
-  ],
-  "FB": [
-    {
-      "url": "/images/gallery/bits/FB/00_base_render.png",
-      "label": "FB Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/FB/variant_01.png",
-      "label": "FB Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "G": [
-    {
-      "url": "/images/gallery/bits/G/00_base_render.png",
-      "label": "G Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/G/variant_01.png",
-      "label": "G Colorway #1",
+      "label": "F Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     }
   ],
   "GF": [
     {
-      "url": "/images/gallery/bits/GF/00_base_render.png",
-      "label": "GF Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/GF/variant_01.png",
-      "label": "GF Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/GF/variant_02.png",
-      "label": "GF Colorway #2",
+      "label": "GF Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/GF/variant_03.png",
-      "label": "GF Colorway #3",
+      "label": "GF Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "GN": [
     {
-      "url": "/images/gallery/bits/GN/00_base_render.png",
-      "label": "GN Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/GN/variant_01.png",
-      "label": "GN Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/GN/variant_02.png",
-      "label": "GN Colorway #2",
+      "label": "GN Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "GP": [
     {
-      "url": "/images/gallery/bits/GP/00_base_render.png",
-      "label": "GP Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/GP/variant_01.png",
-      "label": "GP Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/GP/variant_02.png",
-      "label": "GP Colorway #2",
+      "label": "GP Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "H": [
     {
-      "url": "/images/gallery/bits/H/00_base_render.png",
-      "label": "H Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/H/variant_01.png",
-      "label": "H Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/H/variant_02.png",
-      "label": "H Colorway #2",
-      "tag": "RECOLOR"
-    }
-  ],
-  "HN": [
-    {
-      "url": "/images/gallery/bits/HN/00_base_render.png",
-      "label": "HN Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/HN/variant_01.png",
-      "label": "HN Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "HT": [
-    {
-      "url": "/images/gallery/bits/HT/00_base_render.png",
-      "label": "HT Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/HT/variant_01.png",
-      "label": "HT Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "L": [
-    {
-      "url": "/images/gallery/bits/L/00_base_render.png",
-      "label": "L Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/L/variant_01.png",
-      "label": "L Colorway #1",
+      "label": "H Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "LF": [
     {
-      "url": "/images/gallery/bits/LF/00_base_render.png",
-      "label": "LF Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/LF/variant_01.png",
-      "label": "LF Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/LF/variant_02.png",
-      "label": "LF Colorway #2",
+      "label": "LF Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/LF/variant_03.png",
-      "label": "LF Colorway #3",
+      "label": "LF Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "LO": [
     {
-      "url": "/images/gallery/bits/LO/00_base_render.png",
-      "label": "LO Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/LO/variant_01.png",
-      "label": "LO Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/LO/variant_02.png",
-      "label": "LO Colorway #2",
+      "label": "LO Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "LR": [
     {
-      "url": "/images/gallery/bits/LR/00_base_render.png",
-      "label": "LR Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/LR/variant_01.png",
-      "label": "LR Colorway #1",
+      "label": "LR Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/LR/variant_02.png",
-      "label": "LR Colorway #2",
+      "label": "LR Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "MN": [
     {
-      "url": "/images/gallery/bits/MN/00_base_render.png",
-      "label": "MN Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/MN/variant_01.png",
-      "label": "MN Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/MN/variant_02.png",
-      "label": "MN Colorway #2",
+      "label": "MN Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "N": [
     {
-      "url": "/images/gallery/bits/N/00_base_render.png",
-      "label": "N Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/N/variant_01.png",
-      "label": "N Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/N/variant_02.png",
-      "label": "N Colorway #2",
+      "label": "N Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/N/variant_03.png",
-      "label": "N Colorway #3",
+      "label": "N Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/N/variant_04.png",
-      "label": "N Colorway #4",
+      "label": "N Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     }
   ],
   "O": [
     {
-      "url": "/images/gallery/bits/O/00_base_render.png",
-      "label": "O Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/O/variant_01.png",
-      "label": "O Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/O/variant_02.png",
-      "label": "O Colorway #2",
+      "label": "O Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/O/variant_03.png",
-      "label": "O Colorway #3",
+      "label": "O Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "P": [
     {
-      "url": "/images/gallery/bits/P/00_base_render.png",
-      "label": "P Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/P/variant_01.png",
-      "label": "P Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/P/variant_02.png",
-      "label": "P Colorway #2",
+      "label": "P Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/P/variant_03.png",
-      "label": "P Colorway #3",
+      "label": "P Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "Q": [
     {
-      "url": "/images/gallery/bits/Q/00_base_render.png",
-      "label": "Q Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/Q/variant_01.png",
-      "label": "Q Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/Q/variant_02.png",
-      "label": "Q Colorway #2",
+      "label": "Q Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/Q/variant_03.png",
-      "label": "Q Colorway #3",
+      "label": "Q Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "R": [
     {
-      "url": "/images/gallery/bits/R/00_base_render.png",
-      "label": "R Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/R/variant_01.png",
-      "label": "R Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/R/variant_02.png",
-      "label": "R Colorway #2",
+      "label": "R Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/R/variant_03.png",
-      "label": "R Colorway #3",
+      "label": "R Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     }
   ],
   "RA": [
     {
-      "url": "/images/gallery/bits/RA/00_base_render.png",
-      "label": "RA Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/RA/variant_01.png",
-      "label": "RA Colorway #1",
+      "label": "RA Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "T": [
     {
-      "url": "/images/gallery/bits/T/00_base_render.png",
-      "label": "T Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/T/variant_01.png",
-      "label": "T Colorway #1",
+      "label": "T Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/T/variant_02.png",
-      "label": "T Colorway #2",
+      "label": "T Colorway / Variante Oficial #2",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/T/variant_03.png",
-      "label": "T Colorway #3",
+      "label": "T Colorway / Variante Oficial #3",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/T/variant_04.png",
-      "label": "T Colorway #4",
+      "label": "T Colorway / Variante Oficial #4",
       "tag": "RECOLOR"
     },
     {
       "url": "/images/gallery/bits/T/variant_05.png",
-      "label": "T Colorway #5",
+      "label": "T Colorway / Variante Oficial #5",
       "tag": "RECOLOR"
     }
   ],
   "TP": [
     {
-      "url": "/images/gallery/bits/TP/00_base_render.png",
-      "label": "TP Render Base",
-      "tag": "STUDIO"
-    },
-    {
       "url": "/images/gallery/bits/TP/variant_01.png",
-      "label": "TP Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "U": [
-    {
-      "url": "/images/gallery/bits/U/00_base_render.png",
-      "label": "U Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/U/variant_01.png",
-      "label": "U Colorway #1",
+      "label": "TP Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ],
   "V": [
     {
-      "url": "/images/gallery/bits/V/00_base_render.png",
-      "label": "V Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/V/variant_01.png",
-      "label": "V Colorway #1",
-      "tag": "RECOLOR"
-    },
-    {
       "url": "/images/gallery/bits/V/variant_02.png",
-      "label": "V Colorway #2",
-      "tag": "RECOLOR"
-    }
-  ],
-  "W": [
-    {
-      "url": "/images/gallery/bits/W/00_base_render.png",
-      "label": "W Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/W/variant_01.png",
-      "label": "W Colorway #1",
-      "tag": "RECOLOR"
-    }
-  ],
-  "WB": [
-    {
-      "url": "/images/gallery/bits/WB/00_base_render.png",
-      "label": "WB Render Base",
-      "tag": "STUDIO"
-    },
-    {
-      "url": "/images/gallery/bits/WB/variant_01.png",
-      "label": "WB Colorway #1",
+      "label": "V Colorway / Variante Oficial #1",
       "tag": "RECOLOR"
     }
   ]
