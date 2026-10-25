@@ -1,5 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Scan, Check, RefreshCw, QrCode, Upload, Sun, CheckCircle2, Cpu, Zap } from 'lucide-react';
+import {
+  Camera,
+  Scan,
+  Check,
+  RefreshCw,
+  QrCode,
+  Upload,
+  Sun,
+  CheckCircle2,
+  Cpu,
+  Zap,
+  Info,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+} from 'lucide-react';
 import {
   analyzeCurrentFrame,
   rankCatalogByVision,
@@ -22,6 +40,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
   const [cameraActive, setCameraActive] = useState<boolean>(false);
   const [scanMode, setScanMode] = useState<'BLADE' | 'RATCHET' | 'BIT' | 'HASBRO_QR'>('BLADE');
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+  const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
 
   // Live real-time analysis HUD metrics
   const [liveMetrics, setLiveMetrics] = useState<{
@@ -285,7 +304,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
       </div>
 
       {/* Mode Selector */}
-      <div className="flex justify-center mb-4 sm:mb-6 w-full">
+      <div className="flex justify-center mb-3 sm:mb-4 w-full">
         <div className="w-full max-w-md bg-slate-900 p-1 sm:p-1.5 rounded-2xl border border-slate-800 grid grid-cols-4 gap-1">
           <button
             onClick={() => {
@@ -340,6 +359,190 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
             <QrCode className="w-3.5 h-3.5 shrink-0" />
             <span>QR</span>
           </button>
+        </div>
+      </div>
+
+      {/* DYNAMIC PLACEMENT & ORIENTATION GUIDE */}
+      <div className="w-full max-w-lg mx-auto mb-3.5 px-0.5">
+        {scanMode === 'RATCHET' && (
+          <div className="bg-slate-900/95 border-2 border-blue-500/60 rounded-2xl p-3 sm:p-3.5 shadow-xl shadow-blue-950/30">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-ping" />
+                <span className="text-xs font-black text-blue-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                  <span>Orientación Obligatoria del Ratchet</span>
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-blue-300 bg-blue-950 px-2 py-0.5 rounded-full border border-blue-700/60 font-bold shrink-0">
+                Cara Superior
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-2.5 flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-emerald-300 text-[11px] sm:text-xs">
+                    ✅ Cara Superior (Boca Arriba)
+                  </p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-300 mt-0.5 leading-snug">
+                    Los números grabados (ej: <span className="text-white font-mono font-semibold">3-60, 5-70</span>) y las trabas del Bit deben mirar a la cámara.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-red-950/40 border border-red-500/40 rounded-xl p-2.5 flex items-start gap-2">
+                <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-red-300 text-[11px] sm:text-xs">
+                    ❌ No Poner al Revés (Abajo)
+                  </p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-300 mt-0.5 leading-snug">
+                    El cilindro liso de encastre al Blade es idéntico en todos los ratchets y causa falsos positivos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {scanMode === 'BIT' && (
+          <div className="bg-slate-900/95 border-2 border-amber-500/60 rounded-2xl p-3 sm:p-3.5 shadow-xl shadow-amber-950/30">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+                <span className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Enfoque Macro para Bits (Puntas)</span>
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-amber-300 bg-amber-950 px-2 py-0.5 rounded-full border border-amber-700/60 font-bold shrink-0">
+                10-15 cm de distancia
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-2.5 flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-emerald-300 text-[11px] sm:text-xs">
+                    🎯 Acerca la Cámara a 10 cm
+                  </p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-300 mt-0.5 leading-snug">
+                    La punta debe llenar el círculo guía para distinguir su silueta (<span className="text-white font-mono">Ball, Flat, Needle, Orb</span>).
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-amber-950/40 border border-amber-500/40 rounded-xl p-2.5 flex items-start gap-2">
+                <Sun className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-amber-300 text-[11px] sm:text-xs">
+                    💡 Fondo Claro y Buena Luz
+                  </p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-300 mt-0.5 leading-snug">
+                    Evitá fondos negros o sombras de tu teléfono para que la geometría de la punta resalte con nitidez.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {scanMode === 'BLADE' && (
+          <div className="bg-slate-900/95 border border-cyan-500/50 rounded-2xl p-3 sm:p-3.5 shadow-lg shadow-cyan-950/20">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+                <span className="text-xs font-black text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <span>Posición para Blades (Metal / Plástico)</span>
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950 px-2 py-0.5 rounded-full border border-cyan-700/60 font-bold shrink-0">
+                Vista Cenital
+              </span>
+            </div>
+            <p className="text-[11px] sm:text-xs text-slate-300 leading-snug">
+              Coloca el Blade <strong className="text-cyan-300 font-semibold">plano boca arriba</strong> sobre una superficie bien iluminada y alinea su perímetro con la retícula circular.
+            </p>
+          </div>
+        )}
+
+        {scanMode === 'HASBRO_QR' && (
+          <div className="bg-slate-900/95 border border-red-500/50 rounded-2xl p-3 sm:p-3.5 shadow-lg shadow-red-950/20">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                <span className="text-xs font-black text-red-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                  <span>Escaneo de Código Hasbro</span>
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-red-300 bg-red-950 px-2 py-0.5 rounded-full border border-red-700/60 font-bold shrink-0">
+                100% Precisión
+              </span>
+            </div>
+            <p className="text-[11px] sm:text-xs text-slate-300 leading-snug">
+              Enfoca directamente el microcódigo QR impreso en el plástico del Blade Hasbro para identificación automática al instante.
+            </p>
+          </div>
+        )}
+
+        {/* Expandable Pro Tips Toggle */}
+        <div className="mt-2 text-center">
+          <button
+            onClick={() => setIsGuideOpen(!isGuideOpen)}
+            className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-slate-400 hover:text-cyan-400 py-1 px-3 rounded-full hover:bg-slate-900/80 transition-all border border-transparent hover:border-slate-800"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <span>{isGuideOpen ? 'Ocultar guía detallada' : '💡 Ver guía visual completa para 100% acierto'}</span>
+            {isGuideOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+
+          {isGuideOpen && (
+            <div className="mt-2 text-left bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-xs space-y-3 animate-in fade-in duration-200">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
+                <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                <h4 className="font-bold text-white text-xs sm:text-sm">
+                  Reglas de Oro del Escáner Neuronal
+                </h4>
+              </div>
+
+              <div className="space-y-2.5 text-[11px] sm:text-xs text-slate-300">
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-cyan-400 font-mono">1.</span>
+                  <div>
+                    <strong className="text-white">Ratchets siempre boca arriba:</strong>
+                    <p className="text-slate-400 mt-0.5">
+                      Los Ratchets (<span className="text-blue-300 font-mono">3-60, 5-70, 9-60</span>) deben colocarse con los números y el encastre del bit hacia la lente. Si se fotografían boca abajo (lado cilíndrico liso), la altura y el modelo son físicamente indistinguibles.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-amber-400 font-mono">2.</span>
+                  <div>
+                    <strong className="text-white">Bits a corta distancia (10-15 cm):</strong>
+                    <p className="text-slate-400 mt-0.5">
+                      Para diferenciar puntas similares (<span className="text-amber-300 font-mono">Disc Ball</span> vs <span className="text-amber-300 font-mono">Orb</span> vs <span className="text-amber-300 font-mono">Ball</span>), la punta debe ocupar el centro de la imagen y no ser un punto lejano sobre la mesa.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-emerald-400 font-mono">3.</span>
+                  <div>
+                    <strong className="text-white">Iluminación uniforme:</strong>
+                    <p className="text-slate-400 mt-0.5">
+                      Utiliza el botón de <strong className="text-white">Flash</strong> integrado si estás en una habitación con poca luz para evitar reflejos engañosos en el metal de los Blades.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -439,40 +642,84 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
           </>
         )}
 
-        {/* RETICLE OVERLAY */}
+        {/* RETICLE OVERLAY WITH VISUAL ORIENTATION GUIDES */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
           {scanMode === 'BLADE' && (
-            <div className="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full border-2 border-dashed border-cyan-400/80 flex items-center justify-center animate-pulse">
-              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-cyan-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
-                Centrar Blade
+            <div className="relative w-48 h-48 sm:w-60 sm:h-60 rounded-full border-2 border-dashed border-cyan-400/80 flex items-center justify-center animate-pulse">
+              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-cyan-300 bg-slate-950/90 px-2 py-0.5 rounded-full shadow border border-cyan-500/40">
+                Alinear Perímetro del Blade
               </span>
-              <div className="absolute top-0 w-2 h-2 bg-cyan-400 -translate-y-1 rounded-full shadow"></div>
-              <div className="absolute bottom-0 w-2 h-2 bg-cyan-400 translate-y-1 rounded-full shadow"></div>
-              <div className="absolute left-0 w-2 h-2 bg-cyan-400 -translate-x-1 rounded-full shadow"></div>
-              <div className="absolute right-0 w-2 h-2 bg-cyan-400 translate-x-1 rounded-full shadow"></div>
+              <div className="absolute top-0 w-2.5 h-2.5 bg-cyan-400 -translate-y-1 rounded-full shadow-lg shadow-cyan-400/50"></div>
+              <div className="absolute bottom-0 w-2.5 h-2.5 bg-cyan-400 translate-y-1 rounded-full shadow-lg shadow-cyan-400/50"></div>
+              <div className="absolute left-0 w-2.5 h-2.5 bg-cyan-400 -translate-x-1 rounded-full shadow-lg shadow-cyan-400/50"></div>
+              <div className="absolute right-0 w-2.5 h-2.5 bg-cyan-400 translate-x-1 rounded-full shadow-lg shadow-cyan-400/50"></div>
             </div>
           )}
 
           {scanMode === 'RATCHET' && (
-            <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full border-2 border-dashed border-amber-400/80 flex items-center justify-center animate-pulse">
-              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-amber-400 bg-slate-950/90 px-2 py-1 rounded shadow text-center max-w-[130px] sm:max-w-[170px]">
-                Ratchet Plano (Superior)
-              </span>
+            <div className="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full border-2 border-dashed border-blue-400/90 flex flex-col items-center justify-center">
+              {/* Top orientation reminder */}
+              <div className="absolute -top-3.5 bg-blue-950 text-blue-200 border-2 border-blue-400 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black tracking-wider shadow-xl flex items-center gap-1 z-10">
+                <span className="text-emerald-400 font-bold">▲</span> <span>NÚMEROS Y TRABAS ARRIBA</span>
+              </div>
+
+              {/* Inner ring where bit locks */}
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-blue-400/60 border-dotted flex flex-col items-center justify-center bg-blue-500/10">
+                <span className="text-[8px] sm:text-[9px] font-mono font-bold text-blue-300 uppercase">
+                  Encastre
+                </span>
+                <span className="text-[7px] text-blue-400/80 font-mono">
+                  Bit
+                </span>
+              </div>
+
+              {/* Crosshair ticks */}
+              <div className="absolute top-0 w-3 h-0.5 bg-blue-400" />
+              <div className="absolute bottom-0 w-3 h-0.5 bg-blue-400" />
+              <div className="absolute left-0 h-3 w-0.5 bg-blue-400" />
+              <div className="absolute right-0 h-3 w-0.5 bg-blue-400" />
+
+              {/* Bottom warning badge */}
+              <div className="absolute -bottom-3 bg-red-950/95 text-red-300 border border-red-500/80 px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-bold tracking-wider shadow-xl flex items-center gap-1 z-10">
+                <span>❌</span> <span>NO LADO CILÍNDRICO LISO</span>
+              </div>
             </div>
           )}
 
           {scanMode === 'BIT' && (
-            <div className="relative w-36 h-36 sm:w-44 sm:h-44 border-2 border-dashed border-purple-400/80 rounded-2xl flex items-center justify-center animate-pulse">
-              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-purple-300 bg-slate-950/90 px-2 py-1 rounded shadow text-center max-w-[120px] sm:max-w-[160px]">
-                Apoyá el Bit
-              </span>
+            <div className="relative w-44 h-44 sm:w-52 sm:h-52 border-2 border-dashed border-amber-400/90 rounded-3xl flex flex-col items-center justify-center">
+              {/* Top proximity badge */}
+              <div className="absolute -top-3.5 bg-amber-950 text-amber-200 border-2 border-amber-400 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black tracking-wider shadow-xl flex items-center gap-1 z-10">
+                <span className="text-amber-400">🎯</span> <span>ACERCAR A 10-15 CM</span>
+              </div>
+
+              {/* Focal center target circle for tip geometry */}
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-amber-400 border-dashed flex flex-col items-center justify-center bg-amber-500/10 animate-pulse">
+                <span className="text-[9px] sm:text-[10px] font-black text-amber-300 uppercase tracking-wider text-center px-1">
+                  PUNTA AQUÍ
+                </span>
+                <span className="text-[7px] sm:text-[8px] text-amber-300/80 font-mono">
+                  Llenar círculo
+                </span>
+              </div>
+
+              {/* Crosshair marks */}
+              <div className="absolute top-0 w-4 h-0.5 bg-amber-400" />
+              <div className="absolute bottom-0 w-4 h-0.5 bg-amber-400" />
+              <div className="absolute left-0 h-4 w-0.5 bg-amber-400" />
+              <div className="absolute right-0 h-4 w-0.5 bg-amber-400" />
+
+              {/* Bottom reminder badge */}
+              <div className="absolute -bottom-3 bg-slate-950/95 text-amber-300 border border-amber-500/60 px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-mono tracking-wider shadow-xl z-10">
+                💡 Buena luz / Sin sombra
+              </div>
             </div>
           )}
 
           {scanMode === 'HASBRO_QR' && (
-            <div className="relative w-44 h-44 border-2 border-red-500 rounded-2xl flex items-center justify-center bg-red-500/10">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-red-400 bg-slate-950/90 px-2 py-0.5 rounded shadow">
-                Código QR / DataMatrix
+            <div className="relative w-44 h-44 sm:w-52 sm:h-52 border-2 border-red-500 rounded-2xl flex items-center justify-center bg-red-500/10">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-red-300 bg-slate-950/90 px-2.5 py-1 rounded-full shadow border border-red-500/50">
+                Alinear Código QR
               </span>
             </div>
           )}
@@ -592,17 +839,55 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onAddDetectedPart }) =
             </div>
           </div>
 
-          {/* LOW CONFIDENCE / OUT-OF-DISTRIBUTION WARNING BANNER */}
+          {/* LOW CONFIDENCE / OUT-OF-DISTRIBUTION WARNING BANNER WITH CONTEXTUAL DIAGNOSTICS */}
           {selectedCandidate.confidence < 60 && !selectedCandidate.isQrMatch && (
-            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-950/40 border border-amber-500/60 rounded-xl sm:rounded-2xl flex items-start gap-2.5 sm:gap-3.5 text-amber-200">
-              <span className="text-lg sm:text-xl shrink-0">⚠️</span>
-              <div className="text-xs leading-relaxed">
-                <p className="font-bold text-amber-300 text-xs sm:text-sm mb-0.5">
-                  Certeza Visual Reducida ({selectedCandidate.confidence}%)
-                </p>
-                <p className="text-amber-200/90 text-[11px] sm:text-xs">
-                  Afinidad morfológica con <strong>{selectedCandidate.part.display_name}</strong>, pero el umbral es &lt;60%. Revisa los candidatos abajo.
-                </p>
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-950/50 border border-amber-500/70 rounded-xl sm:rounded-2xl text-amber-200">
+              <div className="flex items-start gap-2.5 sm:gap-3.5">
+                <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <div className="text-xs leading-relaxed flex-1">
+                  <p className="font-bold text-amber-300 text-xs sm:text-sm mb-1">
+                    Certeza Visual Reducida ({selectedCandidate.confidence}%) — ¿Cómo solucionarlo?
+                  </p>
+                  <p className="text-amber-200/90 text-[11px] sm:text-xs mb-2">
+                    La red neuronal detecta similitud con <strong>{selectedCandidate.part.display_name}</strong>, pero el umbral es bajo.
+                  </p>
+
+                  {scanMode === 'RATCHET' && (
+                    <div className="bg-amber-900/40 rounded-xl p-2.5 border border-amber-600/40 text-[11px] space-y-1">
+                      <p className="font-bold text-amber-200 flex items-center gap-1.5">
+                        <span>🔍</span> <span>Verifica la orientación de tu Ratchet:</span>
+                      </p>
+                      <p className="text-amber-100">
+                        • <strong>¿Está boca arriba?</strong> Deben verse claramente los números grabados (ej: 3-60, 5-70) y los dientes del centro.
+                      </p>
+                      <p className="text-amber-100">
+                        • <strong>Si está boca abajo</strong> (mostrando el cilindro liso que va al blade), la IA no podrá reconocerlo porque todos los ratchets se ven idénticos desde abajo.
+                      </p>
+                    </div>
+                  )}
+
+                  {scanMode === 'BIT' && (
+                    <div className="bg-amber-900/40 rounded-xl p-2.5 border border-amber-600/40 text-[11px] space-y-1">
+                      <p className="font-bold text-amber-200 flex items-center gap-1.5">
+                        <span>🔍</span> <span>Verifica la distancia y el fondo de tu Bit:</span>
+                      </p>
+                      <p className="text-amber-100">
+                        • <strong>Acerca la cámara a 10-15 cm</strong>: La punta plástica debe llenar el círculo guía central para que la IA aprecie la forma de la punta.
+                      </p>
+                      <p className="text-amber-100">
+                        • <strong>Evitá sombras oscuras</strong>: Si sacas la foto sobre un fondo negro o con la sombra del celular, la punta se camufla. Activa el <strong className="text-white">Flash</strong> o usa buena luz.
+                      </p>
+                    </div>
+                  )}
+
+                  {scanMode === 'BLADE' && (
+                    <div className="bg-amber-900/40 rounded-xl p-2.5 border border-amber-600/40 text-[11px] space-y-1">
+                      <p className="text-amber-100">
+                        • Coloca el Blade completamente plano sobre la mesa mirando hacia arriba y centrado en la retícula.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
