@@ -10,10 +10,14 @@ import {
   calculateSwissStandings,
   checkRoundRobinProgression,
   FINISH_POINTS,
+  filterTournaments,
   generateNextSwissRound,
   getBracketSeeds,
   migrateState,
+  normalizeSearchTerm,
   normalizeState,
+  normalizeTournament,
+  sortTournaments,
   type AppState,
   type FinishType,
   type Match,
@@ -26,7 +30,7 @@ import {
  */
 describe('Beyblade X Domain & Scoring Invariants', () => {
   it('has consistent version string', () => {
-    expect(BEYBLADE_X_VERSION).toBe('1.0.0');
+    expect(BEYBLADE_X_VERSION).toBe('1.1.0');
   });
 
   it('matches official Takara Tomy / Hasbro finish points', () => {
@@ -408,5 +412,153 @@ describe('State Normalization & Migration Engine', () => {
     expect(migrated.version).toBe(1);
     expect(migrated.activeArenaMatchIds).toEqual([]);
     expect(migrated.players['blader_1']!.name).toBe('Kurosu Ex');
+  });
+
+  it('normalizes missing createdAt and updatedAt timestamps on legacy tournaments', () => {
+    const rawTournament = {
+      id: 'tour_no_dates',
+      name: 'Torneo Antiguo',
+      format: 'brackets',
+      status: 'in_progress',
+      rules: {
+        targetPoints: 4,
+        finishPoints: { spin: 1, over: 2, burst: 2, xtreme: 3, penalty: 1 }
+      },
+      playerIds: ['p1', 'p2'],
+      matches: {},
+      rounds: []
+    } as unknown as Tournament;
+
+    normalizeTournament(rawTournament);
+    expect(typeof rawTournament.createdAt).toBe('number');
+    expect(rawTournament.createdAt).toBeGreaterThanOrEqual(0);
+    expect(typeof rawTournament.updatedAt).toBe('number');
+    expect(rawTournament.updatedAt).toBe(rawTournament.createdAt);
+  });
+
+  it('sorts tournaments chronologically from most recent to oldest by default', () => {
+    const testFinishRules = { ...FINISH_POINTS, penalty: 1 };
+    const t1: Tournament = {
+      id: 't1',
+      name: 'Torneo A',
+      format: 'brackets',
+      status: 'completed',
+      rules: { targetPoints: 4, finishPoints: testFinishRules },
+      playerIds: [],
+      matches: {},
+      rounds: [],
+      createdAt: 1000,
+      updatedAt: 1000
+    };
+    const t2: Tournament = {
+      id: 't2',
+      name: 'Torneo B',
+      format: 'round_robin',
+      status: 'in_progress',
+      rules: { targetPoints: 4, finishPoints: testFinishRules },
+      playerIds: [],
+      matches: {},
+      rounds: [],
+      createdAt: 3000,
+      updatedAt: 3000
+    };
+    const t3: Tournament = {
+      id: 't3',
+      name: 'Torneo C',
+      format: 'swiss',
+      status: 'completed',
+      rules: { targetPoints: 4, finishPoints: testFinishRules },
+      playerIds: [],
+      matches: {},
+      rounds: [],
+      createdAt: 2000,
+      updatedAt: 5000 // recently active
+    };
+
+    const sortedRecent = sortTournaments([t1, t2, t3], 'recent');
+    // t3 has highest updatedAt (5000), followed by t2 (3000), followed by t1 (1000)
+    expect(sortedRecent.map((t) => t.id)).toEqual(['t3', 't2', 't1']);
+
+    const sortedOldest = sortTournaments([t1, t2, t3], 'oldest');
+    expect(sortedOldest.map((t) => t.id)).toEqual(['t1', 't3', 't2']);
+
+    const sortedNameAsc = sortTournaments([t1, t2, t3], 'name_asc');
+    expect(sortedNameAsc.map((t) => t.id)).toEqual(['t1', 't2', 't3']);
+
+    const sortedNameDesc = sortTournaments([t1, t2, t3], 'name_desc');
+    expect(sortedNameDesc.map((t) => t.id)).toEqual(['t3', 't2', 't1']);
+  });
+
+  it('filters tournaments by keyword across name, blader, winner, format, and date', () => {
+    // 2026-11-08 10:00:00 UTC
+    const dateNov8 = new Date(2026, 10, 8, 10, 0, 0).getTime();
+    const dateOct20 = new Date(2026, 9, 20, 15, 30, 0).getTime();
+
+    const players: Record<string, Player> = {
+      p1: { id: 'p1', name: 'Valt Aoi', emoji: '⚡' },
+      p2: { id: 'p2', name: 'Shu Kurenai', emoji: '🔥' },
+      p3: { id: 'p3', name: 'Free De La Hoya', emoji: '🦌' }
+    };
+
+    const testFinishRules = { ...FINISH_POINTS, penalty: 1 };
+    const t1: Tournament = {
+      id: 't1',
+      name: 'Copa Beyblade X',
+      format: 'brackets',
+      status: 'completed',
+      winnerId: 'p1',
+      rules: { targetPoints: 4, finishPoints: testFinishRules },
+      playerIds: ['p1', 'p2'],
+      matches: {},
+      rounds: [],
+      createdAt: dateNov8,
+      updatedAt: dateNov8
+    };
+
+    const t2: Tournament = {
+      id: 't2',
+      name: 'Liga Nocturna',
+      format: 'round_robin',
+      status: 'in_progress',
+      rules: { targetPoints: 4, finishPoints: testFinishRules },
+      playerIds: ['p2', 'p3'],
+      matches: {},
+      rounds: [],
+      createdAt: dateOct20,
+      updatedAt: dateOct20
+    };
+
+    const all = [t1, t2];
+    const datesProvider = (t: Tournament) =>
+      t.id === 't1' ? ['08/11', 'noviembre', '2026-11-08'] : ['20/10', 'octubre', '2026-10-20'];
+
+    // Search by tournament name
+    expect(filterTournaments(all, { query: 'copa', players }).map((t) => t.id)).toEqual(['t1']);
+    // Search by participant blader
+    expect(filterTournaments(all, { query: 'Free', players }).map((t) => t.id)).toEqual(['t2']);
+    // Search by blader participating in both
+    expect(filterTournaments(all, { query: 'Shu', players }).map((t) => t.id)).toEqual([
+      't1',
+      't2'
+    ]);
+    // Search by winner
+    expect(filterTournaments(all, { query: 'Valt', players }).map((t) => t.id)).toEqual(['t1']);
+    // Search by format keyword
+    expect(
+      filterTournaments(all, { query: 'todos contra todos', players }).map((t) => t.id)
+    ).toEqual(['t2']);
+    // Search by date string (e.g. "08/11" or "noviembre")
+    expect(
+      filterTournaments(all, { query: '08/11', players, datesProvider }).map((t) => t.id)
+    ).toEqual(['t1']);
+    expect(
+      filterTournaments(all, { query: 'noviembre', players, datesProvider }).map((t) => t.id)
+    ).toEqual(['t1']);
+    expect(
+      filterTournaments(all, { query: 'octubre', players, datesProvider }).map((t) => t.id)
+    ).toEqual(['t2']);
+    // Status filter
+    expect(filterTournaments(all, { status: 'completed' }).map((t) => t.id)).toEqual(['t1']);
+    expect(filterTournaments(all, { status: 'in_progress' }).map((t) => t.id)).toEqual(['t2']);
   });
 });

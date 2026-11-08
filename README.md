@@ -36,6 +36,11 @@ Everything is packed into a single standalone file: **`index.html`**.
   - **Sistema Suizo (Swiss System):** Balanced pairings by record across rounds without player elimination.
   - **Fase de Grupos + Playoffs:** Group stage followed by single elimination finals.
   - **Rey de la Pista (King of the Hill):** Continuous queue where winners defend against challengers.
+- **🔍 Tournament Hub with Universal Search & Chronological Sorting:**
+  - Automatic reverse-chronological ordering (most recent first) with live `updatedAt` refresh.
+  - Universal real-time search across tournament names, participant bladers, winners, formats, and dates.
+  - Interactive status filter chips (`All`, `In Progress`, `Completed`, `Paused`) with live counters.
+  - Quick sorting dropdown selector (*Most recent, Oldest, Name A-Z, Name Z-A*).
 - **⚔️ Official Beyblade X Touch Scoreboard:**
   - 🟢 **+1 Spin Finish:** Opponent bey stops spinning first.
   - 🟠 **+2 Over Finish:** Opponent bey is knocked into the Over Zone pocket.

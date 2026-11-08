@@ -778,6 +778,32 @@
         border-color: var(--bx-cyan);
         color: var(--bx-cyan);
       }
+      .chip-count {
+        font-size: 11px;
+        opacity: 0.85;
+        margin-left: 3px;
+      }
+      .search-box-wrapper {
+        position: relative;
+        margin-bottom: 12px;
+      }
+      .search-clear-btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 14px;
+        padding: 4px;
+        display: none;
+        line-height: 1;
+      }
+      .search-clear-btn:hover {
+        color: var(--text-main);
+      }
 
       .rule-card {
         background: var(--bg-surface);
@@ -1187,6 +1213,78 @@
             <div class="card-title">🏆 Torneos Guardados</div>
             <button class="btn btn-primary" id="btn-open-create-tournament">➕ Crear Torneo</button>
           </div>
+
+          <!-- Tournament Search Box -->
+          <div class="search-box-wrapper">
+            <input
+              type="text"
+              id="tournament-search-input"
+              class="input-field"
+              placeholder="🔍 Buscar por torneo, blader, fecha (ej. 08/11), formato..."
+              aria-label="Buscar torneos por nombre, participante o fecha"
+            />
+            <button
+              type="button"
+              id="btn-clear-tournament-search"
+              class="search-clear-btn"
+              title="Limpiar búsqueda"
+              aria-label="Limpiar búsqueda"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Tournament Status Filter Chips -->
+          <div class="rule-category-chips" id="tournament-status-chips">
+            <div class="chip active" data-filter="all">
+              Todos <span id="chip-count-all" class="chip-count"></span>
+            </div>
+            <div class="chip" data-filter="in_progress">
+              ⚡ En curso <span id="chip-count-in-progress" class="chip-count"></span>
+            </div>
+            <div class="chip" data-filter="completed">
+              🏆 Finalizados <span id="chip-count-completed" class="chip-count"></span>
+            </div>
+            <div class="chip" data-filter="paused">
+              ⏸️ Pausados <span id="chip-count-paused" class="chip-count"></span>
+            </div>
+          </div>
+
+          <!-- Tournament Results Count & Sort Dropdown -->
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 14px;
+              flex-wrap: wrap;
+              gap: 8px;
+            "
+          >
+            <div
+              id="tournament-results-count"
+              style="font-size: 12px; color: var(--text-muted); font-weight: 600"
+            ></div>
+            <div style="display: flex; align-items: center; gap: 6px">
+              <label
+                for="tournament-sort-select"
+                style="font-size: 12px; color: var(--text-muted); font-weight: 600"
+                >Ordenar:</label
+              >
+              <select
+                id="tournament-sort-select"
+                class="input-field"
+                style="padding: 5px 8px; font-size: 12px; width: auto; margin-bottom: 0"
+                aria-label="Criterio de ordenación de torneos"
+              >
+                <option value="recent">Más recientes</option>
+                <option value="oldest">Más antiguos</option>
+                <option value="name_asc">Nombre (A-Z)</option>
+                <option value="name_desc">Nombre (Z-A)</option>
+              </select>
+            </div>
+          </div>
+
           <div id="tournaments-list">
             <!-- Tournament Cards Injected via JS -->
           </div>
@@ -1942,7 +2040,7 @@
       /* ==========================================================================
        REALTIME CLOUD SYNC & GITHUB VERSION MANAGEMENT
        ========================================================================== */
-      const APP_VERSION = '1.0.0';
+      const APP_VERSION = '1.1.0';
       const GITHUB_REPO = 'Darkham77/beyblade-x-tournament';
       const FIREBASE_CONFIG_KEY = 'BEYBLADE_X_FIREBASE_CONFIG';
 
@@ -2229,6 +2327,12 @@
           if (!Array.isArray(tournament.rounds)) {
             tournament.rounds = [];
           }
+          if (!tournament.createdAt || typeof tournament.createdAt !== 'number') {
+            tournament.createdAt = Date.now();
+          }
+          if (!tournament.updatedAt || typeof tournament.updatedAt !== 'number') {
+            tournament.updatedAt = tournament.createdAt;
+          }
           if (!tournament.rules || typeof tournament.rules !== 'object') {
             tournament.rules = {
               targetPoints: 4,
@@ -2263,6 +2367,7 @@
 
           if (allMatchesDone && tournament.status !== 'completed') {
             tournament.status = 'completed';
+            tournament.updatedAt = Date.now();
             if (!tournament.winnerId) {
               const scores = {};
               tournament.playerIds.forEach((pId) => {
@@ -2646,6 +2751,64 @@
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         return `${prefix} ${day}/${month} ${hours}:${minutes}`;
+      }
+
+      function normalizeSearchTerm(term) {
+        if (!term) return '';
+        return String(term)
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+      }
+
+      function getTournamentSearchableDates(timestamp) {
+        if (!timestamp) return [];
+        const d = new Date(timestamp);
+        const day = String(d.getDate()).padStart(2, '0');
+        const dayNoZero = String(d.getDate());
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const monthNoZero = String(d.getMonth() + 1);
+        const year = String(d.getFullYear());
+        const monthNamesEs = [
+          'enero',
+          'febrero',
+          'marzo',
+          'abril',
+          'mayo',
+          'junio',
+          'julio',
+          'agosto',
+          'septiembre',
+          'octubre',
+          'noviembre',
+          'diciembre'
+        ];
+        const monthName = monthNamesEs[d.getMonth()] || '';
+
+        return [
+          `${day}/${month}`,
+          `${day}/${month}/${year}`,
+          `${dayNoZero}/${monthNoZero}`,
+          `${day}-${month}`,
+          `${day}-${month}-${year}`,
+          `${year}-${month}-${day}`,
+          `${day} de ${monthName}`,
+          `${day} ${monthName}`,
+          monthName,
+          year
+        ];
+      }
+
+      function formatTournamentDate(timestamp) {
+        if (!timestamp) return 'Fecha desconocida';
+        const d = new Date(timestamp);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
       }
 
       /* ==========================================================================
@@ -3914,6 +4077,7 @@
           }
 
           match.status = 'in_progress';
+          t.updatedAt = Date.now();
           if (!Array.isArray(match.history)) {
             match.history = [];
           }
@@ -3955,6 +4119,7 @@
           }
 
           const last = match.history.pop();
+          t.updatedAt = Date.now();
           if (last.playerScored === 1) {
             match.score1 = Math.max(0, match.score1 - last.points);
           } else {
@@ -4090,6 +4255,7 @@
 
         completeMatch(tournament, match) {
           match.status = 'completed';
+          tournament.updatedAt = Date.now();
           const p1Won = match.score1 > match.score2;
           match.winnerId = p1Won ? match.player1Id : match.player2Id;
           match.loserId = p1Won ? match.player2Id : match.player1Id;
@@ -4182,6 +4348,25 @@
        ========================================================================== */
       const UI = {
         isTournamentNameManuallyEdited: false,
+        tournamentSearchQuery: '',
+        tournamentStatusFilter: 'all',
+        tournamentSortOrder: 'recent',
+
+        clearTournamentFilters() {
+          this.tournamentSearchQuery = '';
+          this.tournamentStatusFilter = 'all';
+          this.tournamentSortOrder = 'recent';
+          const input = document.getElementById('tournament-search-input');
+          if (input) input.value = '';
+          const clearBtn = document.getElementById('btn-clear-tournament-search');
+          if (clearBtn) clearBtn.style.display = 'none';
+          const sortSelect = document.getElementById('tournament-sort-select');
+          if (sortSelect) sortSelect.value = 'recent';
+          document.querySelectorAll('#tournament-status-chips .chip').forEach((c) => {
+            c.classList.toggle('active', c.dataset.filter === 'all');
+          });
+          this.renderTournaments();
+        },
 
         init() {
           this.bindEvents();
@@ -4476,6 +4661,50 @@
               );
             });
           });
+
+          // Tournaments Search, Filter Chips, and Sort Order
+          const tourneySearchInput = document.getElementById('tournament-search-input');
+          const clearTourneySearchBtn = document.getElementById('btn-clear-tournament-search');
+          if (tourneySearchInput) {
+            tourneySearchInput.addEventListener('input', (e) => {
+              this.tournamentSearchQuery = e.target.value;
+              if (clearTourneySearchBtn) {
+                clearTourneySearchBtn.style.display = e.target.value ? 'block' : 'none';
+              }
+              this.renderTournaments();
+            });
+          }
+
+          if (clearTourneySearchBtn) {
+            clearTourneySearchBtn.addEventListener('click', () => {
+              if (tourneySearchInput) {
+                tourneySearchInput.value = '';
+                tourneySearchInput.focus();
+              }
+              this.tournamentSearchQuery = '';
+              clearTourneySearchBtn.style.display = 'none';
+              this.renderTournaments();
+            });
+          }
+
+          document.querySelectorAll('#tournament-status-chips .chip').forEach((chip) => {
+            chip.addEventListener('click', () => {
+              document
+                .querySelectorAll('#tournament-status-chips .chip')
+                .forEach((c) => c.classList.remove('active'));
+              chip.classList.add('active');
+              this.tournamentStatusFilter = chip.dataset.filter || 'all';
+              this.renderTournaments();
+            });
+          });
+
+          const tourneySortSelect = document.getElementById('tournament-sort-select');
+          if (tourneySortSelect) {
+            tourneySortSelect.addEventListener('change', (e) => {
+              this.tournamentSortOrder = e.target.value || 'recent';
+              this.renderTournaments();
+            });
+          }
         },
 
         switchView(viewId) {
@@ -4647,9 +4876,28 @@
         renderTournaments() {
           const container = document.getElementById('tournaments-list');
           container.innerHTML = '';
-          const list = Object.values(AppState.tournaments);
+          const allTournaments = Object.values(AppState.tournaments);
 
-          if (list.length === 0) {
+          // Update filter chip counters
+          const countAll = allTournaments.length;
+          const countInProgress = allTournaments.filter(
+            (t) => t.status === 'in_progress' || (t.status !== 'completed' && t.status !== 'paused')
+          ).length;
+          const countCompleted = allTournaments.filter((t) => t.status === 'completed').length;
+          const countPaused = allTournaments.filter((t) => t.status === 'paused').length;
+
+          const elCountAll = document.getElementById('chip-count-all');
+          if (elCountAll) elCountAll.textContent = `(${countAll})`;
+          const elCountInProg = document.getElementById('chip-count-in-progress');
+          if (elCountInProg) elCountInProg.textContent = `(${countInProgress})`;
+          const elCountComp = document.getElementById('chip-count-completed');
+          if (elCountComp) elCountComp.textContent = `(${countCompleted})`;
+          const elCountPaused = document.getElementById('chip-count-paused');
+          if (elCountPaused) elCountPaused.textContent = `(${countPaused})`;
+
+          if (allTournaments.length === 0) {
+            const elResCount = document.getElementById('tournament-results-count');
+            if (elResCount) elResCount.textContent = '';
             container.innerHTML = `
             <div class="empty-state">
               <div class="empty-icon">🏆</div>
@@ -4660,7 +4908,101 @@
             return;
           }
 
-          list.forEach((t) => {
+          // 1. Status Filter
+          const statusFilter = this.tournamentStatusFilter || 'all';
+          let filtered = allTournaments.filter((t) => {
+            if (statusFilter === 'completed') return t.status === 'completed';
+            if (statusFilter === 'in_progress') {
+              return (
+                t.status === 'in_progress' || (t.status !== 'completed' && t.status !== 'paused')
+              );
+            }
+            if (statusFilter === 'paused') return t.status === 'paused';
+            return true;
+          });
+
+          // 2. Keyword Search
+          const q = normalizeSearchTerm(this.tournamentSearchQuery || '');
+          if (q) {
+            const formatSearchMap = {
+              brackets: 'llaves brackets eliminacion directa',
+              double_elimination: 'doble eliminacion',
+              round_robin: 'liga todos contra todos',
+              swiss: 'sistema suizo',
+              groups_playoffs: 'grupos playoffs',
+              king_of_the_hill: 'rey de la pista koth'
+            };
+
+            filtered = filtered.filter((t) => {
+              // Tournament Name
+              if (normalizeSearchTerm(t.name || '').includes(q)) return true;
+
+              // Tournament Format
+              const formatStr = formatSearchMap[t.format] || t.format || '';
+              if (normalizeSearchTerm(formatStr).includes(q)) return true;
+
+              // Winner Name
+              if (t.winnerId && AppState.players[t.winnerId]) {
+                const w = AppState.players[t.winnerId];
+                if (w && w.name && normalizeSearchTerm(w.name).includes(q)) return true;
+              }
+
+              // Participating Bladers
+              const hasPlayer = (t.playerIds || []).some((pId) => {
+                const p = AppState.players[pId];
+                if (!p || !p.name) return false;
+                return normalizeSearchTerm(p.name).includes(q);
+              });
+              if (hasPlayer) return true;
+
+              // Dates
+              const dates = getTournamentSearchableDates(t.createdAt);
+              if (dates.some((d) => normalizeSearchTerm(d).includes(q))) return true;
+
+              return false;
+            });
+          }
+
+          // 3. Sorting (Default: recent / newest to oldest)
+          const sortOrder = this.tournamentSortOrder || 'recent';
+          filtered.sort((a, b) => {
+            if (sortOrder === 'oldest') {
+              return (a.createdAt || 0) - (b.createdAt || 0);
+            }
+            if (sortOrder === 'name_asc') {
+              return (a.name || '').localeCompare(b.name || '');
+            }
+            if (sortOrder === 'name_desc') {
+              return (b.name || '').localeCompare(a.name || '');
+            }
+            // Default 'recent': newest activity or creation first
+            const timeA = Math.max(a.createdAt || 0, a.updatedAt || 0);
+            const timeB = Math.max(b.createdAt || 0, b.updatedAt || 0);
+            return timeB - timeA || (b.createdAt || 0) - (a.createdAt || 0);
+          });
+
+          // Update Results Counter
+          const elResCount = document.getElementById('tournament-results-count');
+          if (elResCount) {
+            if (q || statusFilter !== 'all') {
+              elResCount.textContent = `Mostrando ${filtered.length} de ${allTournaments.length} torneos`;
+            } else {
+              elResCount.textContent = `Total: ${allTournaments.length} torneo${allTournaments.length === 1 ? '' : 's'}`;
+            }
+          }
+
+          if (filtered.length === 0) {
+            container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">🔍</div>
+              <p>No se encontraron torneos que coincidan con la búsqueda.</p>
+              <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="UI.clearTournamentFilters()">Limpiar Filtros</button>
+            </div>
+          `;
+            return;
+          }
+
+          filtered.forEach((t) => {
             const card = document.createElement('div');
             card.className = 'card';
             card.style.border =
@@ -4685,11 +5027,17 @@
                 ? '<span class="badge badge-cyan">EN CURSO</span>'
                 : '<span class="badge badge-orange">PAUSADO</span>';
 
+            const winner = isDone && t.winnerId ? AppState.players[t.winnerId] : null;
+            const championBadge = winner
+              ? `<div style="font-size:13px; font-weight:800; color:var(--bx-gold); margin-top:4px; display:flex; align-items:center; gap:6px;">🥇 Campeón: <span>${winner.emoji || '👑'} ${winner.name}</span></div>`
+              : '';
+
             card.innerHTML = `
             <div class="card-header">
               <div>
                 <div style="font-size:16px; font-weight:800; color:var(--text-main);">${t.name}</div>
-                <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">${formatLabel} • Meta: ${t.rules.targetPoints} pts • ${t.playerIds.length} Bladers</div>
+                ${championBadge}
+                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">📅 ${formatTournamentDate(t.createdAt)} • ${formatLabel} • Meta: ${t.rules.targetPoints} pts • ${t.playerIds.length} Bladers</div>
               </div>
               <div>${activeBadge}</div>
             </div>

@@ -2,7 +2,14 @@
  * State Normalization and Data Integrity Engine
  */
 
-import type { AppState, Match, Tournament } from './types.ts';
+import type {
+  AppState,
+  Match,
+  Player,
+  Tournament,
+  TournamentFilterStatus,
+  TournamentSortOrder
+} from './types.ts';
 
 /**
  * Computes tournament winner from standings based on completed matches.
@@ -90,6 +97,12 @@ export function normalizeTournament(tournament: Tournament): void {
   if (!Array.isArray(tournament.rounds)) {
     tournament.rounds = [];
   }
+  if (typeof tournament.createdAt !== 'number') {
+    tournament.createdAt = 0;
+  }
+  if (typeof tournament.updatedAt !== 'number') {
+    tournament.updatedAt = tournament.createdAt;
+  }
   if (!tournament.rules || typeof tournament.rules !== 'object') {
     tournament.rules = {
       targetPoints: 4,
@@ -122,8 +135,122 @@ export function normalizeTournament(tournament: Tournament): void {
 
   if (allMatchesDone && tournament.status !== 'completed') {
     tournament.status = 'completed';
+    tournament.updatedAt = Math.max(tournament.updatedAt, tournament.createdAt);
     if (!tournament.winnerId) {
       tournament.winnerId = computeTournamentWinner(tournament.playerIds, matchesList);
     }
+  }
+}
+
+/**
+ * Normalizes text for accent-insensitive and case-insensitive comparison.
+ */
+export function normalizeSearchTerm(term: string): string {
+  return term
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+const FORMAT_LABELS_SEARCH: Record<string, string> = {
+  brackets: 'llaves brackets eliminacion directa',
+  double_elimination: 'doble eliminacion',
+  round_robin: 'liga todos contra todos',
+  swiss: 'sistema suizo',
+  groups_playoffs: 'grupos playoffs',
+  king_of_the_hill: 'rey de la pista koth'
+};
+
+export interface TournamentFilterOptions {
+  query?: string;
+  status?: TournamentFilterStatus;
+  players?: Record<string, Player>;
+  datesProvider?: (tournament: Tournament) => string[];
+}
+
+/**
+ * Filters tournaments by search keyword and status filter.
+ */
+export function filterTournaments(
+  tournaments: Tournament[],
+  options: TournamentFilterOptions = {}
+): Tournament[] {
+  const { query = '', status = 'all', players = {}, datesProvider } = options;
+  const cleanQuery = normalizeSearchTerm(query);
+
+  return tournaments.filter((t) => {
+    // 1. Status Filter
+    if (status !== 'all') {
+      if (status === 'in_progress' && t.status !== 'in_progress' && t.status !== 'draft') {
+        return false;
+      }
+      if (status === 'completed' && t.status !== 'completed') {
+        return false;
+      }
+      if (status === 'paused' && t.status !== 'paused') {
+        return false;
+      }
+    }
+
+    if (!cleanQuery) return true;
+
+    // 2. Tournament Name
+    const cleanName = normalizeSearchTerm(t.name);
+    if (cleanName.includes(cleanQuery)) return true;
+
+    // 3. Tournament Format
+    const formatSearchStr = FORMAT_LABELS_SEARCH[t.format] ?? t.format;
+    if (normalizeSearchTerm(formatSearchStr).includes(cleanQuery)) return true;
+
+    // 4. Winner Name
+    if (t.winnerId && players[t.winnerId]) {
+      const winner = players[t.winnerId];
+      if (winner?.name && normalizeSearchTerm(winner.name).includes(cleanQuery)) {
+        return true;
+      }
+    }
+
+    // 5. Participating Bladers
+    const matchesPlayer = (t.playerIds || []).some((pId) => {
+      const p = players[pId];
+      if (!p?.name) return false;
+      return normalizeSearchTerm(p.name).includes(cleanQuery);
+    });
+    if (matchesPlayer) return true;
+
+    // 6. Dates
+    if (datesProvider) {
+      const dates = datesProvider(t);
+      if (dates.some((dateStr) => normalizeSearchTerm(dateStr).includes(cleanQuery))) {
+        return true;
+      }
+    }
+
+    return false;
+  });
+}
+
+/**
+ * Sorts tournaments based on specified order.
+ */
+export function sortTournaments(
+  tournaments: Tournament[],
+  order: TournamentSortOrder = 'recent'
+): Tournament[] {
+  const list = [...tournaments];
+  switch (order) {
+    case 'oldest':
+      return list.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    case 'name_asc':
+      return list.sort((a, b) => a.name.localeCompare(b.name));
+    case 'name_desc':
+      return list.sort((a, b) => b.name.localeCompare(a.name));
+    default:
+      return list.sort((a, b) => {
+        const timeA = Math.max(a.createdAt || 0, a.updatedAt || 0);
+        const timeB = Math.max(b.createdAt || 0, b.updatedAt || 0);
+        return timeB - timeA || (b.createdAt || 0) - (a.createdAt || 0);
+      });
   }
 }

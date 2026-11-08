@@ -21,6 +21,10 @@ export type TournamentFormat =
 
 export type TournamentStatus = 'draft' | 'in_progress' | 'paused' | 'completed';
 
+export type TournamentSortOrder = 'recent' | 'oldest' | 'name_asc' | 'name_desc';
+
+export type TournamentFilterStatus = 'all' | 'in_progress' | 'completed' | 'paused';
+
 export interface PlayerStats {
   matchesPlayed: number;
   matchesWon: number;

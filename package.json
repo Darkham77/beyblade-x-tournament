@@ -1,6 +1,6 @@
 {
   "name": "beyblade-x-tournament",
-  "version": "1.0.0",
+  "version": "1.1.0-build.20261108-132823",
   "description": "Interactive standalone tournament manager and scoreboard for Beyblade X",
   "type": "module",
   "scripts": {
