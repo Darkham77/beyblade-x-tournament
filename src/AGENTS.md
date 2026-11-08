@@ -9,6 +9,7 @@ Beyblade X Tournament Architecture & Development Team.
 ## Local Contracts
 
 - **Domain Integrity**: All finish types and tournament formats must strictly type-check.
+- **Completed Tournament Winner Invariant**: All tournaments with status 'completed' must have their `winnerId` deterministically computed and persisted, ensuring podium banners and export summaries never encounter null champions.
 
 ## Key Files
 

@@ -2,7 +2,7 @@
  * Beyblade X Tournament Manager & Engine
  */
 
-export const BEYBLADE_X_VERSION = '1.1.0';
+export const BEYBLADE_X_VERSION = '1.1.1';
 
 export * from './types.ts';
 export * from './bracket.ts';

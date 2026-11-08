@@ -4,7 +4,6 @@
 
 import type {
   AppState,
-  Match,
   Player,
   Tournament,
   TournamentFilterStatus,
@@ -12,15 +11,51 @@ import type {
 } from './types.ts';
 
 /**
- * Computes tournament winner from standings based on completed matches.
+ * Computes tournament winner based on tournament format and completed matches.
  */
-function computeTournamentWinner(playerIds: string[], matches: Match[]): string | null {
+export function computeTournamentWinner(tournament: Tournament): string | null {
+  const matchesList = Object.values(tournament.matches);
+  if (matchesList.length === 0) {
+    return null;
+  }
+
+  if (tournament.format === 'brackets') {
+    const finalMatch = matchesList.find((m) => !m.nextMatchId);
+    if (finalMatch?.winnerId) {
+      return finalMatch.winnerId;
+    }
+  }
+
+  if (tournament.format === 'double_elimination') {
+    const gfReset = tournament.matches['grand_final_reset'];
+    if (gfReset && gfReset.status === 'completed' && gfReset.winnerId) {
+      return gfReset.winnerId;
+    }
+    const gf = tournament.matches['grand_final'];
+    if (gf && gf.status === 'completed' && gf.winnerId) {
+      return gf.winnerId;
+    }
+  }
+
+  if (tournament.format === 'groups_playoffs') {
+    const pf = tournament.matches['playoff_final'];
+    if (pf && pf.status === 'completed' && pf.winnerId) {
+      return pf.winnerId;
+    }
+  }
+
+  if (tournament.format === 'king_of_the_hill') {
+    if (tournament.koth?.kingId) {
+      return tournament.koth.kingId;
+    }
+  }
+
   const scores: Record<string, { id: string; pts: number; diff: number; pf: number }> = {};
-  for (const pId of playerIds) {
+  for (const pId of tournament.playerIds) {
     scores[pId] = { id: pId, pts: 0, diff: 0, pf: 0 };
   }
 
-  for (const m of matches) {
+  for (const m of matchesList) {
     if (!m.player1Id || !m.player2Id || !m.winnerId) continue;
     if (!scores[m.player1Id]) {
       scores[m.player1Id] = { id: m.player1Id, pts: 0, diff: 0, pf: 0 };
@@ -136,9 +171,10 @@ export function normalizeTournament(tournament: Tournament): void {
   if (allMatchesDone && tournament.status !== 'completed') {
     tournament.status = 'completed';
     tournament.updatedAt = Math.max(tournament.updatedAt, tournament.createdAt);
-    if (!tournament.winnerId) {
-      tournament.winnerId = computeTournamentWinner(tournament.playerIds, matchesList);
-    }
+  }
+
+  if (tournament.status === 'completed' && !tournament.winnerId && hasMatches) {
+    tournament.winnerId = computeTournamentWinner(tournament);
   }
 }
 

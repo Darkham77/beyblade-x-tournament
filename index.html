@@ -2040,7 +2040,7 @@
       /* ==========================================================================
        REALTIME CLOUD SYNC & GITHUB VERSION MANAGEMENT
        ========================================================================== */
-      const APP_VERSION = '1.1.0';
+      const APP_VERSION = '1.1.1';
       const GITHUB_REPO = 'Darkham77/beyblade-x-tournament';
       const FIREBASE_CONFIG_KEY = 'BEYBLADE_X_FIREBASE_CONFIG';
 
@@ -2304,6 +2304,64 @@
         tournaments: {}
       };
 
+      function computeTournamentWinner(tournament) {
+        if (!tournament || !tournament.matches) return null;
+        const matchesList = Object.values(tournament.matches);
+        if (matchesList.length === 0) return null;
+
+        if (tournament.format === 'brackets') {
+          const finalMatch = matchesList.find((m) => !m.nextMatchId);
+          if (finalMatch && finalMatch.winnerId) return finalMatch.winnerId;
+        }
+
+        if (tournament.format === 'double_elimination') {
+          const gfReset = tournament.matches['grand_final_reset'];
+          if (gfReset && gfReset.status === 'completed' && gfReset.winnerId)
+            return gfReset.winnerId;
+          const gf = tournament.matches['grand_final'];
+          if (gf && gf.status === 'completed' && gf.winnerId) return gf.winnerId;
+        }
+
+        if (tournament.format === 'groups_playoffs') {
+          const pf = tournament.matches['playoff_final'];
+          if (pf && pf.status === 'completed' && pf.winnerId) return pf.winnerId;
+        }
+
+        if (tournament.format === 'king_of_the_hill') {
+          if (tournament.koth && tournament.koth.kingId) return tournament.koth.kingId;
+        }
+
+        const scores = {};
+        (tournament.playerIds || []).forEach((pId) => {
+          scores[pId] = { id: pId, pts: 0, diff: 0, pf: 0 };
+        });
+
+        matchesList.forEach((m) => {
+          if (m.player1Id && m.player2Id && m.winnerId) {
+            if (!scores[m.player1Id]) {
+              scores[m.player1Id] = { id: m.player1Id, pts: 0, diff: 0, pf: 0 };
+            }
+            if (!scores[m.player2Id]) {
+              scores[m.player2Id] = { id: m.player2Id, pts: 0, diff: 0, pf: 0 };
+            }
+            scores[m.player1Id].pf += m.score1 || 0;
+            scores[m.player2Id].pf += m.score2 || 0;
+            scores[m.player1Id].diff += (m.score1 || 0) - (m.score2 || 0);
+            scores[m.player2Id].diff += (m.score2 || 0) - (m.score1 || 0);
+            if (m.winnerId === m.player1Id) {
+              scores[m.player1Id].pts += 3;
+            } else if (m.winnerId === m.player2Id) {
+              scores[m.player2Id].pts += 3;
+            }
+          }
+        });
+
+        const sorted = Object.values(scores).sort(
+          (a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf
+        );
+        return sorted[0] ? sorted[0].id : null;
+      }
+
       function normalizeState(state) {
         if (!state || typeof state !== 'object') return state;
         if (!state.players || typeof state.players !== 'object') {
@@ -2368,37 +2426,10 @@
           if (allMatchesDone && tournament.status !== 'completed') {
             tournament.status = 'completed';
             tournament.updatedAt = Date.now();
-            if (!tournament.winnerId) {
-              const scores = {};
-              tournament.playerIds.forEach((pId) => {
-                scores[pId] = { id: pId, pts: 0, diff: 0, pf: 0 };
-              });
-              matchesList.forEach((m) => {
-                if (m.player1Id && m.player2Id && m.winnerId) {
-                  if (!scores[m.player1Id]) {
-                    scores[m.player1Id] = { id: m.player1Id, pts: 0, diff: 0, pf: 0 };
-                  }
-                  if (!scores[m.player2Id]) {
-                    scores[m.player2Id] = { id: m.player2Id, pts: 0, diff: 0, pf: 0 };
-                  }
-                  scores[m.player1Id].pf += m.score1 || 0;
-                  scores[m.player2Id].pf += m.score2 || 0;
-                  scores[m.player1Id].diff += (m.score1 || 0) - (m.score2 || 0);
-                  scores[m.player2Id].diff += (m.score2 || 0) - (m.score1 || 0);
-                  if (m.winnerId === m.player1Id) {
-                    scores[m.player1Id].pts += 3;
-                  } else if (m.winnerId === m.player2Id) {
-                    scores[m.player2Id].pts += 3;
-                  }
-                }
-              });
-              const sorted = Object.values(scores).sort(
-                (a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf
-              );
-              if (sorted.length > 0) {
-                tournament.winnerId = sorted[0].id;
-              }
-            }
+          }
+
+          if (tournament.status === 'completed' && !tournament.winnerId && hasMatches) {
+            tournament.winnerId = computeTournamentWinner(tournament);
           }
         });
         return state;
@@ -5027,7 +5058,8 @@
                 ? '<span class="badge badge-cyan">EN CURSO</span>'
                 : '<span class="badge badge-orange">PAUSADO</span>';
 
-            const winner = isDone && t.winnerId ? AppState.players[t.winnerId] : null;
+            const winnerId = t.winnerId || (isDone ? computeTournamentWinner(t) : null);
+            const winner = isDone && winnerId ? AppState.players[winnerId] : null;
             const championBadge = winner
               ? `<div style="font-size:13px; font-weight:800; color:var(--bx-gold); margin-top:4px; display:flex; align-items:center; gap:6px;">🥇 Campeón: <span>${winner.emoji || '👑'} ${winner.name}</span></div>`
               : '';
@@ -5319,16 +5351,23 @@
 
           // If tournament is completed, show Champion Podium banner
           if (t.status === 'completed') {
-            const winner = AppState.players[t.winnerId];
-            const wName = winner ? `${winner.emoji} ${winner.name}` : 'Campeón del Torneo';
+            if (!t.winnerId) {
+              t.winnerId = computeTournamentWinner(t);
+              if (t.winnerId) {
+                saveState();
+              }
+            }
+            const winner = t.winnerId ? AppState.players[t.winnerId] : null;
+            const wName = winner ? `${winner.emoji} ${winner.name}` : null;
             const banner = document.createElement('div');
             banner.className = 'card';
             banner.style.cssText =
               'background:linear-gradient(135deg, rgba(255,215,0,0.18), rgba(0,240,255,0.08)); border:2px solid var(--bx-gold); text-align:center; padding:18px 14px; margin-bottom:16px; box-shadow:0 0 25px rgba(255,215,0,0.25);';
+            const winnerHeading = wName ? `¡${wName} es el CAMPEÓN!` : `¡TORNEO FINALIZADO!`;
             banner.innerHTML = `
             <div style="font-size:42px; margin-bottom:4px;">🏆</div>
             <div style="font-size:12px; font-weight:800; color:var(--bx-cyan); letter-spacing:1px; text-transform:uppercase;">¡TORNEO FINALIZADO!</div>
-            <div style="font-size:24px; font-weight:900; color:var(--bx-gold); margin:6px 0;">¡${wName} es el CAMPEÓN!</div>
+            <div style="font-size:24px; font-weight:900; color:var(--bx-gold); margin:6px 0;">${winnerHeading}</div>
             <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">El torneo ha concluido exitosamente. Podés compartir los resultados finales y la tabla completa con el grupo de WhatsApp.</div>
             <button type="button" class="btn btn-block" style="background:#25D366; color:white; font-weight:800; border:none; font-size:14px; padding:12px 16px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;" onclick="UI.shareTournamentWhatsapp('${t.id}')">
               💬 Compartir Tabla y Podio Final en WhatsApp
@@ -6086,8 +6125,9 @@
           const statusLabel = isDone ? '🏆 TORNEO FINALIZADO' : '⚡ TORNEO EN CURSO';
 
           let winnerName = 'En disputa';
-          if (t.winnerId && AppState.players[t.winnerId]) {
-            const w = AppState.players[t.winnerId];
+          const winnerId = t.winnerId || (isDone ? computeTournamentWinner(t) : null);
+          if (winnerId && AppState.players[winnerId]) {
+            const w = AppState.players[winnerId];
             winnerName = `${w.emoji || '🌪️'} ${w.name}`;
           }
 
@@ -6096,7 +6136,7 @@
           lines.push(`🏆 *Torneo:* ${t.name}`);
           lines.push(`🎮 *Formato:* ${formatName}`);
           lines.push(`📌 *Estado:* ${statusLabel}`);
-          if (isDone && t.winnerId) {
+          if (isDone && winnerId) {
             lines.push(`👑 *CAMPEÓN SUPREMO:* ${winnerName}`);
           }
           lines.push('');
@@ -6225,8 +6265,9 @@
           } else {
             // brackets or double_elimination
             lines.push(`🏅 *PODIO FINAL:*`);
-            if (t.winnerId) {
-              const champ = AppState.players[t.winnerId];
+            const podiumWinnerId = t.winnerId || computeTournamentWinner(t);
+            if (podiumWinnerId) {
+              const champ = AppState.players[podiumWinnerId];
               lines.push(
                 `🥇 *1er Lugar (Campeón):* ${champ ? `${champ.emoji} ${champ.name}` : 'Blader'}`
               );

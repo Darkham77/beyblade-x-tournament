@@ -40,7 +40,7 @@ Everything is packed into a single standalone file: **`index.html`**.
   - Automatic reverse-chronological ordering (most recent first) with live `updatedAt` refresh.
   - Universal real-time search across tournament names, participant bladers, winners, formats, and dates.
   - Interactive status filter chips (`All`, `In Progress`, `Completed`, `Paused`) with live counters.
-  - Quick sorting dropdown selector (*Most recent, Oldest, Name A-Z, Name Z-A*).
+  - Quick sorting dropdown selector (_Most recent, Oldest, Name A-Z, Name Z-A_).
 - **⚔️ Official Beyblade X Touch Scoreboard:**
   - 🟢 **+1 Spin Finish:** Opponent bey stops spinning first.
   - 🟠 **+2 Over Finish:** Opponent bey is knocked into the Over Zone pocket.

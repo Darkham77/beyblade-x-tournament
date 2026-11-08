@@ -30,7 +30,7 @@ import {
  */
 describe('Beyblade X Domain & Scoring Invariants', () => {
   it('has consistent version string', () => {
-    expect(BEYBLADE_X_VERSION).toBe('1.1.0');
+    expect(BEYBLADE_X_VERSION).toBe('1.1.1');
   });
 
   it('matches official Takara Tomy / Hasbro finish points', () => {
@@ -434,6 +434,80 @@ describe('State Normalization & Migration Engine', () => {
     expect(rawTournament.createdAt).toBeGreaterThanOrEqual(0);
     expect(typeof rawTournament.updatedAt).toBe('number');
     expect(rawTournament.updatedAt).toBe(rawTournament.createdAt);
+  });
+
+  it('normalizes legacy completed round-robin tournament missing winnerId by computing champion from standings', () => {
+    const legacyLeague: Tournament = {
+      id: 'league_legacy',
+      name: 'Liga 11/10',
+      format: 'round_robin',
+      status: 'completed',
+      rules: {
+        targetPoints: 4,
+        finishPoints: { spin: 1, over: 2, burst: 2, xtreme: 3, penalty: 1 }
+      },
+      playerIds: ['p1', 'p2'],
+      matches: {
+        m1: {
+          id: 'm1',
+          roundIndex: 0,
+          matchIndex: 0,
+          player1Id: 'p1',
+          player2Id: 'p2',
+          score1: 4,
+          score2: 1,
+          targetPoints: 4,
+          status: 'completed',
+          winnerId: 'p1',
+          loserId: 'p2',
+          history: []
+        }
+      },
+      rounds: [],
+      createdAt: 1000,
+      updatedAt: 2000
+    };
+
+    expect(legacyLeague.winnerId).toBeUndefined();
+    normalizeTournament(legacyLeague);
+    expect(legacyLeague.winnerId).toBe('p1');
+  });
+
+  it('normalizes legacy completed bracket tournament missing winnerId from grand final match', () => {
+    const legacyBracket: Tournament = {
+      id: 'bracket_legacy',
+      name: 'Copa Knockout',
+      format: 'brackets',
+      status: 'completed',
+      rules: {
+        targetPoints: 4,
+        finishPoints: { spin: 1, over: 2, burst: 2, xtreme: 3, penalty: 1 }
+      },
+      playerIds: ['p1', 'p2'],
+      matches: {
+        final: {
+          id: 'final',
+          roundIndex: 1,
+          matchIndex: 0,
+          player1Id: 'p1',
+          player2Id: 'p2',
+          score1: 2,
+          score2: 4,
+          targetPoints: 4,
+          status: 'completed',
+          winnerId: 'p2',
+          loserId: 'p1',
+          history: []
+        }
+      },
+      rounds: [],
+      createdAt: 1000,
+      updatedAt: 2000
+    };
+
+    expect(legacyBracket.winnerId).toBeUndefined();
+    normalizeTournament(legacyBracket);
+    expect(legacyBracket.winnerId).toBe('p2');
   });
 
   it('sorts tournaments chronologically from most recent to oldest by default', () => {
